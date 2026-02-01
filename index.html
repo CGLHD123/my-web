@@ -3,57 +3,47 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL</title>
+    <title>THE ABYSS PROTOCOL: STALKER EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <main id="game-container">
+    <div id="game-stage">
         <div id="world">
             <div id="player-container">
-                <div id="player-body"></div>
-                <div id="player-weapon"></div>
-                <div id="hp-bar">
-                    <div id="hp-inner"></div>
+                <div id="player-sprite">
+                    <div id="weapon-visual"></div>
+                </div>
+                <div class="hp-label">
+                    <div id="hp-fill"></div>
                 </div>
             </div>
-            <div id="entities-layer"></div>
+            <div id="entity-layer"></div>
         </div>
-    </main>
-
-    <div id="fog-layer"></div>
-
-    <div class="hud-top-right">
-        <div class="hud-box">LVL: <span id="val-lvl">1</span></div>
-        <div class="hud-box">COIN: <span id="val-coin">0</span></div>
-        <button class="pixel-btn" onclick="toggleHelp(true)">HELP</button>
     </div>
 
-    <div id="gui-class" class="overlay">
-        <div class="protocol-window">
-            <div class="window-header">OPERATIVE SELECTION</div>
-            <div class="dual-column">
-                <div class="left-col" id="class-grid"></div>
-                <div class="right-col">
-                    <div id="class-info">
-                        <h3>SCANNING...</h3>
-                        <p>Hover over a unit to see data</p>
+    <div class="hud-top">
+        <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
+        <div class="stat-unit">EXP: <span id="ui-exp">0/100</span></div>
+        <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
+        <button class="pixel-btn" onclick="location.reload()">RESET</button>
+    </div>
+
+    <div id="level-up-msg">LEVEL UP! +HEALTH & ATK</div>
+
+    <div id="gui-selection" class="overlay">
+        <div class="pixel-window">
+            <h2 class="title">SELECT OPERATIVE</h2>
+            <div class="menu-layout">
+                <div class="grid-left" id="class-grid"></div>
+                <div class="info-right">
+                    <div id="class-details">
+                        <p>SCANNING...</p>
                     </div>
-                    <button id="btn-start" class="start-btn" disabled onclick="startGame()">INITIALIZE</button>
+                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE</button>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div id="gui-help" class="overlay" style="display:none">
-        <div class="protocol-window small">
-            <h3>PROTOCOL INFO</h3>
-            <p>[A][D] Move | [SPACE] Jump</p>
-            <p>[SHIFT] Crouch | [L-CLICK] Attack</p>
-            <hr>
-            <button class="pixel-btn red" onclick="location.reload()">RESET PROTOCOL</button>
-            <button class="pixel-btn" onclick="toggleHelp(false)">CLOSE</button>
         </div>
     </div>
 

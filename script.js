@@ -1,154 +1,196 @@
 const classes = [
-    { name: 'SCOUT', hp: 80, atk: 12, range: 60, weapon: 'DAGGER', color: '#0f0', id: 'scout' },
-    { name: 'WARRIOR', hp: 120, atk: 18, range: 80, weapon: 'SWORD', color: '#f00', id: 'warrior' },
-    { name: 'TANKER', hp: 200, atk: 10, range: 70, weapon: 'MACE', color: '#00f', id: 'tanker' },
-    { name: 'MAGE', hp: 70, atk: 30, range: 180, weapon: 'STAFF', color: '#f0f', id: 'mage' },
-    { name: 'ROGUE', hp: 90, atk: 25, range: 60, weapon: 'KATAR', color: '#ff0', id: 'rogue' },
-    { name: 'CLERIC', hp: 110, atk: 15, range: 70, weapon: 'MACE', color: '#fff', id: 'cleric' },
-    { name: 'BERSERKER', hp: 140, atk: 28, range: 80, weapon: 'AXE', color: '#f80', id: 'berserker' },
-    { name: 'ARCHER', hp: 85, atk: 22, range: 250, weapon: 'BOW', color: '#8f0', id: 'archer' },
-    { name: 'PALADIN', hp: 160, atk: 15, range: 80, weapon: 'HOLY', color: '#0ff', id: 'paladin' },
-    { name: 'NECRO', hp: 75, atk: 26, range: 120, weapon: 'SCYTHE', color: '#80f', id: 'necro' }
+    { name: 'SCOUT', hp: 80, atk: 12, range: 75, color: '#0f0', id: 'scout' },
+    { name: 'WARRIOR', hp: 120, atk: 18, range: 90, color: '#f00', id: 'warrior' },
+    { name: 'TANKER', hp: 200, atk: 10, range: 75, color: '#00f', id: 'tanker' },
+    { name: 'MAGE', hp: 70, atk: 30, range: 180, color: '#f0f', id: 'mage' },
+    { name: 'ROGUE', hp: 90, atk: 25, range: 65, color: '#ff0', id: 'rogue' },
+    { name: 'CLERIC', hp: 110, atk: 15, range: 75, color: '#fff', id: 'cleric' },
+    { name: 'BERSERKER', hp: 140, atk: 28, range: 85, color: '#f80', id: 'berserker' },
+    { name: 'ARCHER', hp: 85, atk: 22, range: 250, color: '#8f0', id: 'archer' },
+    { name: 'PALADIN', hp: 160, atk: 15, range: 85, color: '#0ff', id: 'paladin' },
+    { name: 'NECRO', hp: 75, atk: 26, range: 120, color: '#80f', id: 'necro' }
 ];
 
-let gameState = {
-    player: { x: 200, y: 0, vx: 0, vy: 0, hp: 100, maxHp: 100, atk: 10, range: 80, lvl: 1, exp: 0, coin: 0, scale: 1, crouching: false },
+let g = {
     active: false,
-    selectedClass: null,
+    player: { x: 100, y: 0, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, coin: 0, lvl: 1, exp: 0, next: 100, ground: false, crouch: false, dir: 1, range: 80 },
     keys: {},
     platforms: [
-        { x: 0, y: 0, w: 5000, h: 40 },
-        { x: 400, y: 150, w: 200, h: 20 },
-        { x: 700, y: 280, w: 200, h: 20 }
+        { x: 0, y: 0, w: 15000, h: 40 },
+        { x: 500, y: 160, w: 250, h: 20 },
+        { x: 900, y: 320, w: 250, h: 20 },
+        { x: 1400, y: 200, w: 400, h: 20 }
     ],
-    entities: []
+    spawnPoints: [
+        { x: 600, y: 40, type: 'goblin', s: false },
+        { x: 1100, y: 40, type: 'orc', s: false },
+        { x: 550, y: 180, type: 'chest', s: false },
+        { x: 1600, y: 220, type: 'witch', s: false },
+        { x: 2200, y: 40, type: 'orc', s: false },
+        { x: 2800, y: 40, type: 'goblin', s: false }
+    ],
+    entities: [],
+    selected: null
 };
 
-// Khởi tạo GUI chọn Class
-function initMenu() {
+function initSelection() {
     const grid = document.getElementById('class-grid');
     classes.forEach(c => {
-        const btn = document.createElement('div');
-        btn.className = 'class-btn';
-        btn.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
-
-        btn.onmouseenter = () => {
-            document.getElementById('class-info').innerHTML = `
+        const d = document.createElement('div');
+        d.className = 'class-item';
+        d.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
+        d.onmouseenter = () => {
+            document.getElementById('class-details').innerHTML = `
                 <h3 style="color:${c.color}">${c.name}</h3>
                 <p>HP: ${c.hp} | ATK: ${c.atk}</p>
-                <p>WEAPON: ${c.weapon}</p>
                 <p>RANGE: ${c.range}px</p>
             `;
         };
-
-        btn.onclick = () => {
-            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            gameState.selectedClass = c;
-            const startBtn = document.getElementById('btn-start');
-            startBtn.disabled = false;
-            startBtn.classList.add('active');
+        d.onclick = () => {
+            document.querySelectorAll('.class-item').forEach(i => i.classList.remove('active'));
+            d.classList.add('active');
+            g.selected = c;
+            document.getElementById('start-btn').disabled = false;
         };
-        grid.appendChild(btn);
+        grid.appendChild(d);
     });
 }
 
-function startGame() {
-    const c = gameState.selectedClass;
-    gameState.player.hp = gameState.player.maxHp = c.hp;
-    gameState.player.atk = c.atk;
-    gameState.player.range = c.range;
-    document.getElementById('player-body').style.background = c.color;
-    document.getElementById('gui-class').style.display = 'none';
-    gameState.active = true;
-    spawnMapContent();
-    requestAnimationFrame(gameLoop);
+function initGame() {
+    const p = g.player; const s = g.selected;
+    p.hp = p.maxH = s.hp; p.atk = s.atk; p.range = s.range;
+    document.getElementById('player-sprite').style.background = s.color;
+    document.getElementById('gui-selection').style.display = 'none';
+
+    g.platforms.forEach(plat => {
+        const el = document.createElement('div');
+        el.className = 'platform';
+        el.style.left = plat.x + 'px'; el.style.bottom = plat.y + 'px';
+        el.style.width = plat.w + 'px'; el.style.height = plat.h + 'px';
+        document.getElementById('world').appendChild(el);
+    });
+
+    g.active = true;
+    requestAnimationFrame(loop);
 }
 
-function spawnMapContent() {
-    // Spawn 1 rương và 3 quái mẫu
-    spawnEntity('chest', 600, 40);
-    spawnEntity('goblin', 800, 40);
-    spawnEntity('orc', 1200, 40);
-}
-
-function spawnEntity(type, x, y) {
-    const el = document.createElement('div');
-    el.className = type;
-    el.style.left = x + 'px';
-    el.style.bottom = y + 'px';
-    document.getElementById('entities-layer').appendChild(el);
-    gameState.entities.push({ type, x, y, hp: 50, el });
-}
-
-// Logic Game Loop
-function gameLoop() {
-    if (!gameState.active) return;
+function loop() {
+    if (!g.active) return;
     updatePlayer();
-    updateFog();
-    requestAnimationFrame(gameLoop);
+    handleSpawning();
+    updateEntities();
+    requestAnimationFrame(loop);
 }
 
 function updatePlayer() {
-    const p = gameState.player;
-    // Input
-    if (gameState.keys['KeyA']) { p.vx = -5; p.scale = -1; }
-    else if (gameState.keys['KeyD']) { p.vx = 5; p.scale = 1; }
-    else p.vx *= 0.8;
+    const p = g.player;
+    if (g.keys['KeyA']) { p.vx = -7; p.dir = -1; }
+    else if (g.keys['KeyD']) { p.vx = 7; p.dir = 1; }
+    else p.vx *= 0.85;
 
-    if (gameState.keys['Space'] && p.onGround) p.vy = -15;
+    p.crouch = !!g.keys['ShiftLeft'];
+    const s = document.getElementById('player-sprite');
+    s.style.height = p.crouch ? '30px' : '50px';
+    s.style.marginTop = p.crouch ? '20px' : '0px';
 
-    p.crouching = !!gameState.keys['ShiftLeft'];
+    if (g.keys['Space'] && p.ground) { p.vy = 20; p.ground = false; }
+    p.vy -= 1.1; p.x += p.vx; p.y += p.vy;
 
-    // Gravity & Physics
-    p.vy += 0.8;
-    p.x += p.vx;
-    p.y -= p.vy;
-
-    // Va chạm nền đất & Platform
-    p.onGround = false;
-    gameState.platforms.forEach(plat => {
-        if (p.x + 20 > plat.x && p.x - 20 < plat.x + plat.w) {
-            if (p.y <= plat.y + plat.h && p.y + p.vy >= plat.y + plat.h) {
-                p.y = plat.y + plat.h;
-                p.vy = 0;
-                p.onGround = true;
+    p.ground = false;
+    g.platforms.forEach(plat => {
+        if (p.x + 35 > plat.x && p.x < plat.x + plat.w) {
+            if (p.vy <= 0 && p.y >= plat.y + plat.h - 20 && p.y <= plat.y + plat.h + 5) {
+                p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
             }
         }
     });
 
-    // Update DOM
-    const container = document.getElementById('player-container');
-    container.style.left = p.x + 'px';
-    container.style.bottom = p.y + 'px';
-    container.style.transform = `scaleX(${p.scale}) ${p.crouching ? 'scaleY(0.6)' : 'scaleY(1)'}`;
-
-    // Camera follow
+    const c = document.getElementById('player-container');
+    c.style.left = p.x + 'px'; c.style.bottom = p.y + 'px';
+    c.style.transform = `scaleX(${p.dir})`;
     document.getElementById('world').style.transform = `translateX(${-p.x + window.innerWidth / 2}px)`;
-
-    // HUD
-    document.getElementById('val-lvl').innerText = p.lvl;
-    document.getElementById('val-coin').innerText = p.coin;
+    document.getElementById('hp-fill').style.width = (p.hp / p.maxH * 100) + '%';
 }
 
-function updateFog() {
-    const p = document.getElementById('player-container').getBoundingClientRect();
-    document.documentElement.style.setProperty('--px', (p.left + 20) + 'px');
-    document.documentElement.style.setProperty('--py', (p.top + 25) + 'px');
+function handleSpawning() {
+    g.spawnPoints.forEach(sp => {
+        if (!sp.s && Math.abs(g.player.x - sp.x) < 700) {
+            sp.s = true;
+            createEntity(sp.type, sp.x, sp.y);
+        }
+    });
 }
 
-// Events
-window.onkeydown = e => gameState.keys[e.code] = true;
-window.onkeyup = e => gameState.keys[e.code] = false;
-function toggleHelp(s) { document.getElementById('gui-help').style.display = s ? 'flex' : 'none'; }
-
-// Init
-initMenu();
-gameState.platforms.forEach(plat => {
+function createEntity(type, x, y) {
     const el = document.createElement('div');
-    el.className = 'platform';
-    el.style.left = plat.x + 'px';
-    el.style.bottom = plat.y + 'px';
-    el.style.width = plat.w + 'px';
-    document.getElementById('world').appendChild(el);
-});
+    el.className = type;
+    if (type !== 'coin' && type !== 'chest') {
+        el.innerHTML = `<div class="m-hp"><div class="m-hp-i"></div></div>`;
+    }
+    document.getElementById('entity-layer').appendChild(el);
+    g.entities.push({ type, x, y, hp: 50, mH: 50, el, active: true, speed: (type === 'goblin' ? 2.5 : 1.5) });
+}
+
+function updateEntities() {
+    g.entities.forEach((en) => {
+        if (!en.active) return;
+
+        // Logic AI: Đuổi theo người chơi
+        if (['goblin', 'orc', 'witch'].includes(en.type)) {
+            let dist = g.player.x - en.x;
+            if (Math.abs(dist) < 400) { // Tầm nhìn 400px
+                en.x += Math.sign(dist) * en.speed;
+                en.el.style.transform = `scaleX(${Math.sign(dist)})`;
+            }
+        }
+
+        en.el.style.left = en.x + 'px';
+        en.el.style.bottom = en.y + 'px';
+
+        // Nhặt Coin/Chest
+        let pDist = Math.abs(g.player.x - en.x);
+        if (en.type === 'coin' && pDist < 30 && Math.abs(g.player.y - en.y) < 40) {
+            en.active = false; en.el.remove(); g.player.coin += 15;
+            document.getElementById('ui-coin').innerText = g.player.coin;
+        }
+        if (en.type === 'chest' && pDist < 40 && Math.abs(g.player.y - en.y) < 40) {
+            en.active = false; en.el.style.opacity = "0.5";
+            gainExp(50);
+            for (let i = 0; i < 5; i++) createEntity('coin', en.x + Math.random() * 30, en.y + 20);
+        }
+    });
+}
+
+function attack() {
+    if (!g.active) return;
+    g.entities.forEach(en => {
+        if (!en.active || ['coin', 'chest'].includes(en.type)) return;
+        let d = g.player.dir === 1 ? (en.x - g.player.x) : (g.player.x - en.x);
+        if (d > 0 && d < g.player.range && Math.abs(g.player.y - en.y) < 70) {
+            en.hp -= g.player.atk;
+            if (en.hp <= 0) {
+                en.active = false; en.el.remove();
+                gainExp(35);
+                for (let i = 0; i < 4; i++) createEntity('coin', en.x + Math.random() * 20, en.y + 10);
+            } else {
+                en.el.querySelector('.m-hp-i').style.width = (en.hp / en.mH * 100) + '%';
+            }
+        }
+    });
+}
+
+function gainExp(v) {
+    const p = g.player; p.exp += v;
+    if (p.exp >= p.next) {
+        p.lvl++; p.exp = 0; p.next += 50; p.atk += 6; p.maxH += 25; p.hp = p.maxH;
+        const m = document.getElementById('level-up-msg');
+        m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 1500);
+    }
+    document.getElementById('ui-lvl').innerText = p.lvl;
+    document.getElementById('ui-exp').innerText = `${p.exp}/${p.next}`;
+}
+
+window.onkeydown = e => g.keys[e.code] = true;
+window.onkeyup = e => g.keys[e.code] = false;
+window.onmousedown = e => { if (e.button === 0) attack(); };
+initSelection();
