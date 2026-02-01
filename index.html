@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: LEVEL & QUEST SYSTEM</title>
+    <title>THE ABYSS: BOSS & DISTANCE</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -12,7 +12,6 @@
     <div id="game-stage">
         <div id="parallax-far"></div>
         <div id="parallax-mid"></div>
-
         <div id="world" style="display: none;">
             <div id="player-container">
                 <div id="player-sprite">
@@ -23,33 +22,58 @@
                 </div>
             </div>
             <div id="entity-layer"></div>
+            <div id="drop-layer"></div>
             <div id="particle-layer"></div>
         </div>
     </div>
+
+    <div id="distance-meter">DISTANCE: <span id="dist-val">0</span>m</div>
 
     <div class="hud-left-top">
         <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
         <div class="exp-bar">
             <div id="exp-fill"></div>
         </div>
-        <div id="quest-box">QUEST: <span id="quest-desc">Loading...</span></div>
+        <div id="quest-box">QUEST: <span id="quest-desc">...</span></div>
     </div>
 
     <div class="hud-right-top">
         <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
-        <button class="pixel-btn" onclick="location.reload()">RESET</button>
+        <div class="menu-btns">
+            <button class="pixel-btn" onclick="toggleStats()">STATS (C)</button>
+            <button class="pixel-btn" onclick="toggleShop()">SHOP (B)</button>
+        </div>
     </div>
 
     <div id="gui-selection" class="overlay">
         <div class="pixel-window">
             <h2 class="title">SELECT OPERATIVE</h2>
-            <div class="menu-layout">
-                <div class="grid-left" id="class-grid"></div>
-                <div class="info-right">
-                    <div id="class-details">CHỌN NHÂN VẬT...</div>
-                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE</button>
-                </div>
+            <div class="grid-left" id="class-grid"></div>
+            <div class="info-right">
+                <div id="class-details">CHỌN NHÂN VẬT...</div>
+                <button id="start-btn" class="main-btn" disabled onclick="initGame()">DEPLOY</button>
             </div>
+        </div>
+    </div>
+
+    <div id="gui-shop" class="overlay" style="display:none">
+        <div class="pixel-window" style="width:400px">
+            <h2>CYBER SHOP</h2>
+            <div class="shop-item">
+                <p>UPGRADE ATK (+25)</p><button class="pixel-btn" onclick="buyUpgrade('atk', 250)">250G</button>
+            </div>
+            <div class="shop-item">
+                <p>NANO REPAIR (MAX HP)</p><button class="pixel-btn" onclick="buyUpgrade('heal', 100)">100G</button>
+            </div>
+            <button class="main-btn" onclick="toggleShop()">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="gui-stats" class="overlay" style="display:none">
+        <div class="pixel-window" style="width:350px">
+            <h2>OPERATIVE STATS</h2>
+            <div id="stats-content"></div>
+            <button class="main-btn" onclick="toggleStats()">CLOSE</button>
         </div>
     </div>
 
