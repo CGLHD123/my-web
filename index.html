@@ -3,48 +3,32 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE ABYSS PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dark-theme">
-    <button id="btn-toggle-theme" class="theme-fixed-btn"><span id="bulb-icon">💡</span></button>
+    <button id="btn-toggle-theme" class="theme-fixed-btn">💡 LIGHTS</button>
+    <button class="open-gui-btn" onclick="toggleGUI()">HELP</button>
 
     <div id="gui-guide" class="gui-overlay">
         <div class="gui-content">
             <h3>PROTOCOL MANUAL</h3>
             <ul>
-                <li><b>W A S D / Mũi tên:</b> Di chuyển chủ thể</li>
-                <li><b>💡 Bóng đèn:</b> Chuyển đổi hệ năng lượng (Theme)</li>
-                <li><b>Mục tiêu:</b> Thám hiểm vùng tối hầm ngục</li>
+                <li>⚡ <b>WASD:</b> Di chuyển</li>
+                <li>💡 <b>LIGHTS:</b> Chuyển hệ năng lượng</li>
+                <li>🎯 <b>GOAL:</b> Vượt hầm ngục</li>
             </ul>
-            <button onclick="toggleGUI()">XÁC NHẬN</button>
+            <button onclick="toggleGUI()">INITIALIZE</button>
         </div>
     </div>
 
-    <button class="open-gui-btn" onclick="toggleGUI()">HELP</button>
-
-    <div class="game-wrapper">
-        <h1 class="neon-title">THE ABYSS</h1>
-
-        <div class="status-container">
-            <div class="bar-label">SYSTEM STABILITY</div>
-            <div class="bar-outer">
-                <div id="hp-bar" class="bar-inner"></div>
-            </div>
-        </div>
-
+    <div class="game-wrapper" style="display: flex; flex-direction: column; align-items: center;">
+        <h1 style="text-shadow: 0 0 20px var(--neon-main);">THE ABYSS</h1>
         <div id="dungeon-frame">
-            <div id="player">
-                <div class="core-light"></div>
-            </div>
-            <div class="wall w1"></div>
-            <div class="wall w2"></div>
-            <div class="wall w3"></div>
+            <div id="player"></div>
         </div>
-
-        <div id="console-output">Hệ thống sẵn sàng. Vui lòng di chuyển...</div>
+        <p id="console-output" style="margin-top: 20px; opacity: 0.7;">System Booting...</p>
     </div>
 
     <script src="script.js"></script>
