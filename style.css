@@ -2,6 +2,7 @@
     --neon: #00f2ff;
     --exp: #ff00ff;
     --danger: #ff4444;
+    --gold: #ffd700;
 }
 
 body {
@@ -10,16 +11,58 @@ body {
     overflow: hidden;
     font-family: 'Press Start 2P', cursive;
     color: #fff;
+    user-select: none;
+}
+
+/* Hiệu ứng Rung & Cảnh báo máu */
+.shake {
+    animation: shake 0.3s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-6px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(6px, 0, 0);
+    }
+}
+
+.low-hp {
+    animation: bloodPulse 1s infinite;
+}
+
+@keyframes bloodPulse {
+    from {
+        box-shadow: inset 0 0 0px red;
+    }
+
+    to {
+        box-shadow: inset 0 0 100px red;
+    }
 }
 
 #distance-meter {
     position: fixed;
-    top: 20px;
+    top: 25px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    font-size: 14px;
-    text-shadow: 2px 2px #000;
     color: var(--neon);
 }
 
@@ -42,20 +85,24 @@ body {
     align-items: flex-end;
 }
 
-#parallax-far {
-    position: absolute;
-    width: 400%;
-    height: 100%;
-    background: #0a0a1a;
-    z-index: 1;
+.stat-unit {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border: 2px solid #444;
+    font-size: 10px;
 }
 
-#parallax-mid {
-    position: absolute;
-    width: 400%;
+.exp-bar {
+    width: 150px;
+    height: 8px;
+    background: #222;
+    border: 2px solid #444;
+}
+
+#exp-fill {
     height: 100%;
-    background-image: repeating-linear-gradient(90deg, transparent, transparent 300px, rgba(255, 255, 255, 0.02) 301px);
-    z-index: 2;
+    background: var(--exp);
+    width: 0%;
 }
 
 #world {
@@ -64,60 +111,40 @@ body {
     height: 100%;
     bottom: 0;
     z-index: 10;
-    transition: transform 0.1s linear;
 }
 
 .platform {
     position: absolute;
     background: #1a1a1a;
-    border-top: 3px solid #333;
+    border-top: 4px solid #333;
 }
 
 .spike {
     position: absolute;
     width: 30px;
-    height: 15px;
+    height: 18px;
     background: var(--danger);
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .chest {
     position: absolute;
-    width: 32px;
+    width: 35px;
     height: 25px;
-    background: #ffd700;
+    background: var(--gold);
     border: 2px solid #fff;
-    box-shadow: 0 0 10px #ffd700;
 }
 
-.drop-item {
+#player-container {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 1px solid #fff;
-}
-
-.goblin {
-    position: absolute;
-    width: 40px;
-    height: 45px;
-    background: #1a5e1a;
-    border: 2px solid #000;
-}
-
-.boss {
-    position: absolute;
-    width: 100px;
-    height: 120px;
-    background: #4a0000;
-    border: 4px solid #ff0000;
-    box-shadow: 0 0 30px #ff0000;
+    width: 50px;
+    height: 70px;
+    z-index: 100;
 }
 
 #player-sprite {
     width: 50px;
     height: 50px;
-    background-size: cover;
     border: 2px solid #fff;
     position: relative;
 }
@@ -125,10 +152,11 @@ body {
 #weapon-visual {
     position: absolute;
     right: -10px;
-    top: 20px;
-    width: 30px;
+    top: 25px;
+    width: 35px;
     height: 8px;
-    background: #eee;
+    background: var(--neon);
+    box-shadow: 0 0 10px var(--neon);
     transform-origin: left center;
 }
 
@@ -150,10 +178,27 @@ body {
     }
 }
 
+.goblin {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    background: #1a5e1a;
+    border: 2px solid #000;
+}
+
+.boss {
+    position: absolute;
+    width: 110px;
+    height: 130px;
+    background: #4a0000;
+    border: 4px solid #f00;
+    box-shadow: 0 0 30px #f00;
+}
+
 #hp-fill {
     height: 100%;
     background: #0f0;
-    width: 100%;
+    transition: width 0.2s;
 }
 
 .overlay {
@@ -169,39 +214,51 @@ body {
 .pixel-window {
     background: #111;
     border: 4px solid #444;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
 }
 
 .grid-left {
     display: grid;
-    grid-template-columns: repeat(5, 20%);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
 
 .class-item {
-    aspect-ratio: 1/1;
+    width: 60px;
+    height: 60px;
     border: 2px solid #333;
-    background-size: cover;
     cursor: pointer;
+    background: #222;
 }
 
 .class-item.active {
     border-color: var(--neon);
 }
 
-.stat-unit {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 8px;
+.pixel-btn {
+    font-family: inherit;
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    border: 2px solid #555;
+    cursor: pointer;
     font-size: 10px;
-    border: 1px solid #444;
 }
 
 .main-btn {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+    padding: 15px;
     font-family: inherit;
     background: var(--neon);
+    border: none;
     cursor: pointer;
+}
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding: 10px 0;
 }

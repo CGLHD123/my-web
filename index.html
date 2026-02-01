@@ -3,12 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: BOSS & DISTANCE</title>
+    <title>THE ABYSS PROTOCOL: BOSS & DISTANCE</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body id="body-main">
     <div id="game-stage">
         <div id="parallax-far"></div>
         <div id="parallax-mid"></div>
@@ -23,7 +23,6 @@
             </div>
             <div id="entity-layer"></div>
             <div id="drop-layer"></div>
-            <div id="particle-layer"></div>
         </div>
     </div>
 
@@ -34,7 +33,7 @@
         <div class="exp-bar">
             <div id="exp-fill"></div>
         </div>
-        <div id="quest-box">QUEST: <span id="quest-desc">...</span></div>
+        <div id="quest-box" class="stat-unit">QUEST: <span id="quest-desc">...</span></div>
     </div>
 
     <div class="hud-right-top">
@@ -48,11 +47,9 @@
     <div id="gui-selection" class="overlay">
         <div class="pixel-window">
             <h2 class="title">SELECT OPERATIVE</h2>
-            <div class="grid-left" id="class-grid"></div>
-            <div class="info-right">
-                <div id="class-details">CHỌN NHÂN VẬT...</div>
-                <button id="start-btn" class="main-btn" disabled onclick="initGame()">DEPLOY</button>
-            </div>
+            <div id="class-grid" class="grid-left"></div>
+            <div id="class-details" style="margin: 20px 0; min-height: 40px;">CHỌN NHÂN VẬT...</div>
+            <button id="start-btn" class="main-btn" disabled onclick="initGame()">DEPLOY</button>
         </div>
     </div>
 
@@ -72,7 +69,7 @@
     <div id="gui-stats" class="overlay" style="display:none">
         <div class="pixel-window" style="width:350px">
             <h2>OPERATIVE STATS</h2>
-            <div id="stats-content"></div>
+            <div id="stats-content" style="text-align:left; line-height:2; font-size:12px; margin:20px 0;"></div>
             <button class="main-btn" onclick="toggleStats()">CLOSE</button>
         </div>
     </div>
