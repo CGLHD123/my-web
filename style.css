@@ -1,214 +1,210 @@
 :root {
+    --pixel-bg: #221a1a;
     --neon: #00f2ff;
-    --glow: rgba(0, 242, 255, 0.7);
-    --bg: #050505;
-}
-
-body.light-theme {
-    --neon: #ff00de;
-    --glow: rgba(255, 0, 222, 0.5);
-    --bg: #f5f5f5;
+    --brick: #3d2e2e;
 }
 
 body {
     margin: 0;
-    background: var(--bg);
-    color: #fff;
-    font-family: 'Orbitron', sans-serif;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: 0.5s;
-}
-
-.header-ui {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 40px;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.game-logo {
-    font-size: 18px;
-    color: var(--neon);
-    text-shadow: 0 0 10px var(--neon);
-}
-
-/* Stats ở góc màn hình */
-.stats-screen-corner {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.85);
-    border-left: 4px solid var(--neon);
-    padding: 15px;
-    z-index: 2000;
-    font-size: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-}
-
-.stat-item {
-    margin-bottom: 5px;
-    letter-spacing: 1px;
-}
-
-/* Dungeon Frame */
-#dungeon-frame {
-    width: 800px;
-    height: 500px;
-    position: relative;
-    background: #0a0a0a;
-    border: 2px solid var(--neon);
-    margin: auto;
-    clip-path: polygon(0% 0%, 100% 0%, 100% 65%, 70% 65%, 70% 100%, 0% 100%);
-    box-shadow: 0 0 30px var(--glow);
-}
-
-/* Nhân vật (Player) - Z-INDEX CAO NHẤT */
-#player {
-    position: absolute;
-    background: #fff;
-    box-shadow: 0 0 20px #fff;
-    border-radius: 2px;
-    z-index: 1500;
-    top: 50px;
-    left: 50px;
-    /* Vị trí mặc định */
-}
-
-/* Sương mù (Fog) */
-#fog-overlay {
-    position: absolute;
-    inset: 0;
     background: #000;
-    z-index: 1400;
-    pointer-events: none;
-    mask-image: radial-gradient(circle 120px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 120px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+    image-rendering: pixelated;
 }
 
-/* Elements */
-.wall {
-    position: absolute;
-    background: var(--neon);
-    box-shadow: 0 0 10px var(--neon);
-    z-index: 1300;
+/* GUI & Border */
+.pixel-border-box {
+    background: var(--pixel-bg);
+    border: 4px solid #555;
+    box-shadow: inset -4px -4px 0px #111, inset 4px 4px 0px #777;
+    padding: 30px;
+    text-align: center;
 }
 
-.v-wall {
-    width: 6px;
-    height: 120px;
-    left: 250px;
-    top: 0;
-}
-
-.h-wall {
-    width: 150px;
-    height: 6px;
-    left: 400px;
-    top: 200px;
-}
-
-.portal {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border: 2px dashed var(--neon);
-    border-radius: 50%;
-    animation: rotate 4s linear infinite;
-    z-index: 1200;
-}
-
-#portal-in {
-    top: 20px;
-    left: 20px;
-    border-color: #0f0;
-}
-
-#portal-out {
-    bottom: 30px;
-    left: 550px;
-    border-color: #f00;
-}
-
-.gold-coin {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    background: gold;
-    border-radius: 50%;
-    box-shadow: 0 0 15px gold;
-    z-index: 1250;
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* GUI & Reset */
 .gui-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3000;
+    z-index: 2000;
 }
 
-.gui-card {
-    background: #000;
-    border: 2px solid var(--neon);
-    padding: 40px;
-    text-align: center;
-    border-radius: 20px;
-    width: 300px;
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.class-box {
-    border: 1px solid var(--neon);
-    padding: 15px;
+.class-card {
+    border: 2px solid #444;
+    padding: 10px;
     cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
+    background: #111;
+    font-size: 8px;
+    transition: 0.2s;
 }
 
-.class-box:hover {
+.class-card:hover {
+    border-color: var(--neon);
+    box-shadow: 0 0 15px var(--neon);
+    transform: translateY(-5px);
     background: var(--neon);
     color: #000;
 }
 
-.reset-btn-inner {
-    background: none;
-    border: 1px solid #ff4444;
-    color: #ff4444;
-    padding: 10px;
+/* Stats & World */
+.stats-screen {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.pixel-text {
+    font-size: 10px;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px #000;
+}
+
+#world {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+#dungeon {
+    position: absolute;
+    bottom: 0;
+    width: 3000px;
+    height: 100%;
+    transition: 0.1s linear;
+}
+
+.platform {
+    position: absolute;
+    height: 40px;
+    background: var(--brick);
+    border-top: 6px solid #5c4545;
+}
+
+/* Player & Combat */
+#player {
+    position: absolute;
+    width: 32px;
+    height: 48px;
+    background: #fff;
+    bottom: 40px;
+    left: 100px;
+    z-index: 100;
+    transition: height 0.1s;
+}
+
+#player.crouching {
+    height: 24px;
+}
+
+.weapon-pixel {
+    position: absolute;
+    width: 30px;
+    height: 6px;
+    background: silver;
+    right: -25px;
+    top: 20px;
+    display: none;
+    transform-origin: left;
+}
+
+#player.attacking .weapon-pixel {
+    display: block;
+    animation: swing 0.2s;
+}
+
+@keyframes swing {
+    0% {
+        transform: rotate(-45deg);
+    }
+
+    100% {
+        transform: rotate(45deg);
+    }
+}
+
+.shield-pixel {
+    position: absolute;
+    inset: -8px;
+    border: 3px solid skyblue;
+    border-radius: 4px;
+    display: none;
+}
+
+#player.shielding .shield-pixel {
+    display: block;
+    box-shadow: 0 0 20px var(--neon);
+}
+
+#hp-bar-inner {
+    position: absolute;
+    top: -12px;
+    height: 4px;
+    background: #f00;
     width: 100%;
-    cursor: pointer;
-    font-family: 'Orbitron';
-    margin: 20px 0;
 }
 
-.reset-btn-inner:hover {
-    background: #ff4444;
-    color: #fff;
+/* Enemies */
+.enemy {
+    position: absolute;
+    bottom: 40px;
 }
 
-.neon-nav-btn,
-.gui-btn {
-    background: none;
-    border: 1px solid var(--neon);
-    color: var(--neon);
-    padding: 5px 15px;
+.goblin {
+    background: #4a4;
+    width: 28px;
+    height: 32px;
+}
+
+.orc {
+    background: #852;
+    width: 40px;
+    height: 50px;
+}
+
+.witch {
+    background: #606;
+    width: 30px;
+    height: 45px;
+    box-shadow: 0 0 10px #f0f;
+}
+
+#fog-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+    background: #000;
+    mask-image: radial-gradient(circle 180px at var(--px) var(--py), transparent 10%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 180px at var(--px) var(--py), transparent 10%, black 100%);
+}
+
+.pixel-btn {
+    font-family: 'Press Start 2P';
+    padding: 10px;
     cursor: pointer;
-    font-family: 'Orbitron';
+    border: none;
+    margin: 10px;
+}
+
+.help-trigger {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--neon);
+    font-family: 'Press Start 2P';
+    cursor: pointer;
 }

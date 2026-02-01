@@ -1,85 +1,152 @@
-const player = document.getElementById('player');
-const dungeon = document.getElementById('dungeon-frame');
-const fog = document.getElementById('fog-overlay');
-const goldItem = document.getElementById('gold-item');
-const walls = document.querySelectorAll('.wall');
+const classes = [
+    { name: 'SCOUT', hp: 80, atk: 12, range: 60, weapon: 'DAGGER', color: '#0f0' },
+    { name: 'WARRIOR', hp: 120, atk: 18, range: 80, weapon: 'SWORD', color: '#f00' },
+    { name: 'TANKER', hp: 200, atk: 10, range: 70, weapon: 'MACE', color: '#00f' },
+    { name: 'MAGE', hp: 70, atk: 30, range: 180, weapon: 'STAFF', color: '#f0f' },
+    { name: 'ROGUE', hp: 90, atk: 25, range: 60, weapon: 'KATAR', color: '#ff0' },
+    { name: 'CLERIC', hp: 110, atk: 15, range: 70, weapon: 'MACE', color: '#fff' },
+    { name: 'BERSERKER', hp: 140, atk: 28, range: 80, weapon: 'AXE', color: '#f80' },
+    { name: 'ARCHER', hp: 85, atk: 22, range: 250, weapon: 'BOW', color: '#8f0' },
+    { name: 'PALADIN', hp: 160, atk: 15, range: 80, weapon: 'HOLY', color: '#0ff' },
+    { name: 'NECRO', hp: 75, atk: 26, range: 120, weapon: 'SCYTHE', color: '#80f' }
+];
 
-let posX = 60, posY = 60, speed = 5, pSize = 20, goldCount = 0;
-const keys = {};
-const beep = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFRm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTdvT18AZmZmWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZ');
-
-window.onload = () => {
-    const saved = localStorage.getItem('selectedClass');
-    if (!saved) document.getElementById('gui-class').style.display = 'flex';
-    else applyClassSettings(saved);
-    spawnGold();
+let player = {
+    x: 100, y: 0, vx: 0, vy: 0,
+    hp: 100, maxHp: 100, atk: 10, range: 60,
+    lvl: 1, exp: 0, active: false,
+    onGround: false, shielding: false, shieldCD: false
 };
 
-function selectClass(type) {
-    localStorage.setItem('selectedClass', type);
-    applyClassSettings(type);
-    document.getElementById('gui-class').style.display = 'none';
+let enemies = [];
+const keys = {};
+
+// Khởi tạo
+function init() {
+    const grid = document.getElementById('class-grid');
+    classes.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'class-card';
+        card.innerHTML = `<h3>${c.name}</h3><p>${c.weapon}</p>`;
+        card.onclick = () => {
+            player.hp = player.maxHp = c.hp;
+            player.atk = c.atk;
+            player.range = c.range;
+            player.active = true;
+            document.getElementById('gui-class').style.display = 'none';
+            updateUI();
+        };
+        grid.appendChild(card);
+    });
+    spawnEnemy('goblin', 600);
+    spawnEnemy('orc', 1200);
+    spawnEnemy('witch', 1800);
 }
 
-function applyClassSettings(type) {
-    speed = (type === 'Scout') ? 8 : 3;
-    pSize = (type === 'Scout') ? 14 : 28;
-    player.style.width = pSize + 'px';
-    player.style.height = pSize + 'px';
-    document.getElementById('stat-class').innerText = type.toUpperCase();
-    document.getElementById('stat-speed').innerText = speed;
+function spawnEnemy(type, x) {
+    const el = document.createElement('div');
+    el.className = `enemy ${type}`;
+    document.getElementById('enemies-layer').appendChild(el);
+    enemies.push({ type, x, hp: 50, el });
 }
 
-function spawnGold() {
-    goldItem.style.left = (Math.random() * 600 + 50) + 'px';
-    goldItem.style.top = (Math.random() * 300 + 50) + 'px';
-}
+// Input
+document.addEventListener('keydown', e => keys[e.code] = true);
+document.addEventListener('keyup', e => keys[e.code] = false);
 
-function resetData() { localStorage.removeItem('selectedClass'); location.reload(); }
-function toggleHelp(show) { document.getElementById('gui-help').style.display = show ? 'flex' : 'none'; }
+document.addEventListener('mousedown', e => {
+    if (!player.active) return;
+    if (e.button === 0) attack();
+    if (e.button === 2) useShield();
+});
+document.addEventListener('contextmenu', e => e.preventDefault());
 
-document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-
-function gameLoop() {
-    const isGuiOpen = document.getElementById('gui-class').style.display === 'flex' ||
-        document.getElementById('gui-help').style.display === 'flex';
-
-    if (!isGuiOpen) {
-        let nX = posX, nY = posY;
-        if (keys['w']) nY -= speed; if (keys['s']) nY += speed;
-        if (keys['a']) nX -= speed; if (keys['d']) nX += speed;
-
-        const pR = player.getBoundingClientRect();
-
-        // 1. Va chạm Portal
-        const iR = document.getElementById('portal-in').getBoundingClientRect();
-        if (!(pR.right < iR.left || pR.left > iR.right || pR.bottom < iR.top || pR.top > iR.bottom)) {
-            const outRect = document.getElementById('portal-out').getBoundingClientRect();
-            const dRect = dungeon.getBoundingClientRect();
-            posX = outRect.left - dRect.left; posY = outRect.top - dRect.top;
+function attack() {
+    const el = document.getElementById('player');
+    el.classList.add('attacking');
+    enemies.forEach((en, i) => {
+        if (Math.abs(player.x - en.x) < player.range) {
+            en.hp -= player.atk;
+            if (en.hp <= 0) {
+                en.el.remove();
+                enemies.splice(i, 1);
+                player.exp += 340;
+                if (player.exp >= 1000) { player.lvl++; player.exp = 0; }
+                updateUI();
+            }
         }
-
-        // 2. Va chạm Tường & Ăn Vàng
-        const gR = goldItem.getBoundingClientRect();
-        if (!(pR.right < gR.left || pR.left > gR.right || pR.bottom < gR.top || pR.top > gR.bottom)) {
-            goldCount++; document.getElementById('stat-gold').innerText = goldCount;
-            spawnGold(); beep.play().catch(() => { });
-        }
-
-        // 3. Giới hạn biên
-        posX = Math.max(0, Math.min(dungeon.clientWidth - pSize, nX));
-        posY = Math.max(0, Math.min(dungeon.clientHeight - pSize, nY));
-
-        player.style.left = posX + 'px';
-        player.style.top = posY + 'px';
-
-        // Cập nhật sương mù theo nhân vật
-        fog.style.setProperty('--x', (posX + pSize / 2) + 'px');
-        fog.style.setProperty('--y', (posY + pSize / 2) + 'px');
-    }
-    requestAnimationFrame(gameLoop);
+    });
+    setTimeout(() => el.classList.remove('attacking'), 200);
 }
 
-document.getElementById('btn-toggle-theme').addEventListener('click', () => document.body.classList.toggle('light-theme'));
-gameLoop();
+function useShield() {
+    if (player.shieldCD) return;
+    player.shielding = true;
+    player.shieldCD = true;
+    document.getElementById('player').classList.add('shielding');
+    document.getElementById('shield-status').innerText = "SHIELD: ACTIVE";
+
+    setTimeout(() => {
+        player.shielding = false;
+        document.getElementById('player').classList.remove('shielding');
+        let cd = 5;
+        const timer = setInterval(() => {
+            cd--;
+            document.getElementById('shield-status').innerText = `SHIELD: CD ${cd}s`;
+            if (cd <= 0) {
+                clearInterval(timer);
+                player.shieldCD = false;
+                document.getElementById('shield-status').innerText = "SHIELD: READY";
+            }
+        }, 1000);
+    }, 2000);
+}
+
+function updatePhysics() {
+    if (!player.active) return;
+
+    if (keys['KeyA']) player.vx = -6;
+    else if (keys['KeyD']) player.vx = 6;
+    else player.vx *= 0.8;
+
+    if (keys['Space'] && player.onGround) { player.vy = -18; player.onGround = false; }
+
+    const pEl = document.getElementById('player');
+    if (keys['ShiftLeft']) pEl.classList.add('crouching');
+    else pEl.classList.remove('crouching');
+
+    player.vy += 0.8; // Gravity
+    player.x += player.vx;
+    player.y += player.vy;
+
+    if (player.y >= 0) { player.y = 0; player.vy = 0; player.onGround = true; }
+
+    pEl.style.left = player.x + 'px';
+    pEl.style.bottom = (40 - player.y) + 'px';
+
+    // Camera & Fog
+    const screenX = pEl.getBoundingClientRect().left;
+    const screenY = pEl.getBoundingClientRect().top;
+    document.body.style.setProperty('--px', screenX + 16 + 'px');
+    document.body.style.setProperty('--py', screenY + 24 + 'px');
+}
+
+function updateUI() {
+    document.getElementById('stat-level').innerText = player.lvl;
+    document.getElementById('stat-exp').innerText = player.exp;
+    document.getElementById('stat-hp').innerText = player.hp;
+    document.getElementById('stat-atk').innerText = player.atk;
+    document.getElementById('hp-bar-inner').style.width = (player.hp / player.maxHp * 100) + '%';
+}
+
+function loop() {
+    updatePhysics();
+    enemies.forEach(en => en.el.style.left = en.x + 'px');
+    requestAnimationFrame(loop);
+}
+
+function toggleHelp(s) { document.getElementById('gui-help').style.display = s ? 'flex' : 'none'; }
+function resetData() { localStorage.clear(); location.reload(); }
+
+init();
+loop();
