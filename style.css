@@ -1,85 +1,86 @@
-:root {
-    /* Chế độ Tối (Neon chính) */
-    --bg-color: #0d0d0d;
-    --container-bg: rgba(20, 20, 20, 0.9);
-    --text-color: #00fff2;
-    --neon-shadow: 0 0 10px #00fff2, 0 0 20px #00fff2;
-    --btn-color: #ff00ff;
-    --btn-shadow: 0 0 10px #ff00ff;
-}
+let hp=100;
+let lvl=1;
+const neonColors=['#00f2ff',
+'#ff00de',
+'#39ff14',
+'#ff3131',
+'#ffff00'];
 
-body.light-theme {
-    /* Chế độ Sáng */
-    --bg-color: #e0e0e0;
-    --container-bg: #ffffff;
-    --text-color: #222;
-    --neon-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    --btn-color: #007bff;
-    --btn-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
+// 1. Tính năng đổi theme & màu bóng đèn
+const btnToggle=document.getElementById('btn-toggle-theme');
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    transition: all 0.4s ease;
-}
+btnToggle.addEventListener('click', ()=> {
+        document.body.classList.toggle('light-theme');
+        const color=neonColors[Math.floor(Math.random() * neonColors.length)];
+        btnToggle.style.borderColor=color;
 
-/* Nút bóng đèn góc trái trên cùng */
-.theme-fixed-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid var(--text-color);
-    background: var(--container-bg);
-    cursor: pointer;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: var(--neon-shadow);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
+        btnToggle.style.boxShadow=`0 0 20px $ {
+            color
+        }
 
-.game-container {
-    background: var(--container-bg);
-    padding: 40px;
-    border-radius: 20px;
-    border: 2px solid var(--text-color);
-    text-align: center;
-    box-shadow: var(--neon-shadow);
-    max-width: 500px;
-}
+        `;
 
-.neon-text {
-    text-shadow: var(--neon-shadow);
-    letter-spacing: 5px;
-}
+        document.getElementById('bulb-icon').style.textShadow=`0 0 15px $ {
+            color
+        }
 
-.neon-button {
-    background: transparent;
-    border: 2px solid var(--btn-color);
-    color: var(--btn-color);
-    padding: 15px 30px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: var(--btn-shadow);
-    transition: 0.3s;
-}
+        `;
+    });
 
-.neon-button:hover {
-    background: var(--btn-color);
-    color: white;
-    box-shadow: 0 0 20px var(--btn-color);
+// 2. Tính năng trò chơi khám phá
+function explore(direction) {
+    const gameText=document.getElementById('game-text');
+    const status=document.getElementById('status-message');
+    const hpText=document.getElementById('hp-value');
+    const lvlText=document.getElementById('lvl-value');
+
+    let event=Math.random();
+
+    if (event > 0.7) {
+        gameText.innerText=`Bạn rẽ $ {
+            direction==='left' ? 'trái': 'phải'
+        }
+
+        và gặp một quái vật Neon !`;
+        let damage=Math.floor(Math.random() * 20)+10;
+        hp -=damage;
+
+        status.innerText=`Bạn mất $ {
+            damage
+        }
+
+        HP !`;
+    }
+
+    else if (event > 0.3) {
+        gameText.innerText=`Bạn rẽ $ {
+            direction==='left' ? 'trái': 'phải'
+        }
+
+        và tìm thấy lõi năng lượng !`;
+        lvl+=1;
+        status.innerText=`Bạn được tăng 1 cấp độ !`;
+    }
+
+    else {
+        gameText.innerText=`Hành lang $ {
+            direction==='left' ? 'trái': 'phải'
+        }
+
+        vắng lặng,
+        chỉ có tiếng điện xè xè...`;
+        status.innerText=`An toàn.`;
+    }
+
+    // Cập nhật UI
+    hpText.innerText=hp;
+    lvlText.innerText=lvl;
+
+    // Kiểm tra Game Over
+    if (hp <=0) {
+        hpText.innerText=0;
+        gameText.innerText="Năng lượng cạn kiệt... Trò chơi kết thúc.";
+        document.getElementById('action-buttons').style.display='none';
+        document.getElementById('reset-btn').style.display='inline-block';
+    }
 }
