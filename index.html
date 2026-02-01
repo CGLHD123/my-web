@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: FULL SYSTEM</title>
+    <title>THE ABYSS PROTOCOL: INFINITE SYSTEM</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -20,6 +20,7 @@
                 </div>
             </div>
             <div id="entity-layer"></div>
+            <div id="particle-layer"></div>
         </div>
     </div>
 
@@ -27,10 +28,9 @@
         <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
         <div class="stat-unit">EXP: <span id="ui-exp">0/100</span></div>
         <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
+        <button class="pixel-btn" onclick="openShop()">SHOP (B)</button>
         <button class="pixel-btn" onclick="location.reload()">RESET</button>
     </div>
-
-    <div id="level-up-msg">LEVEL UP! +HEALTH & ATK</div>
 
     <div id="gui-selection" class="overlay">
         <div class="pixel-window">
@@ -44,6 +44,17 @@
                     <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="gui-shop" class="overlay" style="display:none">
+        <div class="pixel-window" style="width:400px">
+            <h2>CYBER SHOP</h2>
+            <div id="shop-items">
+                <button class="main-btn" onclick="buyUpgrade('atk')">UPGRADE ATK (50G)</button>
+                <button class="main-btn" onclick="buyUpgrade('hp')">REPAIR HP (30G)</button>
+            </div>
+            <button class="main-btn" style="background:#444" onclick="closeShop()">CLOSE</button>
         </div>
     </div>
 

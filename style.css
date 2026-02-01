@@ -16,7 +16,7 @@ body {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: #111;
+    background: #050505;
     overflow: hidden;
 }
 
@@ -25,14 +25,13 @@ body {
     width: 100%;
     height: 100%;
     bottom: 0;
-    transition: transform 0.1s linear;
 }
 
-/* PLAYER - CARD STYLE */
+/* PLAYER */
 #player-container {
     position: absolute;
     width: 40px;
-    height: 60px;
+    height: 50px;
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -41,63 +40,35 @@ body {
 
 #player-sprite {
     width: 40px;
-    height: 50px;
-    background-color: #ccc;
-    border: 2px solid #fff;
-    border-radius: 4px;
+    height: 40px;
+    border: 2px solid #000;
     position: relative;
-    transition: height 0.1s;
-    background-size: cover;
-    background-position: center;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 #weapon-visual {
     position: absolute;
     right: -15px;
-    top: 25px;
+    top: 15px;
     width: 30px;
-    height: 6px;
+    height: 8px;
     background: #eee;
     border: 1px solid #000;
     transform-origin: left center;
+    transition: 0.1s;
 }
 
-/* GUI SELECTION - COVER MODE */
-.grid-left {
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+.swing {
+    transform: rotate(-90deg) scale(1.5);
+    background: var(--neon) !important;
 }
 
-.class-item {
-    aspect-ratio: 1/1;
-    border: 2px solid #444;
-    cursor: pointer;
-    background-size: cover;
-    /* Tự động kéo dãn lấp đầy ô */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #222;
-    transition: 0.2s;
-}
-
-.class-item:hover {
-    border-color: var(--neon);
-    transform: scale(1.05);
-}
-
-.class-item.active {
-    border-color: var(--neon);
-    background-color: #444;
-    box-shadow: 0 0 10px var(--neon);
-}
-
-/* ENTITIES & WORLD */
+/* MAP & ENTITIES */
 .platform {
     position: absolute;
-    background: #3d2e2e;
-    border-top: 4px solid #5c4545;
+    background: #222;
+    border-top: 4px solid #444;
+    box-shadow: 0 5px 15px #000;
 }
 
 .goblin {
@@ -110,48 +81,39 @@ body {
 
 .orc {
     position: absolute;
-    width: 45px;
-    height: 55px;
+    width: 50px;
+    height: 60px;
     background: #d2b48c;
     border: 3px solid #5c4545;
 }
 
-.witch {
+.particle {
     position: absolute;
-    width: 35px;
-    height: 50px;
-    background: #4b0082;
-    border-top: 15px solid #2e0854;
-}
-
-.chest {
-    position: absolute;
-    width: 45px;
-    height: 35px;
-    background: #5c4033;
-    border: 3px solid #3d2b1f;
-}
-
-.coin {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: var(--gold);
-    border-radius: 50%;
-    border: 2px solid #b8860b;
-}
-
-.m-hp {
-    position: absolute;
-    top: -15px;
-    width: 100%;
+    width: 4px;
     height: 4px;
-    background: #333;
+    pointer-events: none;
 }
 
-.m-hp-i {
-    height: 100%;
-    background: #f00;
+/* GUI GRID - COVER */
+.grid-left {
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.class-item {
+    aspect-ratio: 1/1;
+    border: 2px solid #444;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    background-color: #111;
+}
+
+.class-item.active {
+    border-color: var(--neon);
+    box-shadow: 0 0 15px var(--neon);
 }
 
 /* UI */
@@ -169,27 +131,28 @@ body {
     background: var(--bg);
     border: 4px solid #444;
     padding: 20px;
-    width: 850px;
+    text-align: center;
 }
 
-.menu-layout {
-    display: flex;
-    gap: 20px;
+.hp-label {
+    width: 40px;
+    height: 6px;
+    background: #333;
+    margin-top: 4px;
+    border: 1px solid #000;
 }
 
-.info-right {
-    flex: 1;
-    background: #000;
-    padding: 15px;
-    border: 2px solid #444;
-    font-size: 8px;
-    line-height: 1.6;
+#hp-fill {
+    height: 100%;
+    background: #0f0;
+    width: 100%;
+    transition: 0.2s;
 }
 
 .hud-top {
     position: fixed;
     top: 20px;
-    right: 20px;
+    left: 20px;
     display: flex;
     gap: 10px;
     z-index: 1000;
@@ -197,46 +160,28 @@ body {
 
 .stat-unit {
     background: rgba(0, 0, 0, 0.8);
-    padding: 8px;
+    padding: 10px;
     border: 2px solid #444;
     font-size: 10px;
-}
-
-.hp-label {
-    width: 40px;
-    height: 5px;
-    background: #333;
-    margin-bottom: 2px;
-}
-
-#hp-fill {
-    height: 100%;
-    background: #0f0;
-    width: 100%;
-    transition: 0.3s;
-}
-
-#level-up-msg {
-    display: none;
-    position: fixed;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #0f0;
-    font-size: 20px;
-    z-index: 3000;
 }
 
 .main-btn {
     width: 100%;
     margin-top: 10px;
-    padding: 10px;
+    padding: 12px;
     cursor: pointer;
     font-family: inherit;
+    background: var(--neon);
+    color: #000;
+    border: none;
 }
 
 .pixel-btn {
     font-family: inherit;
     cursor: pointer;
     font-size: 8px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #666;
+    padding: 5px;
 }
