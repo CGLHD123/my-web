@@ -1,5 +1,6 @@
 :root {
     --neon: #00f2ff;
+    --exp: #ff00ff;
 }
 
 body {
@@ -10,10 +11,56 @@ body {
     color: #fff;
 }
 
-#game-stage {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
+/* HUD GÓC TRÁI */
+.hud-left-top {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.exp-bar {
+    width: 150px;
+    height: 8px;
+    background: #222;
+    border: 1px solid #444;
+}
+
+#exp-fill {
+    height: 100%;
+    background: var(--exp);
+    width: 0%;
+    transition: 0.3s;
+}
+
+#quest-box {
+    background: rgba(0, 0, 0, 0.7);
+    border-left: 4px solid var(--neon);
+    padding: 8px;
+    font-size: 8px;
+    color: #aaa;
+    width: 220px;
+    line-height: 1.4;
+}
+
+/* PARALLAX */
+#parallax-far {
+    position: absolute;
+    width: 400%;
+    height: 100%;
+    background: radial-gradient(circle, #1a1a2e 0%, #000 100%);
+    z-index: 1;
+}
+
+#parallax-mid {
+    position: absolute;
+    width: 400%;
+    height: 100%;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 300px, rgba(255, 255, 255, 0.02) 301px);
+    z-index: 2;
 }
 
 #world {
@@ -21,22 +68,20 @@ body {
     width: 100%;
     height: 100%;
     bottom: 0;
+    z-index: 10;
 }
 
-/* PLAYER - SỬ DỤNG ẢNH TỪ ASSETS */
 #player-container {
     position: absolute;
     width: 50px;
     height: 50px;
     z-index: 100;
-    pointer-events: none;
 }
 
 #player-sprite {
     width: 50px;
     height: 50px;
     background-size: cover;
-    background-position: center;
     border: 2px solid #fff;
     position: relative;
 }
@@ -49,18 +94,56 @@ body {
     height: 6px;
     background: #eee;
     transform-origin: left center;
-    transition: 0.1s;
 }
 
 .swing {
-    transform: rotate(-90deg);
+    animation: vung 0.2s ease-out;
 }
 
-/* MENU CHỌN CLASS - COVER MODE */
+@keyframes vung {
+    0% {
+        transform: rotate(0);
+    }
+
+    50% {
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+.platform {
+    position: absolute;
+    background: #1a1a1a;
+    border-top: 3px solid #333;
+}
+
+.goblin {
+    position: absolute;
+    width: 35px;
+    height: 40px;
+    background: #1a5e1a;
+}
+
+.hp-label {
+    width: 50px;
+    height: 6px;
+    background: #333;
+    margin-top: 4px;
+}
+
+#hp-fill {
+    height: 100%;
+    background: #0f0;
+    width: 100%;
+}
+
 .overlay {
     position: fixed;
     inset: 0;
-    background: #111;
+    background: #000;
     z-index: 2000;
     display: flex;
     justify-content: center;
@@ -68,15 +151,10 @@ body {
 }
 
 .pixel-window {
-    background: #222;
+    background: #111;
     border: 4px solid #444;
     padding: 20px;
     width: 850px;
-}
-
-.menu-layout {
-    display: flex;
-    gap: 20px;
 }
 
 .grid-left {
@@ -91,28 +169,10 @@ body {
     border: 3px solid #444;
     cursor: pointer;
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #000;
-}
-
-.class-item:hover {
-    border-color: #fff;
 }
 
 .class-item.active {
     border-color: var(--neon);
-    box-shadow: 0 0 15px var(--neon);
-}
-
-.info-right {
-    flex: 1;
-    border: 2px solid #444;
-    padding: 15px;
-    font-size: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 .main-btn {
@@ -120,57 +180,20 @@ body {
     padding: 15px;
     cursor: pointer;
     font-family: inherit;
-    background: #555;
-    color: #fff;
+    background: var(--neon);
+    color: #000;
     border: none;
 }
 
-.main-btn:not(:disabled) {
-    background: var(--neon);
-    color: #000;
+.stat-unit {
+    font-size: 10px;
 }
 
-.platform {
-    position: absolute;
-    background: #333;
-    border-top: 4px solid #555;
-}
-
-.goblin {
-    position: absolute;
-    width: 30px;
-    height: 35px;
-    background: #1a5e1a;
-}
-
-.hp-label {
-    width: 50px;
-    height: 6px;
-    background: #333;
-    margin-top: 4px;
-    border: 1px solid #000;
-}
-
-#hp-fill {
-    height: 100%;
-    background: #0f0;
-    width: 100%;
-}
-
-.hud-top {
+.hud-right-top {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    display: flex;
-    gap: 10px;
-}
-
-.stat-unit {
-    background: #000;
-    padding: 10px;
-    border: 2px solid #444;
-    font-size: 10px;
 }
 
 .particle {

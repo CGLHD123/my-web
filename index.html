@@ -3,13 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: CHARACTER SYSTEM</title>
+    <title>THE ABYSS: LEVEL & QUEST SYSTEM</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div id="game-stage">
+        <div id="parallax-far"></div>
+        <div id="parallax-mid"></div>
+
         <div id="world" style="display: none;">
             <div id="player-container">
                 <div id="player-sprite">
@@ -24,7 +27,15 @@
         </div>
     </div>
 
-    <div class="hud-top">
+    <div class="hud-left-top">
+        <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
+        <div class="exp-bar">
+            <div id="exp-fill"></div>
+        </div>
+        <div id="quest-box">QUEST: <span id="quest-desc">Loading...</span></div>
+    </div>
+
+    <div class="hud-right-top">
         <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
         <button class="pixel-btn" onclick="location.reload()">RESET</button>
     </div>
@@ -36,7 +47,7 @@
                 <div class="grid-left" id="class-grid"></div>
                 <div class="info-right">
                     <div id="class-details">CHỌN NHÂN VẬT...</div>
-                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">VÀO HẦM NGỤC</button>
+                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE</button>
                 </div>
             </div>
         </div>
