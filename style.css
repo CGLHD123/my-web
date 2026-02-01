@@ -12,11 +12,10 @@ body {
     image-rendering: pixelated;
 }
 
-/* GUI & Border */
+/* GUI & Platforms */
 .pixel-border-box {
     background: var(--pixel-bg);
     border: 4px solid #555;
-    box-shadow: inset -4px -4px 0px #111, inset 4px 4px 0px #777;
     padding: 30px;
     text-align: center;
 }
@@ -35,39 +34,20 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 15px;
-    margin-top: 20px;
 }
 
 .class-card {
     border: 2px solid #444;
     padding: 10px;
     cursor: pointer;
-    background: #111;
     font-size: 8px;
-    transition: 0.2s;
+    color: #fff;
 }
 
 .class-card:hover {
     border-color: var(--neon);
-    box-shadow: 0 0 15px var(--neon);
-    transform: translateY(-5px);
     background: var(--neon);
     color: #000;
-}
-
-/* Stats & World */
-.stats-screen {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
-    pointer-events: none;
-}
-
-.pixel-text {
-    font-size: 10px;
-    margin-bottom: 8px;
-    text-shadow: 2px 2px #000;
 }
 
 #world {
@@ -81,7 +61,6 @@ body {
     bottom: 0;
     width: 3000px;
     height: 100%;
-    transition: 0.1s linear;
 }
 
 .platform {
@@ -91,92 +70,108 @@ body {
     border-top: 6px solid #5c4545;
 }
 
-/* Player & Combat */
+/* PLAYER CORE */
 #player {
     position: absolute;
-    width: 32px;
-    height: 48px;
-    background: #fff;
-    bottom: 40px;
-    left: 100px;
+    width: 64px;
+    height: 64px;
     z-index: 100;
-    transition: height 0.1s;
+    background-repeat: no-repeat;
+    background-size: auto 64px;
+    /* Ép chiều cao ảnh bằng chiều cao nhân vật */
+    image-rendering: pixelated;
+}
+
+/* ANIMATION STATES */
+#player.idle {
+    background-image: url('assets/players/scout/idle.png');
+    animation: ani-idle 0.6s steps(4) infinite;
+}
+
+#player.run {
+    background-image: url('assets/players/scout/run.png');
+    animation: ani-run 0.8s steps(8) infinite;
+}
+
+#player.jump {
+    background-image: url('assets/players/scout/jump.png');
+    animation: ani-jump 0.4s steps(2) forwards;
 }
 
 #player.crouching {
-    height: 24px;
+    background-image: url('assets/players/scout/crouch.png');
+    background-position: 0 0;
 }
 
-.weapon-pixel {
-    position: absolute;
-    width: 30px;
-    height: 6px;
-    background: silver;
-    right: -25px;
-    top: 20px;
-    display: none;
-    transform-origin: left;
+#player.attacking {
+    width: 128px;
+    /* Frame tấn công rộng hơn để chứa vệt chém */
+    background-image: url('assets/players/scout/attack.png');
+    background-size: auto 64px;
+    animation: ani-attack 0.4s steps(6) forwards;
 }
 
-#player.attacking .weapon-pixel {
-    display: block;
-    animation: swing 0.2s;
-}
-
-@keyframes swing {
-    0% {
-        transform: rotate(-45deg);
+/* KEYFRAMES */
+@keyframes ani-idle {
+    from {
+        background-position: 0 0;
     }
 
-    100% {
-        transform: rotate(45deg);
+    to {
+        background-position: -256px 0;
     }
 }
 
+@keyframes ani-run {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -512px 0;
+    }
+}
+
+@keyframes ani-jump {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -128px 0;
+    }
+}
+
+@keyframes ani-attack {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -768px 0;
+    }
+}
+
+/* Combat Effects */
 .shield-pixel {
     position: absolute;
-    inset: -8px;
-    border: 3px solid skyblue;
-    border-radius: 4px;
+    inset: 4px;
+    border: 3px solid var(--neon);
     display: none;
 }
 
 #player.shielding .shield-pixel {
     display: block;
-    box-shadow: 0 0 20px var(--neon);
+    box-shadow: 0 0 15px var(--neon);
 }
 
 #hp-bar-inner {
     position: absolute;
-    top: -12px;
+    top: -5px;
+    left: 16px;
     height: 4px;
     background: #f00;
-    width: 100%;
-}
-
-/* Enemies */
-.enemy {
-    position: absolute;
-    bottom: 40px;
-}
-
-.goblin {
-    background: #4a4;
-    width: 28px;
-    height: 32px;
-}
-
-.orc {
-    background: #852;
-    width: 40px;
-    height: 50px;
-}
-
-.witch {
-    background: #606;
-    width: 30px;
-    height: 45px;
-    box-shadow: 0 0 10px #f0f;
+    width: 32px;
 }
 
 #fog-mask {
@@ -185,26 +180,6 @@ body {
     z-index: 500;
     pointer-events: none;
     background: #000;
-    mask-image: radial-gradient(circle 180px at var(--px) var(--py), transparent 10%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 180px at var(--px) var(--py), transparent 10%, black 100%);
-}
-
-.pixel-btn {
-    font-family: 'Press Start 2P';
-    padding: 10px;
-    cursor: pointer;
-    border: none;
-    margin: 10px;
-}
-
-.help-trigger {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--neon);
-    font-family: 'Press Start 2P';
-    cursor: pointer;
+    mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 10%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 10%, black 100%);
 }
