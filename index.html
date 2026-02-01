@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE ABYSS PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
@@ -17,6 +18,7 @@
     <div id="gui-welcome" class="gui-overlay">
         <div class="gui-card main-neon">
             <h2 class="neon-title">INITIALIZING</h2>
+            <div class="neon-line"></div>
             <p>Hệ thống va chạm và di chuyển mượt đã được nạp.</p>
             <button class="gui-btn" onclick="closeWelcome()">KÍCH HOẠT</button>
         </div>
@@ -24,16 +26,18 @@
 
     <div id="gui-help" class="gui-overlay" style="display: none;">
         <div class="gui-card help-neon">
-            <h3>HƯỚNG DẪN</h3>
-            <ul>
-                <li><b>WASD:</b> Di chuyển mượt</li>
-                <li><b>WALLS:</b> Vật cản vật lý</li>
+            <h3 class="neon-title">OPERATIONAL MANUAL</h3>
+            <div class="neon-line"></div>
+            <ul class="help-list">
+                <li><b>W A S D:</b> Di chuyển chủ thể</li>
+                <li><b>WALLS:</b> Vật cản Neon (Va chạm)</li>
+                <li><b>SHAKE:</b> Hiệu ứng rung khi chạm tường</li>
             </ul>
             <button class="gui-btn" onclick="toggleHelp(false)">ĐÓNG</button>
         </div>
     </div>
 
-    <div class="game-wrapper">
+    <div class="game-wrapper" id="shake-container">
         <div id="dungeon-frame">
             <div id="player"></div>
             <div class="wall v-wall w1"></div>
