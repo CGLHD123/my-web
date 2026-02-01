@@ -1,44 +1,39 @@
+let posX = 237, posY = 187;
+const step = 15;
 const player = document.getElementById('player');
-const gameMap = document.getElementById('game-map');
-const gameText = document.getElementById('game-text');
-const btnToggle = document.getElementById('btn-toggle-theme');
+const gui = document.getElementById('gui-guide');
+const consoleOut = document.getElementById('console-output');
 
-let posX = 185; // Vị trí X ban đầu
-let posY = 185; // Vị trí Y ban đầu
-const step = 15; // Tốc độ di chuyển
+// Đóng/Mở GUI
+function toggleGUI() {
+    gui.style.display = (gui.style.display === 'none') ? 'flex' : 'none';
+}
 
-// 1. Tính năng Đổi Theme & Màu Neon
-btnToggle.addEventListener('click', () => {
+// Chuyển đổi Theme
+document.getElementById('btn-toggle-theme').addEventListener('click', () => {
     document.body.classList.toggle('light-theme');
-    const color = document.body.classList.contains('light-theme') ? '#ff00de' : '#00f2ff';
-    btnToggle.style.borderColor = color;
-    btnToggle.style.boxShadow = `0 0 20px ${color}`;
+    const isLight = document.body.classList.contains('light-theme');
+    document.getElementById('bulb-icon').style.filter = isLight ? 'drop-shadow(0 0 10px red)' : 'none';
 });
 
-// 2. Cơ chế di chuyển nhân vật
+// Điều khiển WASD và Mũi tên
 document.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
+    if (gui.style.display !== 'none') return; // Không di chuyển khi đang mở hướng dẫn
 
+    const key = e.key.toLowerCase();
     if (key === 'w' || key === 'arrowup') posY -= step;
     if (key === 's' || key === 'arrowdown') posY += step;
     if (key === 'a' || key === 'arrowleft') posX -= step;
     if (key === 'd' || key === 'arrowright') posX += step;
 
-    // Giới hạn nhân vật không đi ra ngoài bản đồ (400px - 30px size)
-    posX = Math.max(0, Math.min(370, posX));
-    posY = Math.max(0, Math.min(370, posY));
+    // Giới hạn trong hầm ngục (500x400)
+    posX = Math.max(10, Math.min(465, posX));
+    posY = Math.max(10, Math.min(365, posY));
 
-    updatePosition();
-});
-
-function updatePosition() {
     player.style.left = posX + 'px';
     player.style.top = posY + 'px';
 
-    // Hiệu ứng văn bản khi di chuyển
-    if (posX < 50 && posY < 50) {
-        gameText.innerText = "Khu vực bị khóa. Cần thẻ truy cập mức 1.";
-    } else if (posX > 300 && posY > 300) {
-        gameText.innerText = "Phát hiện tín hiệu thoát ở góc này!";
-    }
-}
+    // Cập nhật console dựa trên vị trí
+    if (posX > 400) consoleOut.innerText = "Cảnh báo: Áp lực tăng cao ở biên giới phía Đông.";
+    else consoleOut.innerText = "Tín hiệu ổn định.";
+});

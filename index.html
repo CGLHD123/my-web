@@ -11,25 +11,40 @@
 <body class="dark-theme">
     <button id="btn-toggle-theme" class="theme-fixed-btn"><span id="bulb-icon">💡</span></button>
 
-    <div class="game-wrapper">
-        <h1 class="glitch-title" data-text="THE ABYSS PROTOCOL">THE ABYSS PROTOCOL</h1>
-
-        <div class="stats-panel">
-            <div class="stat-item">CORE: <span id="hp-value">100</span>%</div>
-            <div class="stat-item">DATA: <span id="lvl-value">01</span></div>
+    <div id="gui-guide" class="gui-overlay">
+        <div class="gui-content">
+            <h3>PROTOCOL MANUAL</h3>
+            <ul>
+                <li><b>W A S D / Mũi tên:</b> Di chuyển chủ thể</li>
+                <li><b>💡 Bóng đèn:</b> Chuyển đổi hệ năng lượng (Theme)</li>
+                <li><b>Mục tiêu:</b> Thám hiểm vùng tối hầm ngục</li>
+            </ul>
+            <button onclick="toggleGUI()">XÁC NHẬN</button>
         </div>
+    </div>
 
-        <div id="game-map">
-            <div id="player">
-                <div class="player-eye"></div>
+    <button class="open-gui-btn" onclick="toggleGUI()">HELP</button>
+
+    <div class="game-wrapper">
+        <h1 class="neon-title">THE ABYSS</h1>
+
+        <div class="status-container">
+            <div class="bar-label">SYSTEM STABILITY</div>
+            <div class="bar-outer">
+                <div id="hp-bar" class="bar-inner"></div>
             </div>
         </div>
 
-        <div class="console-box">
-            <p id="game-text">Hệ thống kích hoạt... Tọa độ: Tầng G-01. Hãy tìm lối thoát.</p>
+        <div id="dungeon-frame">
+            <div id="player">
+                <div class="core-light"></div>
+            </div>
+            <div class="wall w1"></div>
+            <div class="wall w2"></div>
+            <div class="wall w3"></div>
         </div>
 
-        <div class="controls-guide">Sử dụng <b>W A S D</b> hoặc <b>Mũi tên</b> để di chuyển</div>
+        <div id="console-output">Hệ thống sẵn sàng. Vui lòng di chuyển...</div>
     </div>
 
     <script src="script.js"></script>
