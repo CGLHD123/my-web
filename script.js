@@ -1,15 +1,16 @@
 const classes = [
-    { name: 'SCOUT', hp: 80, atk: 12, range: 100, color: '#0f0' },
-    { name: 'WARRIOR', hp: 120, atk: 18, range: 80, color: '#f00' }
+    { name: 'SCOUT', hp: 80, atk: 12, range: 110 },
+    { name: 'WARRIOR', hp: 120, atk: 18, range: 90 }
 ];
 
 let player = {
     x: 100, y: 0, vx: 0, vy: 0,
-    hp: 100, maxHp: 100, atk: 10, range: 100,
-    active: false, onGround: false, shielding: false,
-    isAttacking: false, facingRight: true
+    hp: 100, maxHp: 100, atk: 10, range: 110,
+    active: false, onGround: false, facingRight: true,
+    isAttacking: false
 };
 
+let enemies = [];
 const keys = {};
 
 function init() {
@@ -40,7 +41,6 @@ function attack() {
     player.isAttacking = true;
     const pEl = document.getElementById('player');
 
-    // Logic gây sát thương dựa trên hướng nhân vật
     enemies.forEach((en, i) => {
         const dist = player.facingRight ? (en.x - player.x) : (player.x - en.x);
         if (dist > 0 && dist < player.range) {
@@ -56,58 +56,51 @@ function updatePhysics() {
     if (!player.active) return;
     const pEl = document.getElementById('player');
 
-    // Di chuyển
-    if (keys['KeyA']) {
-        player.vx = -5;
-        player.facingRight = false;
-    } else if (keys['KeyD']) {
-        player.vx = 5;
-        player.facingRight = true;
-    } else {
-        player.vx *= 0.8;
-    }
+    // Movement logic
+    if (keys['KeyA']) { player.vx = -6; player.facingRight = false; }
+    else if (keys['KeyD']) { player.vx = 6; player.facingRight = true; }
+    else { player.vx *= 0.8; }
 
-    if (keys['Space'] && player.onGround) {
-        player.vy = -15;
-        player.onGround = false;
-    }
+    if (keys['Space'] && player.onGround) { player.vy = -16; player.onGround = false; }
 
-    // Trọng lực
     player.vy += 0.8;
     player.x += player.vx;
     player.y += player.vy;
 
     if (player.y >= 0) { player.y = 0; player.vy = 0; player.onGround = true; }
 
-    // Cập nhật DOM
+    // Render Position
     pEl.style.left = player.x + 'px';
     pEl.style.bottom = (40 - player.y) + 'px';
     pEl.style.transform = player.facingRight ? 'scaleX(1)' : 'scaleX(-1)';
 
-    // QUẢN LÝ ANIMATION CLASS
-    pEl.className = ''; // Reset classes
-    if (player.isAttacking) {
-        pEl.classList.add('attacking');
-    } else if (!player.onGround) {
-        pEl.classList.add('jump');
-    } else if (keys['ShiftLeft']) {
-        pEl.classList.add('crouching');
-    } else if (Math.abs(player.vx) > 1) {
-        pEl.classList.add('run');
-    } else {
-        pEl.classList.add('idle');
-    }
+    // Update States
+    pEl.className = '';
+    if (player.isAttacking) pEl.classList.add('attacking');
+    else if (!player.onGround) pEl.classList.add('jump');
+    else if (keys['ShiftLeft']) pEl.classList.add('crouching');
+    else if (Math.abs(player.vx) > 1) pEl.classList.add('run');
+    else pEl.classList.add('idle');
 
-    // Fog mask center
+    // Cập nhật vị trí Fog Mask (Luôn theo tâm nhân vật)
     const rect = pEl.getBoundingClientRect();
-    document.body.style.setProperty('--px', (rect.left + 32) + 'px');
-    document.body.style.setProperty('--py', (rect.top + 32) + 'px');
+    const centerX = rect.left + (player.isAttacking ? 32 : 32); // Giữ tâm ổn định
+    const centerY = rect.top + 32;
+    document.body.style.setProperty('--px', centerX + 'px');
+    document.body.style.setProperty('--py', centerY + 'px');
+
+    // Camera follow
+    const dungeon = document.getElementById('dungeon');
+    dungeon.style.left = `${-player.x + 200}px`;
 }
 
 function loop() {
     updatePhysics();
     requestAnimationFrame(loop);
 }
+
+function toggleHelp(s) { document.getElementById('gui-help').style.display = s ? 'flex' : 'none'; }
+function resetData() { location.reload(); }
 
 init();
 loop();

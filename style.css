@@ -10,67 +10,45 @@ body {
     overflow: hidden;
     font-family: 'Press Start 2P', cursive;
     image-rendering: pixelated;
+    color: white;
 }
 
-/* GUI & Platforms */
-.pixel-border-box {
-    background: var(--pixel-bg);
-    border: 4px solid #555;
-    padding: 30px;
+/* UI LAYER (Cao nhất) */
+.game-logo {
+    position: fixed;
+    top: 15px;
+    width: 100%;
     text-align: center;
+    font-size: 16px;
+    color: var(--neon);
+    z-index: 2000;
+    text-shadow: 4px 4px #000;
+    pointer-events: none;
 }
 
-.gui-overlay {
+.ui-container {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
+    z-index: 2100;
+    pointer-events: none;
 }
 
-.class-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
+.ui-container button {
+    pointer-events: auto;
 }
 
-.class-card {
-    border: 2px solid #444;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 8px;
-    color: #fff;
+/* FOG LAYER (Z-index 50) */
+#fog-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.95);
+    pointer-events: none;
+    mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
 }
 
-.class-card:hover {
-    border-color: var(--neon);
-    background: var(--neon);
-    color: #000;
-}
-
-#world {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-}
-
-#dungeon {
-    position: absolute;
-    bottom: 0;
-    width: 3000px;
-    height: 100%;
-}
-
-.platform {
-    position: absolute;
-    height: 40px;
-    background: var(--brick);
-    border-top: 6px solid #5c4545;
-}
-
-/* PLAYER CORE */
+/* PLAYER LAYER (Z-index 100 - Cao hơn Fog) */
 #player {
     position: absolute;
     width: 64px;
@@ -78,11 +56,9 @@ body {
     z-index: 100;
     background-repeat: no-repeat;
     background-size: auto 64px;
-    /* Ép chiều cao ảnh bằng chiều cao nhân vật */
-    image-rendering: pixelated;
 }
 
-/* ANIMATION STATES */
+/* Animation cho Spritesheet Scout */
 #player.idle {
     background-image: url('assets/players/scout/idle.png');
     animation: ani-idle 0.6s steps(4) infinite;
@@ -105,13 +81,10 @@ body {
 
 #player.attacking {
     width: 128px;
-    /* Frame tấn công rộng hơn để chứa vệt chém */
     background-image: url('assets/players/scout/attack.png');
-    background-size: auto 64px;
     animation: ani-attack 0.4s steps(6) forwards;
 }
 
-/* KEYFRAMES */
 @keyframes ani-idle {
     from {
         background-position: 0 0;
@@ -152,17 +125,31 @@ body {
     }
 }
 
-/* Combat Effects */
-.shield-pixel {
+/* Map & Platforms (Dưới cùng) */
+.platform {
     position: absolute;
-    inset: 4px;
-    border: 3px solid var(--neon);
-    display: none;
+    height: 40px;
+    background: var(--brick);
+    border-top: 6px solid #5c4545;
+    z-index: 10;
 }
 
-#player.shielding .shield-pixel {
-    display: block;
-    box-shadow: 0 0 15px var(--neon);
+.enemy {
+    position: absolute;
+    z-index: 60;
+}
+
+/* Enemy trên Fog một chút hoặc dưới tùy ý */
+
+/* Utils */
+.pixel-btn-small {
+    background: #333;
+    color: #fff;
+    border: 2px solid #fff;
+    font-family: 'Press Start 2P';
+    font-size: 8px;
+    padding: 10px;
+    cursor: pointer;
 }
 
 #hp-bar-inner {
@@ -172,14 +159,4 @@ body {
     height: 4px;
     background: #f00;
     width: 32px;
-}
-
-#fog-mask {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    pointer-events: none;
-    background: #000;
-    mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 10%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 10%, black 100%);
 }

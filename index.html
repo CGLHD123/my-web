@@ -9,12 +9,19 @@
 </head>
 
 <body>
+    <h1 class="game-logo">THE ABYSS PROTOCOL</h1>
+
     <div id="fog-mask"></div>
 
-    <div class="stats-screen">
-        <div class="pixel-text">LVL: <span id="stat-level">1</span> | EXP: <span id="stat-exp">0</span>/1000</div>
-        <div class="pixel-text">HP: <span id="stat-hp">100</span> | ATK: <span id="stat-atk">10</span></div>
-        <div id="shield-status" class="pixel-text">SHIELD: READY</div>
+    <div class="ui-container">
+        <div class="stats-screen">
+            <div class="pixel-text">LVL: <span id="stat-level">1</span> | EXP: <span id="stat-exp">0</span>/1000</div>
+            <div class="pixel-text">HP: <span id="stat-hp">100</span> | ATK: <span id="stat-atk">10</span></div>
+            <div id="shield-status" class="pixel-text">SHIELD: READY</div>
+        </div>
+        <div class="controls-top-right">
+            <button class="pixel-btn-small" onclick="toggleHelp(true)">HELP (?)</button>
+        </div>
     </div>
 
     <div id="gui-class" class="gui-overlay">
@@ -48,9 +55,9 @@
                 <div class="shield-pixel"></div>
             </div>
             <div id="enemies-layer"></div>
-            <div class="platform" style="width: 2500px; bottom: 0; left: 0;"></div>
+            <div class="platform" style="width: 5000px; bottom: 0; left: 0;"></div>
+            <div class="platform" style="width: 400px; bottom: 180px; left: 600px;"></div>
         </div>
-        <button class="help-trigger" onclick="toggleHelp(true)">?</button>
     </main>
 
     <script src="script.js"></script>
