@@ -3,14 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: REFIXED</title>
+    <title>THE ABYSS: CHARACTER SYSTEM</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div id="game-stage">
-        <div id="world">
+        <div id="world" style="display: none;">
             <div id="player-container">
                 <div id="player-sprite">
                     <div id="weapon-visual"></div>
@@ -25,9 +25,7 @@
     </div>
 
     <div class="hud-top">
-        <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
         <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
-        <button class="pixel-btn" onclick="openShop()">SHOP (B)</button>
         <button class="pixel-btn" onclick="location.reload()">RESET</button>
     </div>
 
@@ -37,21 +35,10 @@
             <div class="menu-layout">
                 <div class="grid-left" id="class-grid"></div>
                 <div class="info-right">
-                    <div id="class-details">
-                        <p>AWAITING SELECTION...</p>
-                    </div>
-                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE SYSTEM</button>
+                    <div id="class-details">CHỌN NHÂN VẬT...</div>
+                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">VÀO HẦM NGỤC</button>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div id="gui-shop" class="overlay" style="display:none">
-        <div class="pixel-window" style="width:300px">
-            <h2>SHOP</h2>
-            <button class="main-btn" onclick="buyUpgrade('atk')">ATK +5 (50G)</button>
-            <button class="main-btn" onclick="buyUpgrade('hp')">HEAL (30G)</button>
-            <button class="main-btn" style="background:#444" onclick="closeShop()">EXIT</button>
         </div>
     </div>
 

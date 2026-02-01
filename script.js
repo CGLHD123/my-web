@@ -1,14 +1,14 @@
 const classes = [
-    { name: 'SCOUT', hp: 100, atk: 15, range: 80, color: '#2ecc71', id: 'scout' },
-    { name: 'WARRIOR', hp: 150, atk: 25, range: 90, color: '#e74c3c', id: 'warrior' },
-    { name: 'TANKER', hp: 300, atk: 10, range: 70, color: '#3498db', id: 'tanker' },
-    { name: 'MAGE', hp: 80, atk: 50, range: 200, color: '#9b59b6', id: 'mage' },
-    { name: 'ROGUE', hp: 100, atk: 40, range: 60, color: '#f1c40f', id: 'rogue' },
-    { name: 'CLERIC', hp: 130, atk: 15, range: 70, color: '#ecf0f1', id: 'cleric' },
-    { name: 'BERSERKER', hp: 180, atk: 35, range: 85, color: '#e67e22', id: 'berserker' },
-    { name: 'ARCHER', hp: 90, atk: 30, range: 300, color: '#a2b9bc', id: 'archer' },
-    { name: 'PALADIN', hp: 200, atk: 20, range: 90, color: '#1abc9c', id: 'paladin' },
-    { name: 'NECRO', hp: 90, atk: 30, range: 150, color: '#8e44ad', id: 'necro' }
+    { id: 'scout', name: 'SCOUT', hp: 100, atk: 15, range: 80 },
+    { id: 'warrior', name: 'WARRIOR', hp: 150, atk: 25, range: 90 },
+    { id: 'tanker', name: 'TANKER', hp: 300, atk: 10, range: 70 },
+    { id: 'mage', name: 'MAGE', hp: 80, atk: 50, range: 180 },
+    { id: 'rogue', name: 'ROGUE', hp: 100, atk: 35, range: 60 },
+    { id: 'cleric', name: 'CLERIC', hp: 120, atk: 20, range: 75 },
+    { id: 'berserker', name: 'BERSERKER', hp: 170, atk: 40, range: 85 },
+    { id: 'archer', name: 'ARCHER', hp: 90, atk: 30, range: 250 },
+    { id: 'paladin', name: 'PALADIN', hp: 200, atk: 22, range: 90 },
+    { id: 'necro', name: 'NECRO', hp: 90, atk: 35, range: 140 }
 ];
 
 let g = {
@@ -18,53 +18,62 @@ let g = {
     selected: null
 };
 
-// 1. KHỞI TẠO DANH SÁCH CHỌN
+// --- HÀM KHỞI TẠO LẠI TOÀN BỘ SỰ KIỆN CHỌN ---
 function initSelection() {
     const grid = document.getElementById('class-grid');
     grid.innerHTML = '';
-    classes.forEach(c => {
-        const d = document.createElement('div');
-        d.className = 'class-item';
-        d.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
 
-        d.onclick = () => {
-            // Xóa active cũ
-            document.querySelectorAll('.class-item').forEach(i => i.classList.remove('active'));
-            // Thêm active mới
-            d.classList.add('active');
+    classes.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'class-item';
+        // Tải ảnh làm cover cho ô chọn
+        item.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
+
+        // Gán sự kiện click trực tiếp
+        item.onclick = (e) => {
+            e.stopPropagation();
+            // Reset trạng thái chọn
+            document.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
+            item.classList.add('active');
+
+            // Lưu dữ liệu class đã chọn
             g.selected = c;
 
-            // Cập nhật thông tin bên phải
+            // Cập nhật UI thông tin
             document.getElementById('class-details').innerHTML = `
-                <h3 style="color:${c.color}">${c.name}</h3>
-                <p>HP: ${c.hp} | ATK: ${c.atk}</p>
-                <p>READY TO DEPLOY</p>
+                <h2 style="color:var(--neon)">${c.name}</h2>
+                <p>HP: ${c.hp}</p>
+                <p>ATK: ${c.atk}</p>
+                <p>RANGE: ${c.range}px</p>
             `;
-            // Kích hoạt nút bắt đầu
+
+            // Mở nút Start
             document.getElementById('start-btn').disabled = false;
         };
-        grid.appendChild(d);
+        grid.appendChild(item);
     });
 }
 
-// 2. BẮT ĐẦU GAME (CHUYỂN SANG HẦM NGỤC)
+// --- VÀO HẦM NGỤC ---
 function initGame() {
     if (!g.selected) return;
 
+    // Gán chỉ số nhân vật
+    const p = g.player;
     const s = g.selected;
-    g.player.hp = g.player.maxH = s.hp;
-    g.player.atk = s.atk;
-    g.player.range = s.range;
+    p.hp = p.maxH = s.hp;
+    p.atk = s.atk;
+    p.range = s.range;
 
-    // Thiết lập nhân vật khối đồng nhất màu theo Class
+    // Đổi nhân vật thành ảnh Class đã chọn
     const sprite = document.getElementById('player-sprite');
-    sprite.style.backgroundColor = s.color;
+    sprite.style.backgroundImage = `url('assets/thumbs/${s.id}.png')`;
 
-    // TẮT GUI CHỌN VÀ HIỆN THẾ GIỚI
+    // Chuyển cảnh
     document.getElementById('gui-selection').style.display = 'none';
     document.getElementById('world').style.display = 'block';
 
-    // Tạo sàn ban đầu
+    // Tạo địa hình đầu tiên
     createPlatform(0, 0, 2000, 40);
     g.lastGenX = 2000;
 
@@ -72,7 +81,6 @@ function initGame() {
     requestAnimationFrame(loop);
 }
 
-// 3. MAP VÔ TẬN
 function createPlatform(x, y, w, h) {
     const el = document.createElement('div');
     el.className = 'platform';
@@ -84,16 +92,23 @@ function createPlatform(x, y, w, h) {
 
 function generateMap() {
     if (g.player.x + 1000 > g.lastGenX) {
-        let w = 300 + Math.random() * 400;
+        let w = 400 + Math.random() * 300;
         let x = g.lastGenX + 150 + Math.random() * 150;
         let y = 100 + Math.random() * 200;
         createPlatform(x, y, w, 20);
-        if (Math.random() > 0.5) createEntity('goblin', x + w / 2, y + 40);
+        if (Math.random() > 0.4) createEntity(x + w / 2, y + 40);
         g.lastGenX = x + w;
     }
 }
 
-// 4. VÒNG LẶP CHÍNH
+function createEntity(x, y) {
+    const el = document.createElement('div');
+    el.className = 'goblin';
+    el.innerHTML = `<div class="m-hp"><div class="m-hp-i" style="width:100%"></div></div>`;
+    document.getElementById('entity-layer').appendChild(el);
+    g.entities.push({ x, y, hp: 50, mH: 50, el, active: true });
+}
+
 function loop() {
     if (!g.active) return;
     updatePlayer();
@@ -114,7 +129,7 @@ function updatePlayer() {
 
     p.ground = false;
     g.platforms.forEach(plat => {
-        if (p.x + 35 > plat.x && p.x < plat.x + plat.w) {
+        if (p.x + 45 > plat.x && p.x < plat.x + plat.w) {
             if (p.vy <= 0 && p.y >= plat.y + plat.h - 15 && p.y <= plat.y + plat.h + 5) {
                 p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
             }
@@ -129,35 +144,27 @@ function updatePlayer() {
     if (p.hp <= 0) location.reload();
 }
 
-function createEntity(type, x, y) {
-    const el = document.createElement('div');
-    el.className = type;
-    el.innerHTML = `<div class="m-hp"><div class="m-hp-i" style="width:100%"></div></div>`;
-    document.getElementById('entity-layer').appendChild(el);
-    g.entities.push({ type, x, y, hp: 50, mH: 50, el, active: true });
-}
-
 function updateEntities() {
     g.entities.forEach(en => {
         if (!en.active) return;
-        let dist = g.player.x - en.x;
-        if (Math.abs(dist) < 500) en.x += Math.sign(dist) * 2;
-        if (Math.abs(dist) < 40 && Math.abs(g.player.y - en.y) < 50) g.player.hp -= 0.5;
+        let d = g.player.x - en.x;
+        if (Math.abs(d) < 500) en.x += Math.sign(d) * 2;
+        if (Math.abs(d) < 40 && Math.abs(g.player.y - en.y) < 50) g.player.hp -= 0.5;
         en.el.style.left = en.x + 'px'; en.el.style.bottom = en.y + 'px';
     });
 }
 
-function createParticle(x, y, color) {
+function createParticle(x, y) {
     for (let i = 0; i < 5; i++) {
         const el = document.createElement('div'); el.className = 'particle';
-        el.style.backgroundColor = color; document.getElementById('particle-layer').appendChild(el);
+        el.style.backgroundColor = '#f00'; document.getElementById('particle-layer').appendChild(el);
         g.particles.push({ el, x, y, vx: (Math.random() - 0.5) * 10, vy: Math.random() * 10, life: 1 });
     }
 }
 
 function updateParticles() {
     for (let i = g.particles.length - 1; i >= 0; i--) {
-        const p = g.particles[i]; p.x += p.vx; p.y += p.vy; p.vy -= 0.5; p.life -= 0.03;
+        const p = g.particles[i]; p.x += p.vx; p.y += p.vy; p.vy -= 0.5; p.life -= 0.05;
         p.el.style.left = p.x + 'px'; p.el.style.bottom = p.y + 'px'; p.el.style.opacity = p.life;
         if (p.life <= 0) { p.el.remove(); g.particles.splice(i, 1); }
     }
@@ -172,7 +179,7 @@ function attack() {
         let d = g.player.dir === 1 ? (en.x - g.player.x) : (g.player.x - en.x);
         if (d > 0 && d < g.player.range && Math.abs(g.player.y - en.y) < 70) {
             en.hp -= g.player.atk;
-            createParticle(en.x, en.y + 20, '#f00');
+            createParticle(en.x, en.y + 20);
             if (en.hp <= 0) { en.active = false; en.el.remove(); g.player.coin += 20; document.getElementById('ui-coin').innerText = g.player.coin; }
             else en.el.querySelector('.m-hp-i').style.width = (en.hp / en.mH * 100) + '%';
         }
@@ -180,16 +187,9 @@ function attack() {
     setTimeout(() => { document.getElementById('weapon-visual').classList.remove('swing'); g.player.canAtk = true; }, 200);
 }
 
-// 5. SHOP & EVENTS
-function openShop() { g.active = false; document.getElementById('gui-shop').style.display = 'flex'; }
-function closeShop() { g.active = true; document.getElementById('gui-shop').style.display = 'none'; requestAnimationFrame(loop); }
-function buyUpgrade(type) {
-    if (type === 'atk' && g.player.coin >= 50) { g.player.atk += 5; g.player.coin -= 50; }
-    if (type === 'hp' && g.player.coin >= 30) { g.player.hp = g.player.maxH; g.player.coin -= 30; }
-    document.getElementById('ui-coin').innerText = g.player.coin;
-}
-
-window.onkeydown = e => { g.keys[e.code] = true; if (e.code === 'KeyB') openShop(); };
+window.onkeydown = e => g.keys[e.code] = true;
 window.onkeyup = e => g.keys[e.code] = false;
 window.onmousedown = e => { if (e.button === 0) attack(); };
+
+// Chạy khởi tạo ngay khi load
 window.onload = initSelection;
