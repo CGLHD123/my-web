@@ -11,7 +11,7 @@
 <body class="dark-theme">
     <header class="header-ui">
         <button id="btn-toggle-theme" class="neon-nav-btn">💡 LIGHTS</button>
-        <button onclick="resetData()" class="neon-nav-btn">♻️ RESET DATA</button>
+        <h1 class="game-logo-on-map">THE ABYSS PROTOCOL</h1>
         <button class="neon-nav-btn" onclick="toggleHelp(true)">❓ HELP</button>
     </header>
 
@@ -21,41 +21,50 @@
             <div class="class-selection">
                 <div class="class-box" onclick="selectClass('Scout')">
                     <h4>SCOUT</h4>
-                    <p>Nhanh & Nhỏ</p>
+                    <p>SPD: 8 | SIZE: 14</p>
                 </div>
                 <div class="class-box" onclick="selectClass('Tanker')">
                     <h4>TANKER</h4>
-                    <p>Chậm & Lớn</p>
+                    <p>SPD: 3 | SIZE: 30</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <main class="game-container">
+        <div class="stats-panel">
+            <div>CLASS: <span id="stat-class">-</span></div>
+            <div>SPEED: <span id="stat-speed">0</span></div>
+            <div>GOLD: <span id="stat-gold" style="color: gold;">0</span></div>
+            <button onclick="resetData()" class="reset-btn">♻️ RESET DATA</button>
+        </div>
+
+        <div id="dungeon-frame">
+            <div id="fog-overlay"></div>
+            <div id="player"></div>
+
+            <div id="portal-in" class="portal"></div>
+            <div id="portal-out" class="portal"></div>
+
+            <div class="dungeon-block b1"></div>
+            <div class="dungeon-block b2"></div>
+            <div class="dungeon-block b3"></div>
+
+            <div id="gold-item" class="gold-coin"></div>
+        </div>
+    </main>
 
     <div id="gui-help" class="gui-overlay" style="display: none;">
         <div class="gui-card help-neon">
             <h3 class="neon-title">MANUAL</h3>
             <ul class="help-list">
                 <li><b>W A S D:</b> Di chuyển</li>
-                <li><b>FOG:</b> Vùng sáng theo nhân vật</li>
-                <li><b>RESET:</b> Chọn lại Class</li>
+                <li><b>PORTAL:</b> Đi vào vòng tròn xanh để dịch chuyển</li>
+                <li><b>GOLD:</b> Thu thập vàng để tăng chỉ số</li>
             </ul>
-            <button class="gui-btn" onclick="toggleHelp(false)">ĐÓNG</button>
+            <button class="gui-btn" onclick="toggleHelp(false)">CLOSE</button>
         </div>
     </div>
-
-    <main class="game-container">
-        <div class="dungeon-wrapper">
-            <h1 class="game-logo-on-map">THE ABYSS PROTOCOL</h1>
-            <div id="dungeon-frame" class="irregular-shape">
-                <div id="fog-overlay"></div>
-                <div id="player"></div>
-                <div class="wall v-wall w1"></div>
-                <div class="wall v-wall w2"></div>
-                <div class="wall h-wall w3"></div>
-                <div class="wall h-wall w4"></div>
-            </div>
-        </div>
-    </main>
 
     <script src="script.js"></script>
 </body>

@@ -1,75 +1,79 @@
 const player = document.getElementById('player');
 const dungeon = document.getElementById('dungeon-frame');
 const fog = document.getElementById('fog-overlay');
-const guiClass = document.getElementById('gui-class');
-const guiHelp = document.getElementById('gui-help');
-const walls = document.querySelectorAll('.wall');
+const goldItem = document.getElementById('gold-item');
+const portalIn = document.getElementById('portal-in');
+const portalOut = document.getElementById('portal-out');
 
-let posX = 50, posY = 50, speed = 5, pSize = 20;
+let posX = 100, posY = 100, speed = 5, pSize = 20, goldCount = 0;
 const keys = {};
 const beep = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFRm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTdvT18AZmZmWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZ');
 
 window.onload = () => {
     const savedClass = localStorage.getItem('selectedClass');
-    if (!savedClass) guiClass.style.display = 'flex';
+    if (!savedClass) document.getElementById('gui-class').style.display = 'flex';
     else applyClassSettings(savedClass);
+    spawnGold();
 };
 
 function selectClass(type) {
     localStorage.setItem('selectedClass', type);
     applyClassSettings(type);
-    guiClass.style.display = 'none';
+    document.getElementById('gui-class').style.display = 'none';
 }
 
 function applyClassSettings(type) {
     if (type === 'Scout') { speed = 8; pSize = 14; }
-    else { speed = 3; pSize = 30; }
-    player.style.width = pSize + 'px';
-    player.style.height = pSize + 'px';
+    else { speed = 3; pSize = 26; }
+    player.style.width = pSize + 'px'; player.style.height = pSize + 'px';
+    document.getElementById('stat-class').innerText = type.toUpperCase();
+    document.getElementById('stat-speed').innerText = speed;
 }
 
 function resetData() { localStorage.removeItem('selectedClass'); location.reload(); }
-function toggleHelp(show) { guiHelp.style.display = show ? 'flex' : 'none'; }
+function toggleHelp(show) { document.getElementById('gui-help').style.display = show ? 'flex' : 'none'; }
+function spawnGold() {
+    goldItem.style.left = Math.random() * 700 + 'px';
+    goldItem.style.top = Math.random() * 400 + 'px';
+}
 
 document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
 document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
 
 function update() {
-    if (guiClass.style.display === 'none' && guiHelp.style.display === 'none') {
-        let nX = posX, nY = posY, moving = false;
+    if (document.getElementById('gui-class').style.display === 'none') {
+        let nX = posX, nY = posY;
+        if (keys['w']) nY -= speed; if (keys['s']) nY += speed;
+        if (keys['a']) nX -= speed; if (keys['d']) nX += speed;
 
-        if (keys['w'] || keys['arrowup']) { nY -= speed; moving = true; }
-        if (keys['s'] || keys['arrowdown']) { nY += speed; moving = true; }
-        if (keys['a'] || keys['arrowleft']) { nX -= speed; moving = true; }
-        if (keys['d'] || keys['arrowright']) { nX += speed; moving = true; }
-
-        nX = Math.max(10, Math.min(dungeon.clientWidth - pSize - 10, nX));
-        nY = Math.max(10, Math.min(dungeon.clientHeight - pSize - 10, nY));
-
-        const pR = { left: nX, top: nY, right: nX + pSize, bottom: nY + pSize };
-        let hit = false;
-        walls.forEach(wall => {
-            const wR = wall.getBoundingClientRect(), dR = dungeon.getBoundingClientRect();
-            const relW = { left: wR.left - dR.left, top: wR.top - dR.top, right: wR.right - dR.left, bottom: wR.bottom - dR.top };
-            if (!(pR.right < relW.left || pR.left > relW.right || pR.bottom < relW.top || pR.top > relW.bottom)) hit = true;
-        });
-
-        if (!hit) { posX = nX; posY = nY; }
-        else if (moving) {
-            dungeon.classList.add('shake');
-            beep.play().catch(() => { });
-            setTimeout(() => dungeon.classList.remove('shake'), 150);
+        // Va chạm Portal
+        const pR = player.getBoundingClientRect();
+        const iR = portalIn.getBoundingClientRect();
+        if (!(pR.right < iR.left || pR.left > iR.right || pR.bottom < iR.top || pR.top > iR.bottom)) {
+            const outRect = portalOut.getBoundingClientRect();
+            const dRect = dungeon.getBoundingClientRect();
+            posX = outRect.left - dRect.left; posY = outRect.top - dRect.top;
         }
+
+        // Ăn vàng
+        const gR = goldItem.getBoundingClientRect();
+        if (!(pR.right < gR.left || pR.left > gR.right || pR.bottom < gR.top || pR.top > gR.bottom)) {
+            goldCount++;
+            document.getElementById('stat-gold').innerText = goldCount;
+            spawnGold();
+            beep.play().catch(() => { });
+        }
+
+        // Biên giới hạn (Đơn giản hóa cho đa khối)
+        posX = Math.max(0, Math.min(dungeon.clientWidth - pSize, nX));
+        posY = Math.max(0, Math.min(dungeon.clientHeight - pSize, nY));
 
         player.style.left = posX + 'px';
         player.style.top = posY + 'px';
-
-        // Cập nhật vị trí "đèn pin" trên Fog
         fog.style.setProperty('--x', (posX + pSize / 2) + 'px');
         fog.style.setProperty('--y', (posY + pSize / 2) + 'px');
     }
     requestAnimationFrame(update);
 }
-
 document.getElementById('btn-toggle-theme').addEventListener('click', () => document.body.classList.toggle('light-theme'));
-requestAnimationFrame(update);
+update();
