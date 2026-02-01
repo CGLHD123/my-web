@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: INFINITE SYSTEM</title>
+    <title>THE ABYSS PROTOCOL: REFIXED</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -26,7 +26,6 @@
 
     <div class="hud-top">
         <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
-        <div class="stat-unit">EXP: <span id="ui-exp">0/100</span></div>
         <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
         <button class="pixel-btn" onclick="openShop()">SHOP (B)</button>
         <button class="pixel-btn" onclick="location.reload()">RESET</button>
@@ -39,22 +38,20 @@
                 <div class="grid-left" id="class-grid"></div>
                 <div class="info-right">
                     <div id="class-details">
-                        <p>SCANNING...</p>
+                        <p>AWAITING SELECTION...</p>
                     </div>
-                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE</button>
+                    <button id="start-btn" class="main-btn" disabled onclick="initGame()">INITIALIZE SYSTEM</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="gui-shop" class="overlay" style="display:none">
-        <div class="pixel-window" style="width:400px">
-            <h2>CYBER SHOP</h2>
-            <div id="shop-items">
-                <button class="main-btn" onclick="buyUpgrade('atk')">UPGRADE ATK (50G)</button>
-                <button class="main-btn" onclick="buyUpgrade('hp')">REPAIR HP (30G)</button>
-            </div>
-            <button class="main-btn" style="background:#444" onclick="closeShop()">CLOSE</button>
+        <div class="pixel-window" style="width:300px">
+            <h2>SHOP</h2>
+            <button class="main-btn" onclick="buyUpgrade('atk')">ATK +5 (50G)</button>
+            <button class="main-btn" onclick="buyUpgrade('hp')">HEAL (30G)</button>
+            <button class="main-btn" style="background:#444" onclick="closeShop()">EXIT</button>
         </div>
     </div>
 
