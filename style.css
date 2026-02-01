@@ -26,128 +26,125 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
-.game-logo-on-map {
+.game-logo {
     font-size: 20px;
     color: var(--neon);
     text-shadow: 0 0 10px var(--neon);
-    margin: 0;
 }
 
-/* Dashboard chỉ số */
-.stats-panel {
+/* Chỉ số góc màn hình */
+.stats-screen-corner {
     position: fixed;
     bottom: 20px;
     left: 20px;
     background: rgba(0, 0, 0, 0.8);
-    border: 1px solid var(--neon);
-    padding: 15px;
-    border-radius: 10px;
-    z-index: 1000;
+    border-left: 3px solid var(--neon);
+    padding: 10px 15px;
+    z-index: 1500;
     font-size: 12px;
-    line-height: 2;
 }
 
-.reset-btn {
-    margin-top: 10px;
-    background: none;
-    border: 1px solid #ff4444;
-    color: #ff4444;
-    cursor: pointer;
-    padding: 5px;
-    width: 100%;
-    font-family: 'Orbitron';
-    font-size: 10px;
-}
-
-/* Dungeon đa khối */
+/* Dungeon Shape: Kết hợp nhiều khối bằng clip-path */
 #dungeon-frame {
     width: 800px;
     height: 500px;
     position: relative;
-    background: #000;
-    overflow: hidden;
+    background: #080808;
     border: 2px solid var(--neon);
+    /* Clip-path tạo hình chữ L ngược kết hợp khối lồi */
+    clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 70% 60%, 70% 100%, 0% 100%);
+    box-shadow: 0 0 30px var(--glow);
 }
 
-.dungeon-block {
+/* Walls */
+.wall {
     position: absolute;
-    border: 2px solid var(--neon);
-    background: rgba(0, 242, 255, 0.05);
-    pointer-events: none;
-}
-
-.b1 {
-    width: 400px;
-    height: 300px;
-    top: 0;
-    left: 0;
-}
-
-.b2 {
-    width: 300px;
-    height: 400px;
-    top: 100px;
-    left: 350px;
-}
-
-.b3 {
-    width: 200px;
-    height: 200px;
-    top: 50px;
-    left: 600px;
-}
-
-/* Elements */
-#player {
-    position: absolute;
-    background: #fff;
-    box-shadow: 0 0 15px #fff;
-    border-radius: 2px;
+    background: var(--neon);
+    box-shadow: 0 0 15px var(--neon);
     z-index: 100;
 }
 
-.portal {
+.v-wall {
+    width: 6px;
+    height: 100px;
+}
+
+.h-wall {
+    height: 6px;
+    width: 100px;
+}
+
+.w1 {
+    top: 50px;
+    left: 200px;
+}
+
+.w2 {
+    top: 200px;
+    left: 450px;
+}
+
+.w3 {
+    top: 350px;
+    left: 100px;
+}
+
+.w4 {
+    top: 120px;
+    left: 550px;
+}
+
+#player {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    border: 3px dashed var(--neon);
-    border-radius: 50%;
-    animation: rotate 3s linear infinite;
-}
-
-#portal-in {
-    top: 20px;
-    left: 20px;
-    border-color: #00ff00;
-}
-
-#portal-out {
-    bottom: 20px;
-    right: 200px;
-    border-color: #ff0000;
-}
-
-.gold-coin {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: gold;
-    border-radius: 50%;
-    box-shadow: 0 0 10px gold;
-    z-index: 90;
+    background: #fff;
+    box-shadow: 0 0 20px #fff;
+    border-radius: 2px;
+    z-index: 999;
 }
 
 #fog-overlay {
     position: absolute;
     inset: 0;
     background: #000;
-    z-index: 10;
+    z-index: 900;
     pointer-events: none;
-    mask-image: radial-gradient(circle 100px at var(--x, 50%) var(--y, 50%), transparent 20%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 100px at var(--x, 50%) var(--y, 50%), transparent 20%, black 100%);
+    mask-image: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+}
+
+.portal {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px dashed var(--neon);
+    border-radius: 50%;
+    animation: rotate 3s linear infinite;
+    z-index: 800;
+}
+
+#portal-in {
+    top: 20px;
+    left: 20px;
+    border-color: #0f0;
+}
+
+#portal-out {
+    bottom: 20px;
+    left: 500px;
+    border-color: #f00;
+}
+
+.gold-coin {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: gold;
+    border-radius: 50%;
+    box-shadow: 0 0 15px gold;
+    z-index: 850;
 }
 
 @keyframes rotate {
@@ -160,18 +157,17 @@ body {
     }
 }
 
-.shake {
-    animation: shakeAnim 0.1s infinite;
-}
-
-@keyframes shakeAnim {
-    0% {
-        transform: translate(0, 0);
-    }
-
-    50% {
-        transform: translate(3px, 3px);
-    }
+/* Reset Data in Help */
+.reset-btn-inner {
+    background: none;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    cursor: pointer;
+    font-family: 'Orbitron';
+    font-size: 10px;
 }
 
 .gui-overlay {
@@ -188,7 +184,9 @@ body {
     background: #000;
     border: 2px solid var(--neon);
     padding: 30px;
+    border-radius: 20px;
     text-align: center;
+    width: 300px;
 }
 
 .neon-nav-btn,
@@ -196,7 +194,7 @@ body {
     background: none;
     border: 1px solid var(--neon);
     color: var(--neon);
-    padding: 5px 15px;
+    padding: 8px 15px;
     cursor: pointer;
     font-family: 'Orbitron';
 }
