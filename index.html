@@ -5,49 +5,41 @@
     <meta charset="UTF-8">
     <title>THE ABYSS PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="dark-theme">
     <div class="top-nav">
-        <button id="btn-toggle-theme" class="neon-nav-btn">💡 SYSTEM LIGHT</button>
-        <button class="neon-nav-btn" onclick="toggleHelp(true)">❓ HELP CENTER</button>
+        <button id="btn-toggle-theme" class="neon-nav-btn">💡 LIGHT SYSTEM</button>
+        <button class="neon-nav-btn" onclick="toggleHelp(true)">❓ HELP</button>
     </div>
 
     <div id="gui-welcome" class="gui-overlay">
         <div class="gui-card main-neon">
-            <div class="neon-line"></div>
-            <h2 class="glitch">INITIALIZING PROTOCOL</h2>
-            <p>Hệ thống Abyss đã sẵn sàng điều hướng.</p>
-            <button class="gui-btn" onclick="closeWelcome()">ACCESS SYSTEM</button>
+            <h2 class="neon-title">INITIALIZING</h2>
+            <p>Hệ thống va chạm và di chuyển mượt đã được nạp.</p>
+            <button class="gui-btn" onclick="closeWelcome()">KÍCH HOẠT</button>
         </div>
     </div>
 
     <div id="gui-help" class="gui-overlay" style="display: none;">
         <div class="gui-card help-neon">
-            <h3>OPERATIONAL MANUAL</h3>
-            <div class="help-content">
-                <div class="control-item"><span>W A S D</span>
-                    <p>Di chuyển hạt nhân</p>
-                </div>
-                <div class="control-item"><span>SPACE</span>
-                    <p>Kích hoạt quét Radar</p>
-                </div>
-            </div>
-            <button class="gui-btn secondary" onclick="toggleHelp(false)">CLOSE</button>
+            <h3>HƯỚNG DẪN</h3>
+            <ul>
+                <li><b>WASD:</b> Di chuyển mượt</li>
+                <li><b>WALLS:</b> Vật cản vật lý</li>
+            </ul>
+            <button class="gui-btn" onclick="toggleHelp(false)">ĐÓNG</button>
         </div>
     </div>
 
-    <div class="game-content">
-        <div class="status-monitor">
-            <div class="scanline"></div>
-            <p>CORE STABILITY: <span id="hp-percent">100%</span></p>
-            <div class="energy-bar">
-                <div class="energy-fill"></div>
-            </div>
-        </div>
-
+    <div class="game-wrapper">
         <div id="dungeon-frame">
             <div id="player"></div>
+            <div class="wall v-wall w1"></div>
+            <div class="wall v-wall w2"></div>
+            <div class="wall h-wall w3"></div>
+            <div class="wall h-wall w4"></div>
         </div>
     </div>
 
