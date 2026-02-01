@@ -1,105 +1,101 @@
 :root {
-    --pixel-bg: #221a1a;
     --neon: #00f2ff;
-    --brick: #3d2e2e;
+    --bg: #221a1a;
 }
 
 body {
     margin: 0;
     background: #000;
-    overflow: hidden;
     font-family: 'Press Start 2P', cursive;
     color: white;
+    overflow: hidden;
     image-rendering: pixelated;
 }
 
-.game-logo {
+/* FOG SYSTEM */
+#fog-mask {
     position: fixed;
-    top: 15px;
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
-    color: var(--neon);
-    z-index: 2000;
+    inset: 0;
+    z-index: 50;
+    background: black;
+    pointer-events: none;
+    mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 20%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 20%, black 100%);
 }
 
-/* GUI 2 CỘT */
+/* GUI SELECTION */
+.gui-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .protocol-window {
-    background: #3d2e2e;
+    background: var(--bg);
     border: 4px solid #1a1515;
-    padding: 15px;
-    width: 900px;
+    padding: 20px;
+    width: 950px;
     display: flex;
     flex-direction: column;
-}
-
-.window-header {
-    background: #251d1d;
-    padding: 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    font-size: 12px;
 }
 
 .selection-container {
     display: flex;
     gap: 20px;
+    height: 320px;
 }
 
-/* Cột trái: 5 cột x 2 hàng */
 .class-grid {
+    flex: 2;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 80px);
-    gap: 10px;
-    flex: 2;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 12px;
 }
 
 .class-card {
-    background: #2b2323;
-    border: 2px solid #555;
+    background: #1a1515;
+    border: 2px solid #444;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.1s;
 }
 
 .class-card:hover {
     border-color: var(--neon);
-    background: #3a2f2f;
+    background: #2a2222;
 }
 
 .class-thumb {
-    width: 48px;
-    height: 48px;
+    width: 64px;
+    height: 64px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-/* Cột phải: Thông số */
 .class-info-panel {
     flex: 1;
-    background: #1a1515;
-    border: 2px solid #555;
-    padding: 15px;
+    background: #111;
+    border: 2px solid var(--neon);
+    padding: 20px;
     font-size: 10px;
     line-height: 1.8;
-    color: #ccc;
 }
 
-/* FOG & PLAYER */
-#fog-mask {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    background: rgba(0, 0, 0, 0.9);
-    pointer-events: none;
-    mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
+.panel-title {
+    color: var(--neon);
+    margin-bottom: 20px;
+    font-size: 12px;
+    text-decoration: underline;
 }
 
+/* PLAYER & ACTION */
 #player {
     position: absolute;
     width: 64px;
@@ -116,6 +112,16 @@ body {
 #player.run {
     background-image: url('assets/players/scout/run.png');
     animation: ani-run 0.8s steps(8) infinite;
+}
+
+#player.attacking {
+    width: 128px;
+    background-image: url('assets/players/scout/attack.png');
+    animation: ani-attack 0.4s steps(6) forwards;
+}
+
+#player.attacking[style*="scaleX(-1)"] {
+    margin-left: -64px;
 }
 
 @keyframes ani-idle {
@@ -138,28 +144,36 @@ body {
     }
 }
 
-.ui-container {
-    position: fixed;
-    inset: 0;
-    z-index: 2100;
-    pointer-events: none;
+@keyframes ani-attack {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -768px 0;
+    }
 }
 
-.ui-container button {
-    pointer-events: auto;
+.ui-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    pointer-events: none;
 }
 
 .platform {
     position: absolute;
     height: 40px;
-    background: var(--brick);
-    z-index: 10;
+    background: #3d2e2e;
+    border-top: 4px solid #5c4545;
 }
 
 #hp-bar-inner {
     position: absolute;
-    top: -5px;
-    height: 4px;
+    top: -10px;
+    height: 6px;
     background: #f00;
-    width: 32px;
+    width: 100%;
+    border: 1px solid #000;
 }

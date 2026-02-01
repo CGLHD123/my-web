@@ -10,43 +10,29 @@
 
 <body>
     <h1 class="game-logo">THE ABYSS PROTOCOL</h1>
+
     <div id="fog-mask"></div>
 
     <div class="ui-container">
         <div class="stats-screen">
-            <div class="pixel-text">LVL: <span id="stat-level">1</span> | EXP: <span id="stat-exp">0</span>/1000</div>
-            <div class="pixel-text">HP: <span id="stat-hp">100</span> | ATK: <span id="stat-atk">10</span></div>
-        </div>
-        <div class="controls-top-right">
-            <button class="pixel-btn-small" onclick="toggleHelp(true)">HELP (?)</button>
+            <div class="pixel-text">HP: <span id="stat-hp">0</span> | ATK: <span id="stat-atk">0</span></div>
+            <div class="pixel-text">EXP: <span id="stat-exp">0</span>/1000</div>
         </div>
     </div>
 
     <div id="gui-class" class="gui-overlay">
         <div class="protocol-window">
-            <div class="window-header">CLASS SELECTION MENU</div>
+            <div class="window-header">OPERATIVE SELECTION MENU</div>
             <div class="selection-container">
                 <div class="class-grid" id="class-grid"></div>
 
-                <div class="class-info-panel" id="class-info-panel">
-                    <h3 class="pixel-title">PROTOCOL INFO</h3>
+                <div class="class-info-panel">
+                    <h3 class="panel-title">SPECIFICATIONS</h3>
                     <div id="info-content">
-                        <p>HOVER OVER A UNIT</p>
+                        <p class="blink">HOVER TO SCAN...</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div id="gui-help" class="gui-overlay" style="display:none;">
-        <div class="pixel-border-box help-box">
-            <h3 class="pixel-title">PROTOCOL INFO</h3>
-            <ul class="pixel-list">
-                <li>[A][D]: MOVE</li>
-                <li>[SPACE]: JUMP</li>
-                <li>[L-CLICK]: ATTACK</li>
-            </ul>
-            <button class="pixel-btn-small" onclick="toggleHelp(false)">CLOSE</button>
         </div>
     </div>
 
