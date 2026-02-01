@@ -1,118 +1,85 @@
-/* Biến CSS cho chế độ Sáng/Tối */
 :root {
-    --bg-color: #f4f4f4;
-    /* Nền sáng */
-    --text-color: #333;
-    /* Chữ tối */
-    --container-bg: #fff;
-    /* Nền container sáng */
-    --button-bg: #007bff;
-    /* Nền nút sáng */
-    --button-hover-bg: #0056b3;
-    /* Nền nút hover sáng */
-    --border-color: #ccc;
-    /* Viền sáng */
+    /* Chế độ Tối (Neon chính) */
+    --bg-color: #0d0d0d;
+    --container-bg: rgba(20, 20, 20, 0.9);
+    --text-color: #00fff2;
+    --neon-shadow: 0 0 10px #00fff2, 0 0 20px #00fff2;
+    --btn-color: #ff00ff;
+    --btn-shadow: 0 0 10px #ff00ff;
 }
 
-/* Chế độ tối */
-body.dark-theme {
-    --bg-color: #222;
-    /* Nền tối */
-    --text-color: #eee;
-    /* Chữ sáng */
-    --container-bg: #333;
-    /* Nền container tối */
-    --button-bg: #4CAF50;
-    /* Nền nút tối */
-    --button-hover-bg: #45a049;
-    /* Nền nút hover tối */
-    --border-color: #555;
-    /* Viền tối */
+body.light-theme {
+    /* Chế độ Sáng */
+    --bg-color: #e0e0e0;
+    --container-bg: #ffffff;
+    --text-color: #222;
+    --neon-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    --btn-color: #007bff;
+    --btn-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 body {
-    font-family: 'Press Start 2P', cursive, Arial, sans-serif;
-    /* Font game */
     background-color: var(--bg-color);
     color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    /* Đảm bảo chiều cao tối thiểu */
+    height: 100vh;
     margin: 0;
-    transition: background-color 0.5s, color 0.5s;
-    /* Hiệu ứng chuyển đổi mượt */
+    transition: all 0.4s ease;
+}
+
+/* Nút bóng đèn góc trái trên cùng */
+.theme-fixed-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--text-color);
+    background: var(--container-bg);
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--neon-shadow);
+    transition: all 0.3s ease;
+    z-index: 1000;
 }
 
 .game-container {
-    text-align: center;
     background: var(--container-bg);
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    width: 90%;
-    border: 1px solid var(--border-color);
-    transition: background 0.5s, border-color 0.5s, box-shadow 0.5s;
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid var(--text-color);
+    text-align: center;
+    box-shadow: var(--neon-shadow);
+    max-width: 500px;
 }
 
-h1 {
-    color: var(--text-color);
-    margin-bottom: 1.5rem;
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.neon-text {
+    text-shadow: var(--neon-shadow);
+    letter-spacing: 5px;
 }
 
-p#game-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-}
-
-.actions {
-    margin-top: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    /* Cho phép các nút xuống dòng */
-    justify-content: center;
-    gap: 15px;
-    /* Khoảng cách giữa các nút */
-}
-
-button {
-    padding: 12px 25px;
-    background-color: var(--button-bg);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
+.neon-button {
+    background: transparent;
+    border: 2px solid var(--btn-color);
+    color: var(--btn-color);
+    padding: 15px 30px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 1rem;
-    font-family: 'Press Start 2P', cursive, Arial, sans-serif;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    flex-grow: 1;
-    /* Cho phép nút mở rộng */
-    max-width: 250px;
-    /* Giới hạn chiều rộng nút */
-}
-
-button:hover {
-    background-color: var(--button-hover-bg);
-    transform: translateY(-2px);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-p#status-message {
-    margin-top: 1.5rem;
     font-weight: bold;
-    color: orange;
-    /* Màu thông báo game */
+    text-transform: uppercase;
+    box-shadow: var(--btn-shadow);
+    transition: 0.3s;
 }
 
-/* Thêm font cho game nếu bạn muốn */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+.neon-button:hover {
+    background: var(--btn-color);
+    color: white;
+    box-shadow: 0 0 20px var(--btn-color);
+}

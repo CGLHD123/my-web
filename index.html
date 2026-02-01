@@ -4,19 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hầm Ngục Tối | Trò Chơi Phiêu Lưu</title>
+    <title>Hầm Ngục Neon</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="dark-theme"> <button id="btn-toggle-theme" class="theme-fixed-btn">
+        <span id="bulb-icon">💡</span>
+    </button>
+
     <div class="game-container">
-        <h1>Khám Phá Hầm Ngục</h1>
-        <p id="game-text">Bạn xuất hiện ở trong một hầm ngục tối đen như mực. Mùi ẩm mốc và tiếng nước nhỏ giọt từ đâu
-            đó vọng lại. Bạn chuẩn bị cho chuyến khám phá của mình.</p>
+        <h1 class="neon-text">HẦM NGỤC TỐI</h1>
+        <p id="game-text">Bạn xuất hiện ở trong một hầm ngục tối đen như mực. Ánh sáng Neon le lói phản chiếu trên những
+            bức tường ẩm ướt.</p>
 
         <div class="actions">
-            <button id="btn-explore">Bắt đầu khám phá</button>
-            <button id="btn-toggle-theme">Chế độ Sáng/Tối</button>
+            <button id="btn-explore" class="neon-button">Khám phá ngay</button>
         </div>
 
         <p id="status-message"></p>
