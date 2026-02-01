@@ -3,48 +3,59 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: PIXEL SOULS</title>
+    <title>THE ABYSS PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h1 class="game-logo">THE ABYSS PROTOCOL</h1>
-
-    <div id="fog-mask"></div>
-
-    <div class="ui-container">
-        <div class="stats-screen">
-            <div class="pixel-text">HP: <span id="stat-hp">0</span> | ATK: <span id="stat-atk">0</span></div>
-            <div class="pixel-text">EXP: <span id="stat-exp">0</span>/1000</div>
+    <main id="game-container">
+        <div id="world">
+            <div id="player-container">
+                <div id="player-body"></div>
+                <div id="player-weapon"></div>
+                <div id="hp-bar">
+                    <div id="hp-inner"></div>
+                </div>
+            </div>
+            <div id="entities-layer"></div>
         </div>
+    </main>
+
+    <div id="fog-layer"></div>
+
+    <div class="hud-top-right">
+        <div class="hud-box">LVL: <span id="val-lvl">1</span></div>
+        <div class="hud-box">COIN: <span id="val-coin">0</span></div>
+        <button class="pixel-btn" onclick="toggleHelp(true)">HELP</button>
     </div>
 
-    <div id="gui-class" class="gui-overlay">
+    <div id="gui-class" class="overlay">
         <div class="protocol-window">
-            <div class="window-header">OPERATIVE SELECTION MENU</div>
-            <div class="selection-container">
-                <div class="class-grid" id="class-grid"></div>
-
-                <div class="class-info-panel">
-                    <h3 class="panel-title">SPECIFICATIONS</h3>
-                    <div id="info-content">
-                        <p class="blink">HOVER TO SCAN...</p>
+            <div class="window-header">OPERATIVE SELECTION</div>
+            <div class="dual-column">
+                <div class="left-col" id="class-grid"></div>
+                <div class="right-col">
+                    <div id="class-info">
+                        <h3>SCANNING...</h3>
+                        <p>Hover over a unit to see data</p>
                     </div>
+                    <button id="btn-start" class="start-btn" disabled onclick="startGame()">INITIALIZE</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <main id="world">
-        <div id="dungeon">
-            <div id="player">
-                <div id="hp-bar-inner"></div>
-            </div>
-            <div id="enemies-layer"></div>
-            <div class="platform" style="width: 5000px; bottom: 0; left: 0;"></div>
+    <div id="gui-help" class="overlay" style="display:none">
+        <div class="protocol-window small">
+            <h3>PROTOCOL INFO</h3>
+            <p>[A][D] Move | [SPACE] Jump</p>
+            <p>[SHIFT] Crouch | [L-CLICK] Attack</p>
+            <hr>
+            <button class="pixel-btn red" onclick="location.reload()">RESET PROTOCOL</button>
+            <button class="pixel-btn" onclick="toggleHelp(false)">CLOSE</button>
         </div>
-    </main>
+    </div>
 
     <script src="script.js"></script>
 </body>

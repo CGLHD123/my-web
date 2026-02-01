@@ -1,179 +1,190 @@
 :root {
     --neon: #00f2ff;
-    --bg: #221a1a;
+    --gold: #ffd700;
 }
 
 body {
     margin: 0;
-    background: #000;
+    background: #111;
     font-family: 'Press Start 2P', cursive;
-    color: white;
+    color: #fff;
     overflow: hidden;
-    image-rendering: pixelated;
 }
 
-/* FOG SYSTEM */
-#fog-mask {
+/* LAYERING */
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+#fog-layer {
     position: fixed;
     inset: 0;
-    z-index: 50;
-    background: black;
+    z-index: 10;
     pointer-events: none;
-    mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 20%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 150px at var(--px) var(--py), transparent 20%, black 100%);
+    background: radial-gradient(circle 180px at var(--px) var(--py), transparent 10%, rgba(0, 0, 0, 0.95) 100%);
 }
 
-/* GUI SELECTION */
-.gui-overlay {
+.hud-top-right,
+.overlay {
+    z-index: 100;
+}
+
+/* GUI CLASS SELECTION */
+.overlay {
     position: fixed;
     inset: 0;
-    z-index: 3000;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .protocol-window {
-    background: var(--bg);
-    border: 4px solid #1a1515;
+    background: #221a1a;
+    border: 4px solid #444;
     padding: 20px;
-    width: 950px;
-    display: flex;
-    flex-direction: column;
+    width: 850px;
+    box-shadow: 0 0 20px #000;
 }
 
-.selection-container {
+.dual-column {
     display: flex;
     gap: 20px;
-    height: 320px;
+    margin-top: 20px;
 }
 
-.class-grid {
+.left-col {
     flex: 2;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
-.class-card {
-    background: #1a1515;
-    border: 2px solid #444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.class-btn {
+    aspect-ratio: 1/1;
+    border: 2px solid #555;
     cursor: pointer;
+    background: #111 no-repeat center;
+    background-size: 80%;
+    transition: 0.2s;
 }
 
-.class-card:hover {
+.class-btn:hover {
     border-color: var(--neon);
-    background: #2a2222;
+    background-color: #222;
+    box-shadow: 0 0 10px var(--neon);
 }
 
-.class-thumb {
-    width: 64px;
-    height: 64px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+.class-btn.selected {
+    border-color: var(--neon);
+    background-color: #333;
 }
 
-.class-info-panel {
+.right-col {
     flex: 1;
     background: #111;
-    border: 2px solid var(--neon);
-    padding: 20px;
+    border: 2px solid #444;
+    padding: 15px;
     font-size: 10px;
-    line-height: 1.8;
+    line-height: 1.6;
 }
 
-.panel-title {
-    color: var(--neon);
-    margin-bottom: 20px;
-    font-size: 12px;
-    text-decoration: underline;
+.start-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    font-family: inherit;
+    cursor: pointer;
+    background: #444;
+    color: #888;
+    border: none;
 }
 
-/* PLAYER & ACTION */
-#player {
+.start-btn.active {
+    background: #080;
+    color: #fff;
+    box-shadow: 0 0 10px #0f0;
+}
+
+/* ENTITIES (PLAYER, ENEMY, CHEST) */
+#player-container {
     position: absolute;
-    width: 64px;
-    height: 64px;
-    z-index: 100;
-    background-size: auto 64px;
+    width: 40px;
+    height: 50px;
+    transition: transform 0.1s;
 }
 
-#player.idle {
-    background-image: url('assets/players/scout/idle.png');
-    animation: ani-idle 0.6s steps(4) infinite;
+#player-body {
+    width: 100%;
+    height: 100%;
+    background: #ccc;
+    border-radius: 4px;
 }
 
-#player.run {
-    background-image: url('assets/players/scout/run.png');
-    animation: ani-run 0.8s steps(8) infinite;
-}
-
-#player.attacking {
-    width: 128px;
-    background-image: url('assets/players/scout/attack.png');
-    animation: ani-attack 0.4s steps(6) forwards;
-}
-
-#player.attacking[style*="scaleX(-1)"] {
-    margin-left: -64px;
-}
-
-@keyframes ani-idle {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -256px 0;
-    }
-}
-
-@keyframes ani-run {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -512px 0;
-    }
-}
-
-@keyframes ani-attack {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -768px 0;
-    }
-}
-
-.ui-container {
-    position: fixed;
+#player-weapon {
+    position: absolute;
+    right: -10px;
     top: 20px;
-    left: 20px;
-    z-index: 2000;
-    pointer-events: none;
+    width: 30px;
+    height: 6px;
+    background: #888;
+    transform-origin: left;
 }
 
 .platform {
     position: absolute;
-    height: 40px;
-    background: #3d2e2e;
-    border-top: 4px solid #5c4545;
+    height: 20px;
+    background: #333;
+    border-top: 4px solid #555;
 }
 
-#hp-bar-inner {
+.chest {
     position: absolute;
-    top: -10px;
-    height: 6px;
-    background: #f00;
-    width: 100%;
-    border: 1px solid #000;
+    width: 40px;
+    height: 30px;
+    background: #543;
+    border: 3px solid #321;
+}
+
+.coin {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: var(--gold);
+    border-radius: 50%;
+    border: 2px solid #b80;
+}
+
+/* HUD */
+.hud-top-right {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hud-box {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border: 2px solid #555;
+    font-size: 12px;
+}
+
+.pixel-btn {
+    font-family: inherit;
+    padding: 10px;
+    cursor: pointer;
+    background: #333;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.pixel-btn.red {
+    border-color: #f00;
+    color: #f00;
 }
