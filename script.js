@@ -1,31 +1,31 @@
 const player = document.getElementById('player');
-const welcomeGUI = document.getElementById('gui-welcome');
-const helpGUI = document.getElementById('gui-help');
-const dungeonFrame = document.getElementById('dungeon-frame');
+const dungeon = document.getElementById('dungeon-frame');
+const guiClass = document.getElementById('gui-class');
+const guiHelp = document.getElementById('gui-help');
 const walls = document.querySelectorAll('.wall');
 
-let posX = 30, posY = 30;
-const speed = 5;
+let posX = 50, posY = 50;
+let speed = 5, pSize = 20;
 const keys = {};
 
-document.addEventListener('keydown', (e) => { keys[e.key.toLowerCase()] = true; });
-document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+// Âm thanh Bíp kỹ thuật số
+const beep = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFRm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YTdvT18AZmZmWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZ');
 
-function closeWelcome() { welcomeGUI.style.display = 'none'; }
-function toggleHelp(show) { helpGUI.style.display = show ? 'flex' : 'none'; }
+document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
+document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
 
-function isColliding(pRect, wRect) {
-    return !(pRect.right < wRect.left || pRect.left > wRect.right ||
-        pRect.bottom < wRect.top || pRect.top > wRect.bottom);
+function selectClass(type) {
+    if (type === 'Scout') { speed = 8; pSize = 14; }
+    else { speed = 3; pSize = 30; }
+    player.style.width = pSize + 'px';
+    player.style.height = pSize + 'px';
+    guiClass.style.display = 'none';
 }
 
-function triggerShake() {
-    dungeonFrame.classList.add('shake');
-    setTimeout(() => dungeonFrame.classList.remove('shake'), 200);
-}
+function toggleHelp(show) { guiHelp.style.display = show ? 'flex' : 'none'; }
 
 function update() {
-    if (welcomeGUI.style.display === 'none' && helpGUI.style.display === 'none') {
+    if (guiClass.style.display === 'none' && guiHelp.style.display === 'none') {
         let nX = posX, nY = posY;
         let moving = false;
 
@@ -34,26 +34,28 @@ function update() {
         if (keys['a'] || keys['arrowleft']) { nX -= speed; moving = true; }
         if (keys['d'] || keys['arrowright']) { nX += speed; moving = true; }
 
-        nX = Math.max(5, Math.min(573, nX));
-        nY = Math.max(5, Math.min(373, nY));
+        nX = Math.max(10, Math.min(dungeon.clientWidth - pSize - 10, nX));
+        nY = Math.max(10, Math.min(dungeon.clientHeight - pSize - 10, nY));
 
-        const pRect = { left: nX, top: nY, right: nX + 22, bottom: nY + 22 };
+        const pR = { left: nX, top: nY, right: nX + pSize, bottom: nY + pSize };
         let hit = false;
 
         walls.forEach(wall => {
             const wR = wall.getBoundingClientRect();
-            const dR = dungeonFrame.getBoundingClientRect();
+            const dR = dungeon.getBoundingClientRect();
             const relW = {
                 left: wR.left - dR.left, top: wR.top - dR.top,
                 right: wR.right - dR.left, bottom: wR.bottom - dR.top
             };
-            if (isColliding(pRect, relW)) hit = true;
+            if (!(pR.right < relW.left || pR.left > relW.right || pR.bottom < relW.top || pR.top > relW.bottom)) hit = true;
         });
 
         if (!hit) {
             posX = nX; posY = nY;
         } else if (moving) {
-            triggerShake(); // Rung khi cố tình đi xuyên tường
+            dungeon.classList.add('shake');
+            beep.play().catch(() => { });
+            setTimeout(() => dungeon.classList.remove('shake'), 150);
         }
 
         player.style.left = posX + 'px';

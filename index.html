@@ -10,42 +10,49 @@
 </head>
 
 <body class="dark-theme">
-    <div class="top-nav">
-        <button id="btn-toggle-theme" class="neon-nav-btn">💡 LIGHT SYSTEM</button>
+    <header class="header-ui">
+        <button id="btn-toggle-theme" class="neon-nav-btn">💡 LIGHTS</button>
+        <h1 class="game-logo">THE ABYSS PROTOCOL</h1>
         <button class="neon-nav-btn" onclick="toggleHelp(true)">❓ HELP</button>
-    </div>
+    </header>
 
-    <div id="gui-welcome" class="gui-overlay">
+    <div id="gui-class" class="gui-overlay">
         <div class="gui-card main-neon">
-            <h2 class="neon-title">INITIALIZING</h2>
-            <div class="neon-line"></div>
-            <p>Hệ thống va chạm và di chuyển mượt đã được nạp.</p>
-            <button class="gui-btn" onclick="closeWelcome()">KÍCH HOẠT</button>
+            <h2 class="neon-title">SELECT OPERATIVE</h2>
+            <div class="class-selection">
+                <div class="class-box" onclick="selectClass('Scout')">
+                    <h4>SCOUT</h4>
+                    <p>Tốc độ: Cao<br>Kích thước: Nhỏ</p>
+                </div>
+                <div class="class-box" onclick="selectClass('Tanker')">
+                    <h4>TANKER</h4>
+                    <p>Tốc độ: Thấp<br>Kích thước: Lớn</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="gui-help" class="gui-overlay" style="display: none;">
         <div class="gui-card help-neon">
-            <h3 class="neon-title">OPERATIONAL MANUAL</h3>
-            <div class="neon-line"></div>
+            <h3 class="neon-title">MANUAL</h3>
             <ul class="help-list">
-                <li><b>W A S D:</b> Di chuyển chủ thể</li>
-                <li><b>WALLS:</b> Vật cản Neon (Va chạm)</li>
-                <li><b>SHAKE:</b> Hiệu ứng rung khi chạm tường</li>
+                <li><b>W A S D:</b> Điều khiển hạt nhân</li>
+                <li><b>VA CHẠM:</b> Rung màn hình & Bíp</li>
+                <li><b>CLASS:</b> Scout (Nhanh), Tanker (Trâu)</li>
             </ul>
-            <button class="gui-btn" onclick="toggleHelp(false)">ĐÓNG</button>
+            <button class="gui-btn" onclick="toggleHelp(false)">QUAY LẠI</button>
         </div>
     </div>
 
-    <div class="game-wrapper" id="shake-container">
-        <div id="dungeon-frame">
+    <main class="game-container">
+        <div id="dungeon-frame" class="irregular-shape">
             <div id="player"></div>
             <div class="wall v-wall w1"></div>
             <div class="wall v-wall w2"></div>
             <div class="wall h-wall w3"></div>
             <div class="wall h-wall w4"></div>
         </div>
-    </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
