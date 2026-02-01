@@ -13,7 +13,6 @@ body {
     color: white;
 }
 
-/* UI LAYER (Cao nhất) */
 .game-logo {
     position: fixed;
     top: 15px;
@@ -24,6 +23,17 @@ body {
     z-index: 2000;
     text-shadow: 4px 4px #000;
     pointer-events: none;
+}
+
+/* FOG SYSTEM */
+#fog-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
 }
 
 .ui-container {
@@ -37,18 +47,7 @@ body {
     pointer-events: auto;
 }
 
-/* FOG LAYER (Z-index 50) */
-#fog-mask {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    background: rgba(0, 0, 0, 0.95);
-    pointer-events: none;
-    mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 140px at var(--px) var(--py), transparent 20%, black 100%);
-}
-
-/* PLAYER LAYER (Z-index 100 - Cao hơn Fog) */
+/* PLAYER & ANIMATIONS */
 #player {
     position: absolute;
     width: 64px;
@@ -58,7 +57,6 @@ body {
     background-size: auto 64px;
 }
 
-/* Animation cho Spritesheet Scout */
 #player.idle {
     background-image: url('assets/players/scout/idle.png');
     animation: ani-idle 0.6s steps(4) infinite;
@@ -76,13 +74,18 @@ body {
 
 #player.crouching {
     background-image: url('assets/players/scout/crouch.png');
-    background-position: 0 0;
 }
 
 #player.attacking {
     width: 128px;
+    /* Frame rộng hơn để chứa vệt chém */
     background-image: url('assets/players/scout/attack.png');
     animation: ani-attack 0.4s steps(6) forwards;
+}
+
+/* Fix tâm khi quay trái khi đang chém */
+#player.attacking[style*="scaleX(-1)"] {
+    margin-left: -64px;
 }
 
 @keyframes ani-idle {
@@ -125,7 +128,24 @@ body {
     }
 }
 
-/* Map & Platforms (Dưới cùng) */
+/* UI & OTHERS */
+.gui-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pixel-border-box {
+    background: var(--pixel-bg);
+    border: 4px solid #555;
+    padding: 20px;
+    text-align: center;
+}
+
 .platform {
     position: absolute;
     height: 40px;
@@ -137,11 +157,9 @@ body {
 .enemy {
     position: absolute;
     z-index: 60;
+    border-radius: 2px;
 }
 
-/* Enemy trên Fog một chút hoặc dưới tùy ý */
-
-/* Utils */
 .pixel-btn-small {
     background: #333;
     color: #fff;
@@ -159,4 +177,5 @@ body {
     height: 4px;
     background: #f00;
     width: 32px;
+    transition: 0.2s;
 }
