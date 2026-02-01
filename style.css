@@ -1,86 +1,91 @@
-let hp=100;
-let lvl=1;
-const neonColors=['#00f2ff',
-'#ff00de',
-'#39ff14',
-'#ff3131',
-'#ffff00'];
+:root {
+    --neon-main: #00f2ff;
+    --neon-glow: rgba(0, 242, 255, 0.6);
+    --bg-space: #050505;
+}
 
-// 1. Tính năng đổi theme & màu bóng đèn
-const btnToggle=document.getElementById('btn-toggle-theme');
+body.dark-theme {
+    background: var(--bg-space);
+    color: #fff;
+}
 
-btnToggle.addEventListener('click', ()=> {
-        document.body.classList.toggle('light-theme');
-        const color=neonColors[Math.floor(Math.random() * neonColors.length)];
-        btnToggle.style.borderColor=color;
+body.light-theme {
+    --neon-main: #ff00de;
+    --neon-glow: rgba(255, 0, 222, 0.4);
+    background: #e0e0e0;
+    color: #000;
+}
 
-        btnToggle.style.boxShadow=`0 0 20px $ {
-            color
-        }
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: 'Courier New', monospace;
+}
 
-        `;
+/* Hiệu ứng Light Neon cho Title */
+.glitch-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-main), 0 0 20px var(--neon-main), 0 0 40px var(--neon-main);
+    margin-bottom: 20px;
+}
 
-        document.getElementById('bulb-icon').style.textShadow=`0 0 15px $ {
-            color
-        }
+/* Bản đồ hầm ngục */
+#game-map {
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 3px solid var(--neon-main);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px var(--neon-glow), 0 0 15px var(--neon-glow);
+}
 
-        `;
-    });
+/* Tạo hình nhân vật (Robot Neon) */
+#player {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px #fff, 0 0 10px var(--neon-main);
+    border-radius: 4px;
+    transition: 0.1s linear;
+}
 
-// 2. Tính năng trò chơi khám phá
-function explore(direction) {
-    const gameText=document.getElementById('game-text');
-    const status=document.getElementById('status-message');
-    const hpText=document.getElementById('hp-value');
-    const lvlText=document.getElementById('lvl-value');
+.player-eye {
+    width: 20px;
+    height: 4px;
+    background: var(--neon-main);
+    margin: 6px auto;
+    box-shadow: 0 0 10px var(--neon-main);
+}
 
-    let event=Math.random();
+/* Console Box */
+.console-box {
+    width: 400px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--neon-main);
+    margin-top: 20px;
+}
 
-    if (event > 0.7) {
-        gameText.innerText=`Bạn rẽ $ {
-            direction==='left' ? 'trái': 'phải'
-        }
-
-        và gặp một quái vật Neon !`;
-        let damage=Math.floor(Math.random() * 20)+10;
-        hp -=damage;
-
-        status.innerText=`Bạn mất $ {
-            damage
-        }
-
-        HP !`;
-    }
-
-    else if (event > 0.3) {
-        gameText.innerText=`Bạn rẽ $ {
-            direction==='left' ? 'trái': 'phải'
-        }
-
-        và tìm thấy lõi năng lượng !`;
-        lvl+=1;
-        status.innerText=`Bạn được tăng 1 cấp độ !`;
-    }
-
-    else {
-        gameText.innerText=`Hành lang $ {
-            direction==='left' ? 'trái': 'phải'
-        }
-
-        vắng lặng,
-        chỉ có tiếng điện xè xè...`;
-        status.innerText=`An toàn.`;
-    }
-
-    // Cập nhật UI
-    hpText.innerText=hp;
-    lvlText.innerText=lvl;
-
-    // Kiểm tra Game Over
-    if (hp <=0) {
-        hpText.innerText=0;
-        gameText.innerText="Năng lượng cạn kiệt... Trò chơi kết thúc.";
-        document.getElementById('action-buttons').style.display='none';
-        document.getElementById('reset-btn').style.display='inline-block';
-    }
+.theme-fixed-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-main);
+    background: transparent;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 0 15px var(--neon-main);
 }

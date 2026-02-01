@@ -1,74 +1,44 @@
-:root {
-    --bg - dark: #050505;
-    --neon - blue: #00f2ff;
-    --neon - pink: #ff00de;
-    --neon - red: #ff3131;
-    --glass - bg: rgba(255, 255, 255, 0.05);
+const player = document.getElementById('player');
+const gameMap = document.getElementById('game-map');
+const gameText = document.getElementById('game-text');
+const btnToggle = document.getElementById('btn-toggle-theme');
+
+let posX = 185; // Vị trí X ban đầu
+let posY = 185; // Vị trí Y ban đầu
+const step = 15; // Tốc độ di chuyển
+
+// 1. Tính năng Đổi Theme & Màu Neon
+btnToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-theme');
+    const color = document.body.classList.contains('light-theme') ? '#ff00de' : '#00f2ff';
+    btnToggle.style.borderColor = color;
+    btnToggle.style.boxShadow = `0 0 20px ${color}`;
+});
+
+// 2. Cơ chế di chuyển nhân vật
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === 'w' || key === 'arrowup') posY -= step;
+    if (key === 's' || key === 'arrowdown') posY += step;
+    if (key === 'a' || key === 'arrowleft') posX -= step;
+    if (key === 'd' || key === 'arrowright') posX += step;
+
+    // Giới hạn nhân vật không đi ra ngoài bản đồ (400px - 30px size)
+    posX = Math.max(0, Math.min(370, posX));
+    posY = Math.max(0, Math.min(370, posY));
+
+    updatePosition();
+});
+
+function updatePosition() {
+    player.style.left = posX + 'px';
+    player.style.top = posY + 'px';
+
+    // Hiệu ứng văn bản khi di chuyển
+    if (posX < 50 && posY < 50) {
+        gameText.innerText = "Khu vực bị khóa. Cần thẻ truy cập mức 1.";
+    } else if (posX > 300 && posY > 300) {
+        gameText.innerText = "Phát hiện tín hiệu thoát ở góc này!";
+    }
 }
-
-body.dark - theme {
-    background - color: var(--bg - dark);
-    color: #fff;
-}
-
-body.light - theme {
-    background - color: #f0f0f0;
-    color: #222;
-    --glass - bg: rgba(0, 0, 0, 0.05);
-}
-
-/* Nút bóng đèn góc trái */
-.theme - fixed - btn {
-    position: fixed; top: 20px; left: 20px;
-    width: 50px; height: 50px; border - radius: 50 %;
-    border: 2px solid var(--neon - blue);
-    background: var(--glass - bg); cursor: pointer;
-    box - shadow: 0 0 15px var(--neon - blue);
-    transition: 0.3s; z - index: 100;
-}
-
-/* Container hiệu ứng kính mờ */
-.game - container {
-    background: var(--glass - bg);
-    backdrop - filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 30px; border - radius: 15px;
-    text - align: center; width: 90 %; max - width: 500px;
-    box - shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-}
-
-/* Text Neon rực rỡ */
-.neon - title {
-    font - size: 2.5rem;
-    color: #fff;
-    text - shadow: 0 0 10px var(--neon - blue), 0 0 20px var(--neon - blue), 0 0 40px var(--neon - blue);
-    margin - bottom: 20px;
-}
-
-.neon - text - red { color: var(--neon - red); text - shadow: 0 0 10px var(--neon - red); }
-.neon - text - blue { color: var(--neon - blue); text - shadow: 0 0 10px var(--neon - blue); }
-
-/* Nút bấm Neon */
-.neon - button {
-    padding: 12px 20px; margin: 10px;
-    background: transparent; cursor: pointer;
-    border - radius: 5px; font - weight: bold;
-    transition: 0.3s;
-}
-
-.neon - button.blue {
-    border: 2px solid var(--neon - blue); color: var(--neon - blue);
-    box - shadow: inset 0 0 10px var(--neon - blue), 0 0 10px var(--neon - blue);
-}
-
-.neon - button.pink {
-    border: 2px solid var(--neon - pink); color: var(--neon - pink);
-    box - shadow: inset 0 0 10px var(--neon - pink), 0 0 10px var(--neon - pink);
-}
-
-.neon - button:hover {
-    transform: scale(1.05);
-    background: white; color: black;
-}
-
-.stats - bar { margin - bottom: 20px; font - size: 1.2rem; display: flex; justify - content: space - around; }

@@ -4,34 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Dungeon Crawler</title>
+    <title>THE ABYSS PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dark-theme">
-    <button id="btn-toggle-theme" class="theme-fixed-btn">
-        <span id="bulb-icon">💡</span>
-    </button>
+    <button id="btn-toggle-theme" class="theme-fixed-btn"><span id="bulb-icon">💡</span></button>
 
-    <div class="game-container">
-        <div class="stats-bar">
-            <span>HP: <span id="hp-value" class="neon-text-red">100</span></span>
-            <span>LVL: <span id="lvl-value" class="neon-text-blue">1</span></span>
+    <div class="game-wrapper">
+        <h1 class="glitch-title" data-text="THE ABYSS PROTOCOL">THE ABYSS PROTOCOL</h1>
+
+        <div class="stats-panel">
+            <div class="stat-item">CORE: <span id="hp-value">100</span>%</div>
+            <div class="stat-item">DATA: <span id="lvl-value">01</span></div>
         </div>
 
-        <h1 class="neon-title">NEON DUNGEON</h1>
-
-        <div class="story-box">
-            <p id="game-text">Luồng sáng Neon xanh le lói dẫn lối bạn vào hầm ngục...</p>
+        <div id="game-map">
+            <div id="player">
+                <div class="player-eye"></div>
+            </div>
         </div>
 
-        <div class="actions" id="action-buttons">
-            <button onclick="explore('left')" class="neon-button blue">Rẽ Trái</button>
-            <button onclick="explore('right')" class="neon-button pink">Rẽ Phải</button>
+        <div class="console-box">
+            <p id="game-text">Hệ thống kích hoạt... Tọa độ: Tầng G-01. Hãy tìm lối thoát.</p>
         </div>
 
-        <p id="status-message"></p>
-        <button id="reset-btn" style="display:none;" onclick="location.reload()">Chơi lại</button>
+        <div class="controls-guide">Sử dụng <b>W A S D</b> hoặc <b>Mũi tên</b> để di chuyển</div>
     </div>
 
     <script src="script.js"></script>
