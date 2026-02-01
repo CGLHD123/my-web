@@ -16,7 +16,7 @@
     </header>
 
     <div id="gui-class" class="gui-overlay" style="display: none;">
-        <div class="gui-card main-neon">
+        <div class="gui-card">
             <h2 class="neon-title">SELECT OPERATIVE</h2>
             <div class="class-selection">
                 <div class="class-box" onclick="selectClass('Scout')">
@@ -32,35 +32,31 @@
     </div>
 
     <div id="gui-help" class="gui-overlay" style="display: none;">
-        <div class="gui-card help-neon">
-            <h3 class="neon-title">HELP MENU</h3>
+        <div class="gui-card">
+            <h3 class="neon-title">PROTOCOL INFO</h3>
             <ul class="help-list">
                 <li><b>W A S D:</b> DI CHUYỂN</li>
-                <li><b>PORTAL:</b> XANH -> ĐỎ</li>
             </ul>
-            <button onclick="resetData()" class="reset-btn-inner">♻️ RESET DATA</button>
+            <button onclick="resetData()" class="reset-btn-inner">♻️ RESET CHARACTER DATA</button>
             <button class="gui-btn" onclick="toggleHelp(false)">CLOSE</button>
         </div>
     </div>
 
     <div class="stats-screen-corner">
-        <div>CLASS: <span id="stat-class">-</span></div>
-        <div>SPD: <span id="stat-speed">0</span></div>
-        <div>GOLD: <span id="stat-gold" style="color: gold;">0</span></div>
+        <div class="stat-item">CLASS: <span id="stat-class">-</span></div>
+        <div class="stat-item">SPD: <span id="stat-speed">0</span></div>
+        <div class="stat-item" style="color: gold;">GOLD: <span id="stat-gold">0</span></div>
     </div>
 
     <main class="game-container">
-        <div id="dungeon-frame" class="complex-shape">
+        <div id="dungeon-frame">
             <div id="fog-overlay"></div>
             <div id="player"></div>
-
             <div id="portal-in" class="portal"></div>
             <div id="portal-out" class="portal"></div>
 
             <div class="wall v-wall w1"></div>
-            <div class="wall v-wall w2"></div>
-            <div class="wall h-wall w3"></div>
-            <div class="wall h-wall w4"></div>
+            <div class="wall h-wall w2"></div>
 
             <div id="gold-item" class="gold-coin"></div>
         </div>

@@ -7,7 +7,7 @@
 body.light-theme {
     --neon: #ff00de;
     --glow: rgba(255, 0, 222, 0.5);
-    --bg: #f0f0f0;
+    --bg: #f5f5f5;
 }
 
 body {
@@ -19,100 +19,97 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: 0.5s;
 }
 
 .header-ui {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 40px;
+    padding: 10px 40px;
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .game-logo {
-    font-size: 20px;
+    font-size: 18px;
     color: var(--neon);
     text-shadow: 0 0 10px var(--neon);
 }
 
-/* Chỉ số góc màn hình */
+/* Stats ở góc màn hình */
 .stats-screen-corner {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    border-left: 3px solid var(--neon);
-    padding: 10px 15px;
-    z-index: 1500;
+    background: rgba(0, 0, 0, 0.85);
+    border-left: 4px solid var(--neon);
+    padding: 15px;
+    z-index: 2000;
     font-size: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Dungeon Shape: Kết hợp nhiều khối bằng clip-path */
+.stat-item {
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+/* Dungeon Frame */
 #dungeon-frame {
     width: 800px;
     height: 500px;
     position: relative;
-    background: #080808;
+    background: #0a0a0a;
     border: 2px solid var(--neon);
-    /* Clip-path tạo hình chữ L ngược kết hợp khối lồi */
-    clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 70% 60%, 70% 100%, 0% 100%);
+    margin: auto;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 65%, 70% 65%, 70% 100%, 0% 100%);
     box-shadow: 0 0 30px var(--glow);
 }
 
-/* Walls */
-.wall {
-    position: absolute;
-    background: var(--neon);
-    box-shadow: 0 0 15px var(--neon);
-    z-index: 100;
-}
-
-.v-wall {
-    width: 6px;
-    height: 100px;
-}
-
-.h-wall {
-    height: 6px;
-    width: 100px;
-}
-
-.w1 {
-    top: 50px;
-    left: 200px;
-}
-
-.w2 {
-    top: 200px;
-    left: 450px;
-}
-
-.w3 {
-    top: 350px;
-    left: 100px;
-}
-
-.w4 {
-    top: 120px;
-    left: 550px;
-}
-
+/* Nhân vật (Player) - Z-INDEX CAO NHẤT */
 #player {
     position: absolute;
     background: #fff;
     box-shadow: 0 0 20px #fff;
     border-radius: 2px;
-    z-index: 999;
+    z-index: 1500;
+    top: 50px;
+    left: 50px;
+    /* Vị trí mặc định */
 }
 
+/* Sương mù (Fog) */
 #fog-overlay {
     position: absolute;
     inset: 0;
     background: #000;
-    z-index: 900;
+    z-index: 1400;
     pointer-events: none;
-    mask-image: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
-    -webkit-mask-image: radial-gradient(circle 130px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+    mask-image: radial-gradient(circle 120px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+    -webkit-mask-image: radial-gradient(circle 120px at var(--x, 50%) var(--y, 50%), transparent 10%, black 100%);
+}
+
+/* Elements */
+.wall {
+    position: absolute;
+    background: var(--neon);
+    box-shadow: 0 0 10px var(--neon);
+    z-index: 1300;
+}
+
+.v-wall {
+    width: 6px;
+    height: 120px;
+    left: 250px;
+    top: 0;
+}
+
+.h-wall {
+    width: 150px;
+    height: 6px;
+    left: 400px;
+    top: 200px;
 }
 
 .portal {
@@ -121,8 +118,8 @@ body {
     height: 40px;
     border: 2px dashed var(--neon);
     border-radius: 50%;
-    animation: rotate 3s linear infinite;
-    z-index: 800;
+    animation: rotate 4s linear infinite;
+    z-index: 1200;
 }
 
 #portal-in {
@@ -132,8 +129,8 @@ body {
 }
 
 #portal-out {
-    bottom: 20px;
-    left: 500px;
+    bottom: 30px;
+    left: 550px;
     border-color: #f00;
 }
 
@@ -144,7 +141,7 @@ body {
     background: gold;
     border-radius: 50%;
     box-shadow: 0 0 15px gold;
-    z-index: 850;
+    z-index: 1250;
 }
 
 @keyframes rotate {
@@ -157,36 +154,53 @@ body {
     }
 }
 
-/* Reset Data in Help */
-.reset-btn-inner {
-    background: none;
-    border: 1px solid #ff4444;
-    color: #ff4444;
-    width: 100%;
-    padding: 10px;
-    margin: 15px 0;
-    cursor: pointer;
-    font-family: 'Orbitron';
-    font-size: 10px;
-}
-
+/* GUI & Reset */
 .gui-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 3000;
 }
 
 .gui-card {
     background: #000;
     border: 2px solid var(--neon);
-    padding: 30px;
-    border-radius: 20px;
+    padding: 40px;
     text-align: center;
+    border-radius: 20px;
     width: 300px;
+}
+
+.class-box {
+    border: 1px solid var(--neon);
+    padding: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.class-box:hover {
+    background: var(--neon);
+    color: #000;
+}
+
+.reset-btn-inner {
+    background: none;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'Orbitron';
+    margin: 20px 0;
+}
+
+.reset-btn-inner:hover {
+    background: #ff4444;
+    color: #fff;
 }
 
 .neon-nav-btn,
@@ -194,7 +208,7 @@ body {
     background: none;
     border: 1px solid var(--neon);
     color: var(--neon);
-    padding: 8px 15px;
+    padding: 5px 15px;
     cursor: pointer;
     font-family: 'Orbitron';
 }
