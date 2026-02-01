@@ -16,18 +16,17 @@ let g = {
     player: { x: 100, y: 0, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, coin: 0, lvl: 1, exp: 0, next: 100, ground: false, crouch: false, dir: 1, range: 80 },
     keys: {},
     platforms: [
-        { x: 0, y: 0, w: 15000, h: 40 },
-        { x: 500, y: 160, w: 250, h: 20 },
-        { x: 900, y: 320, w: 250, h: 20 },
-        { x: 1400, y: 200, w: 400, h: 20 }
+        { x: 0, y: 0, w: 10000, h: 40 },
+        { x: 500, y: 180, w: 250, h: 20 },
+        { x: 950, y: 350, w: 250, h: 20 },
+        { x: 1500, y: 200, w: 300, h: 20 }
     ],
     spawnPoints: [
         { x: 600, y: 40, type: 'goblin', s: false },
-        { x: 1100, y: 40, type: 'orc', s: false },
-        { x: 550, y: 180, type: 'chest', s: false },
-        { x: 1600, y: 220, type: 'witch', s: false },
-        { x: 2200, y: 40, type: 'orc', s: false },
-        { x: 2800, y: 40, type: 'goblin', s: false }
+        { x: 1200, y: 40, type: 'orc', s: false },
+        { x: 550, y: 200, type: 'chest', s: false },
+        { x: 1800, y: 40, type: 'witch', s: false },
+        { x: 2500, y: 40, type: 'orc', s: false }
     ],
     entities: [],
     selected: null
@@ -41,9 +40,11 @@ function initSelection() {
         d.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
         d.onmouseenter = () => {
             document.getElementById('class-details').innerHTML = `
-                <h3 style="color:${c.color}">${c.name}</h3>
-                <p>HP: ${c.hp} | ATK: ${c.atk}</p>
-                <p>RANGE: ${c.range}px</p>
+                <h2 style="color:${c.color}">${c.name}</h2>
+                <hr>
+                <p>HEALTH: ${c.hp}</p>
+                <p>ATTACK: ${c.atk}</p>
+                <p>RANGE:  ${c.range}px</p>
             `;
         };
         d.onclick = () => {
@@ -59,7 +60,11 @@ function initSelection() {
 function initGame() {
     const p = g.player; const s = g.selected;
     p.hp = p.maxH = s.hp; p.atk = s.atk; p.range = s.range;
-    document.getElementById('player-sprite').style.background = s.color;
+
+    // Gán giao diện thẻ bài
+    document.getElementById('card-inner').style.backgroundColor = s.color;
+    document.getElementById('card-inner').style.backgroundImage = `url('assets/thumbs/${s.id}.png')`;
+
     document.getElementById('gui-selection').style.display = 'none';
 
     g.platforms.forEach(plat => {
@@ -89,16 +94,16 @@ function updatePlayer() {
     else p.vx *= 0.85;
 
     p.crouch = !!g.keys['ShiftLeft'];
-    const s = document.getElementById('player-sprite');
-    s.style.height = p.crouch ? '30px' : '50px';
+    const s = document.getElementById('player-card');
+    s.style.height = p.crouch ? '35px' : '55px';
     s.style.marginTop = p.crouch ? '20px' : '0px';
 
-    if (g.keys['Space'] && p.ground) { p.vy = 20; p.ground = false; }
-    p.vy -= 1.1; p.x += p.vx; p.y += p.vy;
+    if (g.keys['Space'] && p.ground) { p.vy = 22; p.ground = false; }
+    p.vy -= 1.2; p.x += p.vx; p.y += p.vy;
 
     p.ground = false;
     g.platforms.forEach(plat => {
-        if (p.x + 35 > plat.x && p.x < plat.x + plat.w) {
+        if (p.x + 40 > plat.x && p.x < plat.x + plat.w) {
             if (p.vy <= 0 && p.y >= plat.y + plat.h - 20 && p.y <= plat.y + plat.h + 5) {
                 p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
             }
@@ -114,7 +119,7 @@ function updatePlayer() {
 
 function handleSpawning() {
     g.spawnPoints.forEach(sp => {
-        if (!sp.s && Math.abs(g.player.x - sp.x) < 700) {
+        if (!sp.s && Math.abs(g.player.x - sp.x) < 750) {
             sp.s = true;
             createEntity(sp.type, sp.x, sp.y);
         }
@@ -124,21 +129,20 @@ function handleSpawning() {
 function createEntity(type, x, y) {
     const el = document.createElement('div');
     el.className = type;
-    if (type !== 'coin' && type !== 'chest') {
+    if (['goblin', 'orc', 'witch'].includes(type)) {
         el.innerHTML = `<div class="m-hp"><div class="m-hp-i"></div></div>`;
     }
     document.getElementById('entity-layer').appendChild(el);
-    g.entities.push({ type, x, y, hp: 50, mH: 50, el, active: true, speed: (type === 'goblin' ? 2.5 : 1.5) });
+    g.entities.push({ type, x, y, hp: 50, mH: 50, el, active: true, speed: (type === 'goblin' ? 3.2 : 1.8) });
 }
 
 function updateEntities() {
-    g.entities.forEach((en) => {
+    g.entities.forEach(en => {
         if (!en.active) return;
 
-        // Logic AI: Đuổi theo người chơi
         if (['goblin', 'orc', 'witch'].includes(en.type)) {
             let dist = g.player.x - en.x;
-            if (Math.abs(dist) < 400) { // Tầm nhìn 400px
+            if (Math.abs(dist) < 500) {
                 en.x += Math.sign(dist) * en.speed;
                 en.el.style.transform = `scaleX(${Math.sign(dist)})`;
             }
@@ -147,16 +151,18 @@ function updateEntities() {
         en.el.style.left = en.x + 'px';
         en.el.style.bottom = en.y + 'px';
 
-        // Nhặt Coin/Chest
         let pDist = Math.abs(g.player.x - en.x);
         if (en.type === 'coin' && pDist < 30 && Math.abs(g.player.y - en.y) < 40) {
-            en.active = false; en.el.remove(); g.player.coin += 15;
+            en.active = false; en.el.remove(); g.player.coin += 10;
             document.getElementById('ui-coin').innerText = g.player.coin;
         }
         if (en.type === 'chest' && pDist < 40 && Math.abs(g.player.y - en.y) < 40) {
-            en.active = false; en.el.style.opacity = "0.5";
-            gainExp(50);
-            for (let i = 0; i < 5; i++) createEntity('coin', en.x + Math.random() * 30, en.y + 20);
+            en.active = false;
+            en.el.style.opacity = "0.3";
+            gainExp(45);
+            for (let i = 0; i < 6; i++) createEntity('coin', en.x + Math.random() * 40, en.y + 10);
+            // Tự động biến mất sau 2 giây
+            setTimeout(() => en.el.remove(), 2000);
         }
     });
 }
@@ -166,7 +172,7 @@ function attack() {
     g.entities.forEach(en => {
         if (!en.active || ['coin', 'chest'].includes(en.type)) return;
         let d = g.player.dir === 1 ? (en.x - g.player.x) : (g.player.x - en.x);
-        if (d > 0 && d < g.player.range && Math.abs(g.player.y - en.y) < 70) {
+        if (d > 0 && d < g.player.range && Math.abs(g.player.y - en.y) < 75) {
             en.hp -= g.player.atk;
             if (en.hp <= 0) {
                 en.active = false; en.el.remove();
@@ -182,9 +188,9 @@ function attack() {
 function gainExp(v) {
     const p = g.player; p.exp += v;
     if (p.exp >= p.next) {
-        p.lvl++; p.exp = 0; p.next += 50; p.atk += 6; p.maxH += 25; p.hp = p.maxH;
+        p.lvl++; p.exp = 0; p.next += 60; p.atk += 6; p.maxH += 25; p.hp = p.maxH;
         const m = document.getElementById('level-up-msg');
-        m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 1500);
+        m.style.display = 'block'; setTimeout(() => m.style.display = 'none', 2000);
     }
     document.getElementById('ui-lvl').innerText = p.lvl;
     document.getElementById('ui-exp').innerText = `${p.exp}/${p.next}`;

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: STALKER EDITION</title>
+    <title>THE ABYSS PROTOCOL: CARD EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -12,7 +12,8 @@
     <div id="game-stage">
         <div id="world">
             <div id="player-container">
-                <div id="player-sprite">
+                <div id="player-card">
+                    <div id="card-inner"></div>
                     <div id="weapon-visual"></div>
                 </div>
                 <div class="hp-label">
@@ -30,7 +31,7 @@
         <button class="pixel-btn" onclick="location.reload()">RESET</button>
     </div>
 
-    <div id="level-up-msg">LEVEL UP! +HEALTH & ATK</div>
+    <div id="level-up-msg">LEVEL UP!</div>
 
     <div id="gui-selection" class="overlay">
         <div class="pixel-window">
