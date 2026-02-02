@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: ASSET EDITION</title>
+    <title>THE ABYSS PROTOCOL: TOTAL INTEGRATION V2</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -11,14 +11,16 @@
 <body oncontextmenu="return false;">
     <div id="game-stage">
         <div id="bg-layers">
-            <div class="bg-wall"></div>
-            <div class="bg-path"></div>
+            <div class="bg-wall-full"></div>
+            <div class="bg-path-stretch"></div>
         </div>
 
-        <div id="danger-overlay">DANGER: <span id="danger-val">1</span> | <span id="time-val">00:00</span></div>
+        <div id="danger-overlay">KHU VỰC NGUY HIỂM: <span id="danger-val">1</span> | <span id="time-val">00:00</span>
+        </div>
 
         <div id="quest-tracker">
-            <div id="quest-desc">ĐANG TẢI NHIỆM VỤ...</div>
+            <div id="quest-title">📜 NHIỆM VỤ</div>
+            <div id="quest-desc">ĐANG TẢI...</div>
             <div class="bar-bg" style="width:100%">
                 <div id="quest-fill" class="fill"></div>
             </div>
@@ -55,28 +57,14 @@
         </div>
     </div>
 
-    <div id="gui-help" class="overlay" style="display: none;">
-        <div class="pixel-window">
-            <h2 class="pixel-text">HƯỚNG DẪN</h2>
-            <p>🖱️ CHUỘT TRÁI: TẤN CÔNG | ⌨️ A-D: DI CHUYỂN | ⌨️ SPACE: NHẢY</p>
-            <p>⌨️ B: SHOP | ⌨️ U: TUYỆT KỸ | ⌨️ H: ĐÓNG</p>
-            <button class="pixel-btn" onclick="toggleHelp()">ĐÃ HIỂU</button>
-        </div>
-    </div>
-
     <div id="gui-shop" class="overlay" style="display: none;">
         <div class="pixel-window shop-window">
-            <div class="shop-flex">
-                <div class="shop-main">
-                    <h2 class="pixel-text" style="color: #ffd700;">BLACK MARKET</h2>
-                    <div id="shop-items"></div>
-                </div>
-                <div class="stats-sidebar">
-                    <h2 class="pixel-text">CHỈ SỐ</h2>
-                    <div id="full-stats"></div>
-                </div>
-            </div>
-            <button class="pixel-btn" onclick="toggleShop()" style="background:#ff4444; margin-top:15px;">ĐÓNG</button>
+            <h2 class="pixel-text" style="color:#ffd700">TIỆM RÈN VŨ KHÍ</h2>
+            <div id="shop-items" class="shop-grid"></div>
+            <hr style="border:1px solid #333; margin:15px 0">
+            <div id="full-stats" style="text-align:left; font-size:12px"></div>
+            <button class="pixel-btn" onclick="toggleShop()"
+                style="background:#ff4444; width:100%; margin-top:10px">THOÁT (B)</button>
         </div>
     </div>
 

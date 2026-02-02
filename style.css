@@ -6,35 +6,37 @@
 
 body {
     margin: 0;
-    background: #111;
+    background: #000;
     overflow: hidden;
     font-family: 'Lexend', sans-serif;
     color: #fff;
 }
 
-/* Nền tạo từ nhiều Assets xếp chồng */
+/* XỬ LÝ NỀN KÍN MÀN HÌNH */
 #bg-layers {
     position: fixed;
     inset: 0;
     z-index: -1;
 }
 
-.bg-wall {
+.bg-wall-full {
     position: absolute;
     inset: 0;
     background-image: url('assets/icons/Brick_Wall.png');
+    background-size: 150px;
+    /* Lặp lại để kín nền */
     background-repeat: repeat;
-    opacity: 0.4;
 }
 
-.bg-path {
+.bg-path-stretch {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 300px;
+    height: 50%;
     background-image: url('assets/icons/Stone_Path.png');
-    background-repeat: repeat-x;
-    opacity: 0.2;
+    background-size: cover;
+    /* Kéo dãn kín phần dưới */
+    opacity: 0.3;
 }
 
 #camera {
@@ -63,30 +65,70 @@ body {
     background: #1a1a1a;
     padding: 25px;
     border: 4px solid #444;
-    text-align: center;
 }
 
 #quest-tracker {
     position: fixed;
     top: 10px;
     right: 20px;
-    width: 200px;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #555;
-    padding: 8px;
-    font-size: 11px;
+    width: 220px;
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid #555;
+    padding: 10px;
 }
 
-#buff-timer {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    background: #004400;
-    border: 1px solid #0f0;
-    padding: 5px;
+#quest-title {
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 5px;
     font-size: 12px;
 }
 
+/* QUÁI VẬT & MÁU TRÊN ĐẦU */
+.enemy-container {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+}
+
+.enemy-sprite {
+    width: 100%;
+    height: 100%;
+    background: #911;
+    border: 2px solid #f00;
+}
+
+.health-bar-mini {
+    position: absolute;
+    top: -12px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: #333;
+    border: 1px solid #000;
+}
+
+.health-fill-mini {
+    height: 100%;
+    background: #f00;
+    transition: 0.1s;
+}
+
+/* SHOP */
+.shop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.shop-card {
+    background: #252525;
+    padding: 10px;
+    border: 1px solid #444;
+    font-size: 12px;
+}
+
+/* WEAPON & PLAYER */
 #player-container {
     position: absolute;
     width: 48px;
@@ -102,128 +144,46 @@ body {
     background-repeat: no-repeat;
 }
 
-/* Vũ khí trên tay */
 #weapon-sprite {
     position: absolute;
     width: 32px;
     height: 32px;
-    right: -10px;
-    top: 10px;
+    right: -12px;
+    top: 12px;
     background-size: contain;
     background-repeat: no-repeat;
     image-rendering: pixelated;
     transform: rotate(15deg);
 }
 
-#melee-effect {
-    position: absolute;
-    width: 70px;
-    height: 70px;
-    top: -10px;
-    right: -50px;
-    border-radius: 50%;
-    border-right: 6px solid #fff;
-    opacity: 0;
-}
-
-.slash-anim {
-    opacity: 1 !important;
-    transform: rotate(45deg);
-    transition: 0.08s;
-}
-
 .platform {
     position: absolute;
     background: #222;
-    border-top: 5px solid #555;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border-top: 5px solid #666;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-.enemy {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: #822;
-    border: 2px solid #f22;
-}
-
-.chest {
-    position: absolute;
-    width: 35px;
-    height: 30px;
-    background: #b82;
-    border: 2px solid #ffd700;
-    color: #ffd700;
-    font-size: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Projectiles từ assets/weapons/ */
 .projectile {
     position: absolute;
-    background-size: contain;
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
+    pointer-events: none;
 }
 
 .pj-arrow {
-    width: 25px;
-    height: 8px;
-    background-image: url('assets/weapons/Hunting_Bow.png');
+    width: 20px;
+    height: 4px;
+    background: #d2b48c;
 }
 
 .pj-magic {
-    width: 20px;
-    height: 20px;
-    background-image: url('assets/weapons/Wandering_Staff.png');
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
+    background: #44f;
     box-shadow: 0 0 10px #44f;
 }
 
-.pj-fire {
-    width: 30px;
-    height: 30px;
-    background: #f40;
-    border-radius: 50%;
-    box-shadow: 0 0 20px #f00;
-}
-
-.selection-window {
-    width: 700px;
-}
-
-.grid-layout {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-}
-
-.class-item {
-    width: 70px;
-    height: 70px;
-    border: 2px solid #333;
-    cursor: pointer;
-    background-size: cover;
-    image-rendering: pixelated;
-}
-
-.class-item.active {
-    border-color: var(--neon);
-    box-shadow: 0 0 15px var(--neon);
-}
-
-.stats-sidebar {
-    width: 200px;
-    background: #000;
-    padding: 15px;
-    text-align: left;
-    border: 1px solid #333;
-}
-
 .pixel-btn {
-    padding: 10px 20px;
+    padding: 8px;
     background: var(--neon);
     color: #000;
     border: none;
