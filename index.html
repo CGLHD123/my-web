@@ -3,60 +3,90 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: ULTIMATE</title>
+    <title>THE ABYSS PROTOCOL: ULTIMATE EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-<body id="body-main">
+<body oncontextmenu="return false;">
     <div id="game-stage">
-        <div id="parallax-far"></div>
+        <div id="danger-overlay">
+            DANGER LEVEL: <span id="danger-val">1</span> | <span id="time-val">00:00</span>
+        </div>
+
         <div id="world" style="display: none;">
             <div id="player-container">
-                <div id="player-sprite">
-                    <div id="weapon-visual"></div>
-                </div>
+                <div id="player-sprite"></div>
             </div>
-            <div id="projectile-layer"></div>
+            <div id="platform-layer"></div>
             <div id="entity-layer"></div>
-            <div id="particle-layer"></div>
+            <div id="projectile-layer"></div>
+            <div id="drop-layer"></div>
         </div>
     </div>
 
-    <div id="distance-meter">KHOẢNG CÁCH: <span id="dist-val">0</span>m</div>
-
-    <div class="hud-left-top">
-        <div class="stat-unit">CẤP: <span id="ui-lvl">1</span> | VÀNG: <span id="ui-coin">0</span></div>
-        <div class="exp-container">
-            <div class="label-tiny">KINH NGHIỆM (EXP)</div>
-            <div class="exp-bar">
-                <div id="exp-fill"></div>
+    <div id="gui-tutorial" class="overlay">
+        <div class="pixel-window tutorial-box">
+            <h2 style="color: var(--neon);">COMMAND CENTER</h2>
+            <div class="control-grid">
+                <div class="ctrl-item">🖱️ <b>Chuột trái:</b> Tấn công</div>
+                <div class="ctrl-item">⌨️ <b>A - D:</b> Di chuyển</div>
+                <div class="ctrl-item">⌨️ <b>Space:</b> Nhảy</div>
+                <div class="ctrl-item">⌨️ <b>U:</b> Tuyệt kỹ (Ultimate)</div>
+                <div class="ctrl-item">⌨️ <b>B:</b> Mở/Đóng Cửa hàng</div>
             </div>
-            <div class="label-tiny">SINH MỆNH (HP)</div>
-            <div class="hp-bar-main">
-                <div id="hp-fill-main"></div>
-            </div>
+            <button class="main-btn" onclick="closeTutorial()">TÔI ĐÃ HIỂU</button>
         </div>
-        <div id="quest-box" class="stat-unit">NHIỆM VỤ: <span id="quest-desc">DIỆT 5 QUÁI</span></div>
     </div>
 
-    <div id="combo-meter">COMBO: <span id="combo-val">0</span></div>
-    <div id="berserk-mode" style="display: none;">BERSERK!</div>
-
-    <div id="gui-selection" class="overlay">
+    <div id="gui-selection" class="overlay" style="display: none;">
         <div class="pixel-window selection-window">
-            <h2 class="title">CHỌN CLASS ĐỂ BẮT ĐẦU</h2>
-
+            <h2>CHỌN CHIẾN BINH</h2>
             <div class="selection-flex">
                 <div id="class-grid" class="grid-layout"></div>
-
                 <div id="info-box" class="stats-sidebar">
-                    <h3>THÔNG SỐ</h3>
-                    <div id="info-content">Hãy chọn một chiến binh...</div>
+                    <div id="info-content">Chọn class để xem chi tiết...</div>
                 </div>
             </div>
+            <button id="start-btn" class="main-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
+        </div>
+    </div>
 
-            <button id="start-btn" class="main-btn" disabled onclick="initGame()">START</button>
+    <div id="gui-shop" class="overlay" style="display: none;">
+        <div class="pixel-window shop-window">
+            <div class="shop-flex">
+                <div class="shop-main">
+                    <h2 style="color: var(--gold);">BLACK MARKET</h2>
+                    <div id="shop-items"></div>
+                </div>
+                <div class="stats-sidebar">
+                    <h2 style="color: var(--neon);">NHÂN VẬT</h2>
+                    <div id="full-stats"></div>
+                </div>
+            </div>
+            <button class="main-btn" onclick="toggleShop()" style="background: #ff4444; margin-top: 20px;">QUAY LẠI
+                (B)</button>
+        </div>
+    </div>
+
+    <div id="hud" style="display:none">
+        <div class="hud-bar-container">
+            HP <div class="bar-bg">
+                <div id="hp-fill" class="fill hp"></div>
+            </div>
+        </div>
+        <div class="hud-bar-container">
+            XP <div class="bar-bg">
+                <div id="xp-fill" class="fill xp"></div>
+            </div>
+        </div>
+        <div class="hud-bar-container">
+            ULT <div class="bar-bg">
+                <div id="ult-fill" class="fill ult"></div>
+            </div>
+        </div>
+        <div id="currency-line">
+            💰 <span id="gold-val">0</span> | LVL: <span id="lvl-val">1</span>
         </div>
     </div>
 
