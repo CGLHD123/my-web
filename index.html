@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: QUEST & COMBAT</title>
+    <title>THE ABYSS PROTOCOL: ULTIMATE</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -20,6 +20,9 @@
             <div class="bar-bg" style="width:100%">
                 <div id="quest-fill" class="fill"></div>
             </div>
+        </div>
+
+        <div id="buff-timer" style="display:none">BUFF: <span id="buff-name"></span> (<span id="buff-val">0</span>s)
         </div>
 
         <div id="camera">
@@ -53,7 +56,7 @@
         <div class="pixel-window">
             <h2 class="pixel-text">HƯỚNG DẪN</h2>
             <p>🖱️ CHUỘT TRÁI: TẤN CÔNG | ⌨️ A-D: DI CHUYỂN | ⌨️ SPACE: NHẢY</p>
-            <p>⌨️ B: SHOP | ⌨️ U: TUYỆT KỸ | ⌨️ H: ĐÓNG HƯỚNG DẪN</p>
+            <p>⌨️ B: SHOP | ⌨️ U: TUYỆT KỸ | ⌨️ H: ĐÓNG</p>
             <button class="pixel-btn" onclick="toggleHelp()">ĐÃ HIỂU</button>
         </div>
     </div>
@@ -69,7 +72,7 @@
                     <h2 class="pixel-text">CHỈ SỐ</h2>
                     <div id="full-stats"></div>
                     <button class="pixel-btn" onclick="toggleHelp()"
-                        style="margin-top:10px; font-size:10px; background:#444">XEM HELP (H)</button>
+                        style="margin-top:10px; font-size:10px; background:#444">HELP (H)</button>
                 </div>
             </div>
             <button class="pixel-btn" onclick="toggleShop()" style="background:#ff4444; margin-top:15px;">ĐÓNG

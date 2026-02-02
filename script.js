@@ -1,24 +1,24 @@
 const classes = [
     { id: 'scout', hp: 160, atk: 35, color: '#00ffcc', type: 'ranged', pj: 'pj-arrow' },
-    { id: 'warrior', hp: 350, atk: 65, color: '#ff4444', type: 'melee' },
-    { id: 'tanker', hp: 950, atk: 30, color: '#aaaaaa', type: 'melee' },
-    { id: 'mage', hp: 130, atk: 140, color: '#4444ff', type: 'ranged', pj: 'pj-magic' },
-    { id: 'rogue', hp: 180, atk: 110, color: '#ff00ff', type: 'melee' },
-    { id: 'cleric', hp: 250, atk: 55, color: '#ffff00', type: 'ranged', pj: 'pj-magic' },
-    { id: 'archer', hp: 160, atk: 95, color: '#ff8800', type: 'ranged', pj: 'pj-arrow' },
-    { id: 'necro', hp: 200, atk: 120, color: '#440044', type: 'ranged', pj: 'pj-fire' },
-    { id: 'paladin', hp: 480, atk: 75, color: '#ffffff', type: 'melee' },
-    { id: 'berserker', hp: 450, atk: 130, color: '#880000', type: 'melee' }
+    { id: 'warrior', hp: 360, atk: 70, color: '#ff4444', type: 'melee' },
+    { id: 'tanker', hp: 1000, atk: 35, color: '#aaaaaa', type: 'melee' },
+    { id: 'mage', hp: 130, atk: 150, color: '#4444ff', type: 'ranged', pj: 'pj-magic' },
+    { id: 'rogue', hp: 190, atk: 115, color: '#ff00ff', type: 'melee' },
+    { id: 'cleric', hp: 260, atk: 60, color: '#ffff00', type: 'ranged', pj: 'pj-magic' },
+    { id: 'archer', hp: 170, atk: 100, color: '#ff8800', type: 'ranged', pj: 'pj-arrow' },
+    { id: 'necro', hp: 210, atk: 125, color: '#440044', type: 'ranged', pj: 'pj-fire' },
+    { id: 'paladin', hp: 500, atk: 80, color: '#ffffff', type: 'melee' },
+    { id: 'berserker', hp: 460, atk: 140, color: '#880000', type: 'melee' }
 ];
 
 let g = {
     active: false, shopOpen: false, helpOpen: false, time: 0, danger: 1,
-    player: { x: 200, y: 200, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, speed: 7, gold: 0, xp: 0, nextXp: 100, lvl: 1, ult: 0, dir: 1, ground: false, invul: false },
+    player: { x: 200, y: 200, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, speed: 7, baseSpeed: 7, gold: 0, xp: 0, nextXp: 100, lvl: 1, ult: 0, dir: 1, ground: false, invul: false },
     quest: { target: 5, current: 0, type: 'kill', desc: 'DIỆT 5 QUÁI VẬT' },
+    buff: { active: false, type: '', timer: 0 },
     keys: {}, platforms: [], enemies: [], projectiles: [], chests: [], lastX: 0, lastY: 100
 };
 
-// KHOỞI TẠO CHỌN CLASS
 window.onload = () => {
     const grid = document.getElementById('class-grid');
     classes.forEach(c => {
@@ -44,8 +44,14 @@ function initGame() {
     Object.assign(g.player, { hp: s.hp, maxH: s.hp, atk: s.atk, invul: true });
     setTimeout(() => g.player.invul = false, 2000);
 
+    g.platforms = []; g.enemies = []; g.projectiles = []; g.chests = [];
+    document.getElementById('platform-layer').innerHTML = '';
+    document.getElementById('entity-layer').innerHTML = '';
+    document.getElementById('projectile-layer').innerHTML = '';
+    document.getElementById('drop-layer').innerHTML = '';
+
     createPlatform(0, 0, 1500, 100); g.lastX = 1500;
-    for (let i = 0; i < 5; i++) generateNextPlatform();
+    for (let i = 0; i < 6; i++) generateNextPlatform();
 
     document.getElementById('player-sprite').style.backgroundColor = s.color;
     document.getElementById('player-sprite').style.backgroundImage = `url('assets/thumbs/${s.id}.png')`;
@@ -54,30 +60,37 @@ function initGame() {
     document.getElementById('hud').style.display = 'block';
 
     g.active = true;
-    setInterval(() => { if (g.active && !g.shopOpen) { g.time++; updateWorld(); } }, 1000);
+    setInterval(() => { if (g.active && !g.shopOpen) { g.time++; updateWorld(); if (g.buff.active) updateBuff(); } }, 1000);
     updateQuestUI();
     requestAnimationFrame(loop);
 }
 
-// HỆ THỐNG NHIỆM VỤ
-function updateQuest(type) {
-    if (g.quest.type === type) {
-        g.quest.current++;
-        if (g.quest.current >= g.quest.target) {
-            g.player.gold += 150; g.player.xp += 100;
-            g.quest.target += 5; g.quest.current = 0;
-            g.quest.desc = `DIỆT ${g.quest.target} QUÁI VẬT`;
-        }
-        updateQuestUI();
+function updateBuff() {
+    g.buff.timer--;
+    document.getElementById('buff-val').innerText = g.buff.timer;
+    if (g.buff.timer <= 0) {
+        g.buff.active = false;
+        g.player.speed = g.player.baseSpeed;
+        document.getElementById('buff-timer').style.display = 'none';
     }
 }
 
-function updateQuestUI() {
-    document.getElementById('quest-desc').innerText = g.quest.desc;
-    document.getElementById('quest-fill').style.width = (g.quest.current / g.quest.target * 100) + '%';
+function spawnChest(x, y) {
+    const cEl = document.createElement('div'); cEl.className = 'chest'; cEl.innerText = 'BOX';
+    cEl.style.left = x + 'px'; cEl.style.bottom = y + 'px';
+    document.getElementById('drop-layer').appendChild(cEl);
+    g.chests.push({ x, y, el: cEl, active: true });
 }
 
-// CHIẾN ĐẤU
+function handleChest() {
+    g.player.gold += 200; g.player.ult = 100;
+    g.buff.active = true; g.buff.timer = 10;
+    g.buff.type = Math.random() > 0.5 ? 'SPEED' : 'POWER';
+    if (g.buff.type === 'SPEED') g.player.speed = g.player.baseSpeed * 1.6;
+    document.getElementById('buff-name').innerText = g.buff.type;
+    document.getElementById('buff-timer').style.display = 'block';
+}
+
 function handleAttack() {
     const p = g.player; const s = g.selected;
     if (s.type === 'melee') {
@@ -85,12 +98,12 @@ function handleAttack() {
         effect.classList.add('slash-anim');
         setTimeout(() => effect.classList.remove('slash-anim'), 100);
         g.enemies.forEach(en => {
-            if (en.active && Math.abs((p.x + p.dir * 45) - en.x) < 75 && Math.abs(p.y - en.y) < 60) applyDamage(en);
+            if (en.active && Math.abs((p.x + p.dir * 45) - en.x) < 80 && Math.abs(p.y - en.y) < 60) applyDamage(en);
         });
     } else {
         const el = document.createElement('div'); el.className = `projectile ${s.pj}`;
         document.getElementById('projectile-layer').appendChild(el);
-        g.projectiles.push({ x: p.x + 20, y: p.y + 20, vx: p.dir * 22, el });
+        g.projectiles.push({ x: p.x + 20, y: p.y + 20, vx: p.dir * 24, startX: p.x, el });
     }
 }
 
@@ -98,34 +111,42 @@ function applyDamage(en) {
     en.hp -= g.player.atk;
     if (en.hp <= 0) {
         en.active = false; en.el.remove();
-        g.player.gold += 30; g.player.xp += 40;
-        g.player.ult = Math.min(100, g.player.ult + 12);
-        updateQuest('kill');
+        g.player.gold += 30; g.player.xp += 50;
+        g.player.ult = Math.min(100, g.player.ult + 15);
+        updateQuest();
     }
 }
 
-// MAP & QUÁI
+function updateQuest() {
+    g.quest.current++;
+    if (g.quest.current >= g.quest.target) {
+        g.player.gold += 200; g.player.xp += 150;
+        g.quest.target += 5; g.quest.current = 0;
+        g.quest.desc = `DIỆT ${g.quest.target} QUÁI VẬT`;
+    }
+    updateQuestUI();
+}
+
+function updateQuestUI() {
+    document.getElementById('quest-desc').innerText = g.quest.desc;
+    document.getElementById('quest-fill').style.width = (g.quest.current / g.quest.target * 100) + '%';
+}
+
 function generateNextPlatform() {
-    const gapX = 160 + Math.random() * 120, gapY = (Math.random() - 0.5) * 130;
-    let newY = Math.max(60, Math.min(280, g.lastY + gapY));
-    const newW = 500 + Math.random() * 500;
+    // Tối ưu khoảng cách bậc nhảy: Max gapX = 250, Max gapY = 140 để luôn nhảy tới được
+    const gapX = 150 + Math.random() * 100, gapY = (Math.random() - 0.5) * 140;
+    let newY = Math.max(60, Math.min(260, g.lastY + gapY));
+    const newW = 450 + Math.random() * 400;
     createPlatform(g.lastX + gapX, newY, newW, 80);
 
-    if (Math.random() < 0.12) spawnChest(g.lastX + gapX + 100, newY + 80);
+    if (Math.random() < 0.15) spawnChest(g.lastX + gapX + 100, newY + 80);
     if (Math.random() > 0.4) {
         const eEl = document.createElement('div'); eEl.className = 'enemy';
         document.getElementById('entity-layer').appendChild(eEl);
-        g.enemies.push({ x: g.lastX + gapX + 200, y: newY + 80, hp: 70 * g.danger, el: eEl, active: true, dir: 1, start: g.lastX + gapX, end: g.lastX + gapX + newW - 40 });
+        g.enemies.push({ x: g.lastX + gapX + 200, y: newY + 80, hp: 80 * g.danger, el: eEl, active: true, dir: 1, start: g.lastX + gapX, end: g.lastX + gapX + newW - 40 });
     }
     g.lastX += gapX + newW; g.lastY = newY;
     if (g.platforms.length > 20) { const old = g.platforms.shift(); old.el.remove(); }
-}
-
-function spawnChest(x, y) {
-    const cEl = document.createElement('div'); cEl.className = 'chest'; cEl.innerText = 'CHEST';
-    cEl.style.left = x + 'px'; cEl.style.bottom = y + 'px';
-    document.getElementById('drop-layer').appendChild(cEl);
-    g.chests.push({ x, y, el: cEl, active: true });
 }
 
 function createPlatform(x, y, w, h) {
@@ -135,7 +156,6 @@ function createPlatform(x, y, w, h) {
     g.platforms.push({ x, y, w, h, el });
 }
 
-// LOOP & UPDATE
 function loop() { if (g.active) { if (!g.shopOpen && !g.helpOpen) update(); draw(); requestAnimationFrame(loop); } }
 
 function update() {
@@ -146,7 +166,6 @@ function update() {
     if (g.keys['Space'] && p.ground) { p.vy = 18; p.ground = false; }
     p.vy -= 0.85; p.x += p.vx; p.y += p.vy;
 
-    // Va chạm platform
     p.ground = false;
     g.platforms.forEach(plat => {
         if (p.x + 35 > plat.x && p.x < plat.x + plat.w && p.vy <= 0 && p.y >= plat.y + plat.h - 15 && p.y <= plat.y + plat.h + 5) {
@@ -154,24 +173,30 @@ function update() {
         }
     });
 
-    // Rương & Đạn
-    g.chests.forEach(ch => { if (ch.active && Math.abs(p.x - ch.x) < 40 && Math.abs(p.y - ch.y) < 40) { ch.active = false; ch.el.remove(); p.gold += 250; p.ult = 100; } });
+    g.chests.forEach(ch => { if (ch.active && Math.abs(p.x - ch.x) < 40 && Math.abs(p.y - ch.y) < 40) { ch.active = false; ch.el.remove(); handleChest(); } });
+
+    // Cập nhật và HỦY ĐẠN KHI BAY QUÁ 800PX
     g.projectiles.forEach((pj, i) => {
         pj.x += pj.vx; pj.el.style.left = pj.x + 'px'; pj.el.style.bottom = pj.y + 'px';
+        if (Math.abs(pj.x - pj.startX) > 800) { pj.el.remove(); g.projectiles.splice(i, 1); return; }
         g.enemies.forEach(en => { if (en.active && Math.abs(pj.x - en.x) < 60 && Math.abs(pj.y - en.y) < 60) { applyDamage(en); pj.el.remove(); g.projectiles.splice(i, 1); } });
     });
 
-    // Quái vật
     g.enemies.forEach(en => {
         if (!en.active) return;
         en.x += en.dir * (en.isBoss ? 2.5 : 3.5);
         if (en.x >= en.end || en.x <= en.start) en.dir *= -1;
-        if (Math.abs(p.x - en.x) < 35 && Math.abs(p.y - en.y) < 40 && !p.invul) p.hp -= 0.8 * g.danger;
+        if (Math.abs(p.x - en.x) < 35 && Math.abs(p.y - en.y) < 40 && !p.invul) p.hp -= 1 * g.danger;
     });
 
     if (p.xp >= p.nextXp) { p.lvl++; p.xp = 0; p.nextXp *= 1.65; p.maxH += 45; p.hp = p.maxH; }
     if (p.x + 1200 > g.lastX) generateNextPlatform();
-    if (p.y < -300 || p.hp <= 0) location.reload();
+
+    // RESET TỨC THÌ KHI RƠI
+    if (p.y < -200 || p.hp <= 0) {
+        g.active = false;
+        location.reload();
+    }
 }
 
 function draw() {
@@ -187,16 +212,15 @@ function draw() {
     document.getElementById('lvl-val').innerText = p.lvl;
 }
 
-// GUI HELPERS
 function toggleShop() {
     g.shopOpen = !g.shopOpen; document.getElementById('gui-shop').style.display = g.shopOpen ? 'flex' : 'none';
     if (g.shopOpen) {
-        document.getElementById('shop-items').innerHTML = `<div class="shop-card">HEAL (100G) <button onclick="buy('h')">BUY</button></div><div class="shop-card">ATK+30 (300G) <button onclick="buy('a')">BUY</button></div>`;
+        document.getElementById('shop-items').innerHTML = `<div class="shop-card">HEAL (100G) <button onclick="buy('h')">BUY</button></div><div class="shop-card">ATK+35 (350G) <button onclick="buy('a')">BUY</button></div>`;
         document.getElementById('full-stats').innerHTML = `LEVEL: ${g.player.lvl}<br>ATK: ${g.player.atk}<br>MAX HP: ${g.player.maxH}`;
     }
 }
 function toggleHelp() { g.helpOpen = !g.helpOpen; document.getElementById('gui-help').style.display = g.helpOpen ? 'flex' : 'none'; }
-function buy(t) { if (t === 'h' && g.player.gold >= 100) { g.player.gold -= 100; g.player.hp = g.player.maxH; } else if (t === 'a' && g.player.gold >= 300) { g.player.gold -= 300; g.player.atk += 30; } toggleShop(); toggleShop(); }
+function buy(t) { if (t === 'h' && g.player.gold >= 100) { g.player.gold -= 100; g.player.hp = g.player.maxH; } else if (t === 'a' && g.player.gold >= 350) { g.player.gold -= 350; g.player.atk += 35; } toggleShop(); toggleShop(); }
 function updateWorld() {
     g.danger = Math.floor(g.time / 60) + 1;
     let m = Math.floor(g.time / 60), s = g.time % 60;
@@ -211,7 +235,7 @@ window.addEventListener('keydown', e => {
         g.player.ult = 0; for (let i = 0; i < 15; i++) {
             const el = document.createElement('div'); el.className = 'projectile pj-fire';
             document.getElementById('projectile-layer').appendChild(el);
-            g.projectiles.push({ x: g.player.x, y: g.player.y, vx: (Math.random() - 0.5) * 40, el });
+            g.projectiles.push({ x: g.player.x, y: g.player.y, vx: (Math.random() - 0.5) * 40, startX: g.player.x, el });
         }
     }
 });
