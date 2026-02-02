@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: PROJECTILE</title>
+    <title>THE ABYSS PROTOCOL: ULTIMATE</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -19,6 +19,7 @@
             </div>
             <div id="projectile-layer"></div>
             <div id="entity-layer"></div>
+            <div id="particle-layer"></div>
             <div id="drop-layer"></div>
         </div>
     </div>
@@ -38,7 +39,11 @@
             </div>
         </div>
         <div id="quest-box" class="stat-unit">Nhiệm vụ: <span id="quest-desc">DIỆT 5 QUÁI</span></div>
+        <div id="dash-cooldown" class="stat-unit" style="display: none;">DASH CD: <span id="dash-cd-val">2s</span></div>
     </div>
+
+    <div id="combo-meter">COMBO: <span id="combo-val">0</span></div>
+    <div id="berserk-mode" style="display: none;">BERSERK!</div>
 
     <div class="hud-right-top">
         <button class="pixel-btn" onclick="toggleStats()">STATS (C)</button>
