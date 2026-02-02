@@ -12,22 +12,22 @@ const classes = [
 ];
 
 let g = {
-    active: false, shopOpen: false, time: 0, danger: 1,
-    player: { x: 150, y: 50, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, speed: 7, gold: 0, ult: 0, dir: 1, ground: false },
-    quest: { target: 3, current: 0 },
-    keys: {}, platforms: [], enemies: [], projectiles: [], lastX: 0, lastY: 0
+    active: false, time: 0, danger: 1,
+    player: { x: 100, y: 50, vx: 0, vy: 0, hp: 100, maxH: 100, exp: 0, atk: 10, speed: 7, gold: 0, dir: 1, ground: false },
+    quest: { target: 5, current: 0 },
+    keys: {}, platforms: [], enemies: [], projectiles: [], items: [], lastX: 0, lastY: 0
 };
 
 window.onload = () => {
     const grid = document.getElementById('class-grid');
     classes.forEach(c => {
         const el = document.createElement('div'); el.className = 'class-item';
-        el.style.backgroundImage = `url('assets/thumbs/${c.thumb}')`;
+        el.style.backgroundImage = `url('assets/thumbs/${c.thumb}')`; // Tích hợp assets/thumbs/
         el.onclick = () => {
             document.querySelectorAll('.class-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active'); g.selected = c;
             document.getElementById('start-btn').disabled = false;
-            document.getElementById('info-content').innerHTML = `<h3>${c.id.toUpperCase()}</h3><p>LOẠI: ${c.type.toUpperCase()}<br>SÁT THƯƠNG: ${c.atk}<br>SINH MỆNH: ${c.hp}</p>`;
+            document.getElementById('info-panel').innerHTML = `<h3>${c.id.toUpperCase()}</h3><p>ATK: ${c.atk} | HP: ${c.hp}</p>`;
         };
         grid.appendChild(el);
     });
@@ -39,76 +39,79 @@ function initGame() {
     document.getElementById('weapon-sprite').style.backgroundImage = `url('assets/weapons/${s.wp}')`;
     document.getElementById('player-sprite').style.backgroundColor = s.color;
 
-    // Khởi tạo sàn thấp góc trái dưới
+    // Khởi tạo sàn thấp góc trái
     createPlatform(0, 0, 2000, 50);
-    g.lastX = 2000; g.lastY = 0;
-    for (let i = 0; i < 6; i++) generateNextPlatform();
+    g.lastX = 2000;
+    for (let i = 0; i < 5; i++) generateNextPlatform();
 
     document.getElementById('gui-selection').style.display = 'none';
     document.getElementById('world').style.display = 'block';
-    document.getElementById('hud').style.display = 'block';
     g.active = true;
-    setInterval(() => { if (g.active && !g.shopOpen) { g.time++; updateWorld(); } }, 1000);
-    updateQuestUI();
+    setInterval(() => { if (g.active) { g.time++; updateWorld(); } }, 1000);
     requestAnimationFrame(loop);
 }
 
 function generateNextPlatform() {
-    const gapX = 140 + Math.random() * 100, gapY = (Math.random() - 0.5) * 50;
-    let newY = Math.max(0, Math.min(120, g.lastY + gapY));
+    const gapX = 160 + Math.random() * 100, gapY = (Math.random() - 0.5) * 40;
+    let newY = Math.max(0, Math.min(100, g.lastY + gapY));
     const newW = 400 + Math.random() * 400;
     createPlatform(g.lastX + gapX, newY, newW, 50);
-    spawnEnemy(g.lastX + gapX + 100, newY + 50, g.lastX + gapX, g.lastX + gapX + newW - 50);
+
+    // Hệ thống Boss & Rương
+    if (g.platforms.length % 6 === 0) spawnEnemy(g.lastX + gapX + 200, newY + 50, true);
+    else {
+        spawnEnemy(g.lastX + gapX + 150, newY + 50, false);
+        if (Math.random() > 0.7) spawnChest(g.lastX + gapX + 300, newY + 50);
+    }
     g.lastX += gapX + newW; g.lastY = newY;
 }
 
-function spawnEnemy(x, y, start, end) {
-    const el = document.createElement('div'); el.className = 'enemy-container';
-    el.style.cssText = `position:absolute; width:45px; height:45px; bottom:${y}px; left:${x}px; background:#400; border:1px solid #f00;`;
+function spawnEnemy(x, y, isBoss) {
+    const el = document.createElement('div'); el.className = 'enemy-container' + (isBoss ? ' boss' : '');
+    el.style.cssText = `position:absolute; width:45px; height:45px; bottom:${y}px; left:${x}px; background:#300; border:1px solid #f00;`;
     document.getElementById('entity-layer').appendChild(el);
-    g.enemies.push({ x, y, hp: 80 * g.danger, el, active: true, dir: 1, start, end });
+    g.enemies.push({ x, y, hp: (isBoss ? 600 : 100) * g.danger, el, active: true, dir: 1, isBoss, start: x - 100, end: x + 100 });
+}
+
+function spawnChest(x, y) {
+    const el = document.createElement('div'); el.className = 'chest';
+    el.style.left = x + 'px'; el.style.bottom = y + 'px';
+    document.getElementById('entity-layer').appendChild(el);
+    g.items.push({ x, y, el, active: true });
 }
 
 function handleAttack() {
-    if (!g.active || g.shopOpen) return;
     const p = g.player; const s = g.selected;
     if (s.type === 'melee') {
-        const eff = document.getElementById('melee-effect');
-        eff.classList.add('slash-anim'); setTimeout(() => eff.classList.remove('slash-anim'), 150);
+        document.getElementById('melee-effect').classList.add('slash-anim');
+        setTimeout(() => document.getElementById('melee-effect').classList.remove('slash-anim'), 150);
         g.enemies.forEach(en => {
-            if (en.active && Math.abs((p.x + p.dir * 45) - en.x) < 80 && Math.abs(p.y - en.y) < 60) {
-                damageEnemy(en);
-            }
+            if (en.active && Math.abs((p.x + p.dir * 50) - en.x) < 85 && Math.abs(p.y - en.y) < 60) damageEnemy(en);
         });
     } else {
-        const el = document.createElement('div'); el.className = `projectile ${s.pj}`;
-        el.style.cssText = `position:absolute; background:gold; width:15px; height:4px;`;
+        const el = document.createElement('div'); el.style.cssText = `position:absolute; background:gold; width:20px; height:4px; left:${p.x + 20}px; bottom:${p.y + 25}px;`;
         document.getElementById('projectile-layer').appendChild(el);
         g.projectiles.push({ x: p.x + 20, y: p.y + 25, vx: p.dir * 20, startX: p.x, el });
     }
 }
 
 function damageEnemy(en) {
-    en.hp -= g.player.atk;
-    createSpark(en.x + 20, en.y + 20);
+    en.hp -= g.player.atk; createSpark(en.x + 20, en.y + 20);
     if (en.hp <= 0) {
         en.active = false; en.el.remove();
-        g.player.gold += 50; g.player.ult = Math.min(100, g.player.ult + 10);
+        g.player.gold += en.isBoss ? 500 : 50;
+        g.player.exp += en.isBoss ? 150 : 30;
         g.quest.current++; updateQuest();
     }
 }
 
 function createSpark(x, y) {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
         const s = document.createElement('div'); s.className = 'spark';
         document.getElementById('fx-layer').appendChild(s);
         let sx = x, sy = y, vx = (Math.random() - 0.5) * 12, vy = (Math.random() - 0.5) * 12;
-        const anim = setInterval(() => {
-            sx += vx; sy += vy; vy -= 0.5;
-            s.style.left = sx + 'px'; s.style.bottom = sy + 'px';
-            if (sy < -10) { s.remove(); clearInterval(anim); }
-        }, 20);
-        setTimeout(() => { s.remove(); clearInterval(anim); }, 400);
+        const anim = setInterval(() => { sx += vx; sy += vy; s.style.left = sx + 'px'; s.style.bottom = sy + 'px'; }, 20);
+        setTimeout(() => { s.remove(); clearInterval(anim); }, 300);
     }
 }
 
@@ -129,35 +132,35 @@ function update() {
 
     g.enemies.forEach(en => {
         if (!en.active) return;
-        en.x += en.dir * 2; if (en.x > en.end || en.x < en.start) en.dir *= -1;
+        en.x += en.dir * (en.isBoss ? 1.5 : 2.5);
+        if (en.x > en.end || en.x < en.start) en.dir *= -1;
         en.el.style.left = en.x + 'px';
-        if (Math.abs(p.x - en.x) < 40 && Math.abs(p.y - en.y) < 40) p.hp -= 1;
+        if (Math.abs(p.x - en.x) < 40 && Math.abs(p.y - en.y) < 40) p.hp -= en.isBoss ? 2 : 0.5;
+    });
+
+    g.items.forEach((it, i) => {
+        if (it.active && Math.abs(p.x - it.x) < 40 && Math.abs(p.y - it.y) < 40) {
+            it.active = false; it.el.remove(); g.player.gold += 300;
+        }
     });
 
     g.projectiles.forEach((pj, i) => {
-        pj.x += pj.vx; pj.el.style.left = pj.x + 'px'; pj.el.style.bottom = pj.y + 'px';
+        pj.x += pj.vx; pj.el.style.left = pj.x + 'px';
         g.enemies.forEach(en => {
             if (en.active && Math.abs(pj.x - en.x) < 40 && Math.abs(pj.y - en.y) < 40) {
                 damageEnemy(en); pj.el.remove(); g.projectiles.splice(i, 1);
             }
         });
-        if (Math.abs(pj.x - pj.startX) > 800) { pj.el.remove(); g.projectiles.splice(i, 1); }
+        if (pj.x > p.x + 800 || pj.x < p.x - 800) { pj.el.remove(); g.projectiles.splice(i, 1); }
     });
 
     if (p.x + 1000 > g.lastX) generateNextPlatform();
-    if (p.y < -100 || p.hp <= 0) location.reload();
+    if (p.y < -200 || p.hp <= 0) location.reload();
 }
 
 function updateQuest() {
-    if (g.quest.current >= g.quest.target) {
-        g.player.gold += 300; g.quest.target += 2; g.quest.current = 0;
-    }
-    updateQuestUI();
-}
-
-function updateQuestUI() {
-    document.getElementById('quest-desc').innerText = `Diệt quái vật Abyss (${g.quest.current}/${g.quest.target})`;
-    document.getElementById('quest-fill').style.width = (g.quest.current / g.quest.target * 100) + '%';
+    if (g.quest.current >= g.quest.target) { g.player.gold += 1000; g.quest.target += 5; g.quest.current = 0; }
+    document.getElementById('quest-text').innerText = `Diệt quái: ${g.quest.current}/${g.quest.target}`;
 }
 
 function draw() {
@@ -165,10 +168,10 @@ function draw() {
     const cont = document.getElementById('player-container');
     cont.style.left = p.x + 'px'; cont.style.bottom = p.y + 'px';
     cont.style.transform = `scaleX(${p.dir})`;
-    document.getElementById('world').style.transform = `translateX(${-p.x + 200}px)`;
+    document.getElementById('world').style.transform = `translateX(${-p.x + 150}px)`;
     document.getElementById('hp-fill').style.width = (p.hp / p.maxH * 100) + '%';
-    document.getElementById('ult-fill').style.width = p.ult + '%';
-    document.getElementById('gold-val').innerText = p.gold;
+    document.getElementById('exp-fill').style.width = (p.exp % 100) + '%';
+    document.getElementById('gold-val').innerText = g.player.gold;
     document.getElementById('danger-val').innerText = g.danger;
 }
 
@@ -179,31 +182,17 @@ function createPlatform(x, y, w, h) {
     g.platforms.push({ x, y, w, h });
 }
 
-function toggleShop() {
-    g.shopOpen = !g.shopOpen; document.getElementById('gui-shop').style.display = g.shopOpen ? 'flex' : 'none';
-    if (g.shopOpen) {
-        document.getElementById('shop-items').innerHTML = `
-            <div style="margin-bottom:15px">Vàng của bạn: ${g.player.gold}</div>
-            <button class="fantasy-btn" onclick="buy('atk')">Nâng ATK (+20) - 400G</button>
-            <button class="fantasy-btn" onclick="buy('hp')">Hồi Máu - 200G</button>
-        `;
-    }
+function toggleHelp() {
+    const h = document.getElementById('gui-help');
+    h.style.display = (h.style.display === 'none') ? 'flex' : 'none';
 }
 
-function buy(type) {
-    if (type === 'atk' && g.player.gold >= 400) { g.player.gold -= 400; g.player.atk += 20; }
-    if (type === 'hp' && g.player.gold >= 200) { g.player.gold -= 200; g.player.hp = g.player.maxH; }
-    toggleShop();
-}
-
-function updateWorld() {
-    g.danger = Math.floor(g.time / 60) + 1;
-    let m = Math.floor(g.time / 60), s = g.time % 60;
-    document.getElementById('time-val').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-}
-
-function loop() { if (g.active && !g.shopOpen) { update(); draw(); } requestAnimationFrame(loop); }
+function updateWorld() { g.danger = Math.floor(g.time / 60) + 1; }
+function loop() { if (g.active) { update(); draw(); requestAnimationFrame(loop); } }
 
 window.addEventListener('mousedown', e => { if (e.button === 0) handleAttack(); });
-window.addEventListener('keydown', e => { g.keys[e.code] = true; if (e.code === 'KeyB') toggleShop(); });
+window.addEventListener('keydown', e => {
+    g.keys[e.code] = true;
+    if (e.code === 'KeyH') toggleHelp();
+});
 window.addEventListener('keyup', e => g.keys[e.code] = false);

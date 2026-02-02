@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: FANTASY EDITION</title>
+    <title>ABYSS PROTOCOL: ULTIMATE FANTASY</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
@@ -11,20 +11,28 @@
 <body oncontextmenu="return false;">
     <div id="game-stage">
         <div id="bg-layers">
-            <div class="bg-wall-full"></div>
-            <div class="bg-path-stretch"></div>
+            <div class="bg-wall"></div>
+            <div class="bg-floor"></div>
         </div>
 
-        <div id="ui-overlay">
-            <div id="danger-level">☠️ KHU VỰC: <span id="danger-val">1</span></div>
-            <div id="timer">⏳ <span id="time-val">00:00</span></div>
-        </div>
-
-        <div id="quest-log">
-            <div id="quest-title">📜 THỬ THÁCH SINH TỒN</div>
-            <div id="quest-desc">Đang dò tìm mục tiêu...</div>
-            <div class="bar-frame">
-                <div id="quest-fill" class="fill"></div>
+        <div id="hud-top">
+            <div id="stats-left">
+                <div class="stat-bar"><span class="label">HP</span>
+                    <div class="bar">
+                        <div id="hp-fill" class="fill hp"></div>
+                    </div>
+                </div>
+                <div class="stat-bar"><span class="label">EXP</span>
+                    <div class="bar">
+                        <div id="exp-fill" class="fill exp"></div>
+                    </div>
+                </div>
+                <div id="quest-box">📜 <span id="quest-text">Khởi hành...</span></div>
+            </div>
+            <div id="stats-right">
+                <div>💰 <span id="gold-val">0</span></div>
+                <div>☠️ TẦNG <span id="danger-val">1</span></div>
+                <div class="hint">[H] TRỢ GIÚP | [B] SHOP</div>
             </div>
         </div>
 
@@ -45,39 +53,22 @@
 
     <div id="gui-selection" class="overlay">
         <div class="fantasy-window">
-            <h1 class="fantasy-title">CHỌN ANH HÙNG</h1>
-            <div class="selection-container">
+            <h1 class="title">CHỌN CHIẾN BINH</h1>
+            <div class="selection-flex">
                 <div id="class-grid" class="class-grid"></div>
-                <div id="info-box" class="fantasy-info">
-                    <div id="info-content">Chọn một linh hồn...</div>
-                </div>
+                <div id="info-panel" class="info-panel">Chọn linh hồn...</div>
             </div>
-            <button id="start-btn" class="fantasy-btn" disabled onclick="initGame()">BẮT ĐẦU HÀNH TRÌNH</button>
+            <button id="start-btn" class="fantasy-btn" disabled onclick="initGame()">BẮT ĐẦU</button>
         </div>
     </div>
 
-    <div id="gui-shop" class="overlay" style="display: none;">
-        <div class="fantasy-window shop-window">
-            <h2 class="fantasy-title" style="font-size: 1.5rem;">CỬA HÀNG RÈN ĐÚC</h2>
-            <div id="shop-items"></div>
-            <button class="fantasy-btn cancel" onclick="toggleShop()">QUAY LẠI (B)</button>
+    <div id="gui-help" class="overlay" style="display:none">
+        <div class="fantasy-window small">
+            <h2>HƯỚNG DẪN</h2>
+            <p>[A][D]: Di chuyển | [Space]: Nhảy</p>
+            <p>[Chuột trái]: Tấn công | [B]: Cửa hàng</p>
+            <button class="fantasy-btn" onclick="toggleHelp()">ĐÓNG</button>
         </div>
-    </div>
-
-    <div id="hud" style="display:none">
-        <div class="hud-stat">
-            <span class="label">MÁU</span>
-            <div class="bar-frame hp">
-                <div id="hp-fill" class="fill hp-color"></div>
-            </div>
-        </div>
-        <div class="hud-stat">
-            <span class="label">NỘ</span>
-            <div class="bar-frame ult">
-                <div id="ult-fill" class="fill ult-color"></div>
-            </div>
-        </div>
-        <div id="currency">💰 <span id="gold-val">0</span></div>
     </div>
 
     <script src="script.js"></script>

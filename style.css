@@ -1,7 +1,7 @@
 :root {
     --gold: #ffd700;
-    --dark: #1a0f00;
     --red: #8b0000;
+    --bg: #0d0d0d;
 }
 
 body {
@@ -9,129 +9,102 @@ body {
     background: #000;
     overflow: hidden;
     font-family: 'MedievalSharp', cursive;
-    color: #f2e8cf;
+    color: #fff;
 }
 
-/* BACKGROUND */
-#bg-layers {
-    position: fixed;
+/* NỀN ĐA LỚP */
+#bg-layers div {
+    position: absolute;
     inset: 0;
+}
+
+.bg-wall {
+    background: url('assets/icons/Brick_Wall.png') repeat;
+    background-size: 100px;
+    filter: brightness(0.2);
+    z-index: -2;
+}
+
+.bg-floor {
+    background: url('assets/icons/Stone_Path.png') repeat-x bottom;
+    background-size: contain;
+    opacity: 0.4;
     z-index: -1;
 }
 
-.bg-wall-full {
-    position: absolute;
-    inset: 0;
-    background: url('assets/icons/Brick_Wall.png') repeat;
-    background-size: 120px;
-    filter: brightness(0.3);
-}
-
-.bg-path-stretch {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 90%;
-    background: url('assets/icons/Stone_Path.png') bottom/cover no-repeat;
-    opacity: 0.5;
-}
-
-/* FANTASY UI ELEMENTS */
-.overlay {
+/* HUD GÓC TRÊN */
+#hud-top {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 2000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.fantasy-window {
-    background: var(--dark);
-    border: 4px double var(--gold);
-    padding: 30px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 1), inset 0 0 50px rgba(139, 0, 0, 0.2);
-    text-align: center;
-    max-width: 800px;
-}
-
-.fantasy-title {
-    color: var(--gold);
-    text-shadow: 2px 2px #000;
-    letter-spacing: 2px;
-    margin-top: 0;
-}
-
-.class-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 90px);
-    gap: 15px;
-}
-
-.class-item {
-    width: 90px;
-    height: 90px;
-    border: 2px solid #443;
-    cursor: pointer;
-    background-size: cover;
-    background-color: #000;
-    transition: 0.2s;
-}
-
-.class-item:hover {
-    border-color: var(--gold);
-    transform: translateY(-5px);
-}
-
-.class-item.active {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px var(--gold);
-}
-
-.fantasy-info {
-    width: 250px;
-    border-left: 2px solid var(--gold);
-    padding-left: 20px;
-    text-align: left;
-}
-
-/* BARS & HUD */
-.bar-frame {
+    top: 20px;
+    left: 0;
     width: 100%;
-    height: 12px;
-    background: #111;
-    border: 1px solid #555;
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+#stats-left,
+#stats-right {
+    pointer-events: all;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--gold);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.label {
+    width: 40px;
+    color: var(--gold);
+    font-size: 0.8rem;
+}
+
+.bar {
+    width: 150px;
+    height: 10px;
+    background: #222;
+    border: 1px solid #444;
 }
 
 .fill {
     height: 100%;
-    transition: 0.2s;
+    transition: 0.3s;
 }
 
-.hp-color {
-    background: linear-gradient(90deg, #500, #f00);
+.hp {
+    background: #f00;
+    box-shadow: 0 0 10px #f00;
 }
 
-.ult-color {
-    background: linear-gradient(90deg, #b8860b, #ffd700);
+.exp {
+    background: #00f;
+    box-shadow: 0 0 10px #00f;
 }
 
-#hud {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    border: 2px solid var(--gold);
+#quest-box {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #ccc;
 }
 
-/* GAMEPLAY ENTITIES */
+.hint {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+/* GAMEPLAY */
 #player-container {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
 }
 
 #player-sprite {
@@ -142,21 +115,20 @@ body {
 
 #weapon-sprite {
     position: absolute;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     right: -15px;
     top: 0;
     background-size: contain;
-    background-repeat: no-repeat;
 }
 
 #melee-effect {
     position: absolute;
     width: 80px;
     height: 80px;
-    right: -70px;
+    right: -65px;
     top: -15px;
-    border-right: 6px solid rgba(255, 255, 255, 0.8);
+    border-right: 5px solid #fff;
     border-radius: 50%;
     opacity: 0;
 }
@@ -168,43 +140,90 @@ body {
 @keyframes slash {
     0% {
         opacity: 1;
-        transform: rotate(-40deg);
+        transform: rotate(-30deg);
     }
 
     100% {
         opacity: 0;
-        transform: rotate(50deg);
+        transform: rotate(40deg);
     }
+}
+
+.platform {
+    position: absolute;
+    background: #1a1a1a;
+    border-top: 4px solid #443;
+    box-shadow: 0 -5px 15px #000;
+}
+
+.boss {
+    transform: scale(2);
+    border: 2px solid #f00 !important;
+}
+
+.chest {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background: var(--gold);
+    border: 2px solid #432;
+    box-shadow: 0 0 10px var(--gold);
 }
 
 .spark {
     position: absolute;
     width: 4px;
     height: 4px;
-    background: #ffcc00;
+    background: #ff0;
     border-radius: 50%;
-    pointer-events: none;
 }
 
-.platform {
-    position: absolute;
-    background: #2a1b0a;
-    border-top: 4px solid #4a3b2a;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+/* GUI */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fantasy-window {
+    background: var(--bg);
+    border: 4px double var(--gold);
+    padding: 30px;
+    text-align: center;
+}
+
+.class-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 85px);
+    gap: 10px;
+}
+
+.class-item {
+    width: 85px;
+    height: 85px;
+    border: 2px solid #444;
+    cursor: pointer;
+    background-size: cover;
+    filter: grayscale(1);
+    transition: 0.2s;
+}
+
+.class-item.active {
+    border-color: var(--gold);
+    filter: grayscale(0);
+    box-shadow: 0 0 15px var(--gold);
 }
 
 .fantasy-btn {
     background: var(--red);
-    color: white;
+    color: #fff;
     border: 2px solid var(--gold);
     padding: 10px 30px;
-    font-family: 'MedievalSharp';
     cursor: pointer;
     margin-top: 20px;
-}
-
-.fantasy-btn:disabled {
-    background: #333;
-    color: #777;
-    border-color: #555;
+    font-family: 'MedievalSharp';
 }
