@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: FULL INTEGRATION</title>
+    <title>THE ABYSS PROTOCOL: FANTASY EDITION</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 
 <body oncontextmenu="return false;">
@@ -15,12 +15,15 @@
             <div class="bg-path-stretch"></div>
         </div>
 
-        <div id="danger-overlay">KHU VỰC: <span id="danger-val">1</span> | <span id="time-val">00:00</span></div>
+        <div id="ui-overlay">
+            <div id="danger-level">☠️ KHU VỰC: <span id="danger-val">1</span></div>
+            <div id="timer">⏳ <span id="time-val">00:00</span></div>
+        </div>
 
-        <div id="quest-tracker">
-            <div id="quest-title">📜 NHIỆM VỤ AUTO</div>
-            <div id="quest-desc">ĐANG ĐỢI...</div>
-            <div class="bar-bg" style="width:100%">
+        <div id="quest-log">
+            <div id="quest-title">📜 THỬ THÁCH SINH TỒN</div>
+            <div id="quest-desc">Đang dò tìm mục tiêu...</div>
+            <div class="bar-frame">
                 <div id="quest-fill" class="fill"></div>
             </div>
         </div>
@@ -35,44 +38,46 @@
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
                 <div id="projectile-layer"></div>
-                <div id="drop-layer"></div>
+                <div id="fx-layer"></div>
             </div>
         </div>
     </div>
 
     <div id="gui-selection" class="overlay">
-        <div class="pixel-window neon-window">
-            <h2 class="pixel-text neon-text">CHỌN CHIẾN BINH</h2>
-            <div class="selection-flex">
-                <div id="class-grid" class="class-grid-2rows"></div>
-                <div id="info-box" class="neon-info-box">
-                    <div id="info-content">Rê chuột để xem thông số...</div>
+        <div class="fantasy-window">
+            <h1 class="fantasy-title">CHỌN ANH HÙNG</h1>
+            <div class="selection-container">
+                <div id="class-grid" class="class-grid"></div>
+                <div id="info-box" class="fantasy-info">
+                    <div id="info-content">Chọn một linh hồn...</div>
                 </div>
             </div>
-            <button id="start-btn" class="pixel-btn neon-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
+            <button id="start-btn" class="fantasy-btn" disabled onclick="initGame()">BẮT ĐẦU HÀNH TRÌNH</button>
         </div>
     </div>
 
     <div id="gui-shop" class="overlay" style="display: none;">
-        <div class="pixel-window shop-window neon-window">
-            <h2 class="pixel-text" style="color:#ffd700">BLACK MARKET</h2>
-            <div id="shop-items" class="shop-grid"></div>
-            <div id="shop-stats"></div>
-            <button class="pixel-btn" onclick="toggleShop()"
-                style="background:#ff4444; width:100%; margin-top:15px">THOÁT (B)</button>
+        <div class="fantasy-window shop-window">
+            <h2 class="fantasy-title" style="font-size: 1.5rem;">CỬA HÀNG RÈN ĐÚC</h2>
+            <div id="shop-items"></div>
+            <button class="fantasy-btn cancel" onclick="toggleShop()">QUAY LẠI (B)</button>
         </div>
     </div>
 
     <div id="hud" style="display:none">
-        <div class="hud-group">HP <div class="bar-bg">
-                <div id="hp-fill" class="fill hp"></div>
+        <div class="hud-stat">
+            <span class="label">MÁU</span>
+            <div class="bar-frame hp">
+                <div id="hp-fill" class="fill hp-color"></div>
             </div>
         </div>
-        <div class="hud-group">ULT <div class="bar-bg">
-                <div id="ult-fill" class="fill ult"></div>
+        <div class="hud-stat">
+            <span class="label">NỘ</span>
+            <div class="bar-frame ult">
+                <div id="ult-fill" class="fill ult-color"></div>
             </div>
         </div>
-        <div id="stats-line">💰 <span id="gold-val">0</span> | LVL: <span id="lvl-val">1</span></div>
+        <div id="currency">💰 <span id="gold-val">0</span></div>
     </div>
 
     <script src="script.js"></script>
