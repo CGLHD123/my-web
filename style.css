@@ -3,6 +3,7 @@
     --exp: #ff00ff;
     --danger: #ff4444;
     --gold: #ffd700;
+    --hp: #00ff00;
 }
 
 body {
@@ -14,197 +15,152 @@ body {
     user-select: none;
 }
 
-/* Hiệu ứng Rung & Cảnh báo máu */
-.shake {
-    animation: shake 0.3s cubic-bezier(.36, .07, .19, .97) both;
-}
-
-@keyframes shake {
-
-    10%,
-    90% {
-        transform: translate3d(-2px, 0, 0);
-    }
-
-    20%,
-    80% {
-        transform: translate3d(4px, 0, 0);
-    }
-
-    30%,
-    50%,
-    70% {
-        transform: translate3d(-6px, 0, 0);
-    }
-
-    40%,
-    60% {
-        transform: translate3d(6px, 0, 0);
-    }
-}
-
-.low-hp {
-    animation: bloodPulse 1s infinite;
-}
-
-@keyframes bloodPulse {
-    from {
-        box-shadow: inset 0 0 0px red;
-    }
-
-    to {
-        box-shadow: inset 0 0 100px red;
-    }
-}
-
-#distance-meter {
-    position: fixed;
-    top: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    color: var(--neon);
-}
-
-.hud-left-top,
-.hud-right-top {
+/* HUD Layout */
+.hud-left-top {
     position: fixed;
     top: 20px;
+    left: 20px;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.hud-left-top {
-    left: 20px;
-}
-
-.hud-right-top {
-    right: 20px;
-    align-items: flex-end;
-}
-
-.stat-unit {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 10px;
+.exp-container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px;
     border: 2px solid #444;
-    font-size: 10px;
 }
 
-.exp-bar {
-    width: 150px;
-    height: 8px;
+.label-tiny {
+    font-size: 8px;
+    margin-bottom: 2px;
+    color: #aaa;
+}
+
+.exp-bar,
+.hp-bar-main {
+    width: 220px;
+    height: 12px;
     background: #222;
-    border: 2px solid #444;
+    border: 1px solid #555;
+    margin-bottom: 5px;
 }
 
 #exp-fill {
     height: 100%;
     background: var(--exp);
     width: 0%;
+    transition: width 0.3s;
 }
 
-#world {
-    position: absolute;
-    width: 100%;
+#hp-fill-main {
     height: 100%;
-    bottom: 0;
-    z-index: 10;
+    background: var(--hp);
+    width: 100%;
+    transition: width 0.3s;
 }
 
-.platform {
-    position: absolute;
-    background: #1a1a1a;
-    border-top: 4px solid #333;
+#distance-meter {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--neon);
+    font-size: 20px;
+    text-shadow: 2px 2px #000;
 }
 
-.spike {
-    position: absolute;
-    width: 30px;
-    height: 18px;
-    background: var(--danger);
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+.hud-right-top {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
 }
 
-.chest {
-    position: absolute;
-    width: 35px;
-    height: 25px;
-    background: var(--gold);
-    border: 2px solid #fff;
-}
-
-#player-container {
-    position: absolute;
-    width: 50px;
-    height: 70px;
-    z-index: 100;
-}
-
-#player-sprite {
-    width: 50px;
-    height: 50px;
-    border: 2px solid #fff;
-    position: relative;
-}
-
+/* Vũ khí hình học */
 #weapon-visual {
     position: absolute;
     right: -10px;
-    top: 25px;
-    width: 35px;
-    height: 8px;
-    background: var(--neon);
+    top: 15px;
+    width: 30px;
+    height: 30px;
+}
+
+.weapon-bow {
+    border-radius: 50% 0 0 50%;
+    border-left: 5px solid #8b4513;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+}
+
+.weapon-staff {
+    width: 6px !important;
+    height: 45px !important;
+    background: #4b0082;
+    border: 2px solid var(--neon);
     box-shadow: 0 0 10px var(--neon);
-    transform-origin: left center;
+    top: 0 !important;
 }
 
-.swing {
-    animation: vung 0.2s ease-out;
-}
-
-@keyframes vung {
-    0% {
-        transform: rotate(0);
-    }
-
-    50% {
-        transform: rotate(-100deg);
-    }
-
-    100% {
-        transform: rotate(0);
-    }
-}
-
-.goblin {
+/* Projectiles */
+.projectile {
     position: absolute;
-    width: 40px;
-    height: 45px;
+    z-index: 99;
+    pointer-events: none;
+}
+
+.arrow {
+    width: 20px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 2px;
+}
+
+.magic-orb {
+    width: 16px;
+    height: 16px;
+    background: var(--neon);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--neon);
+}
+
+/* Entities */
+.entity {
+    position: absolute;
+    width: 45px;
+    height: 50px;
+    z-index: 50;
+}
+
+.monster-sprite {
+    width: 100%;
+    height: 100%;
     background: #1a5e1a;
     border: 2px solid #000;
 }
 
-.boss {
+.m-hp-bar {
+    width: 100%;
+    height: 6px;
+    background: #333;
     position: absolute;
-    width: 110px;
-    height: 130px;
-    background: #4a0000;
-    border: 4px solid #f00;
-    box-shadow: 0 0 30px #f00;
+    bottom: -12px;
+    left: 0;
+    border: 1px solid #000;
 }
 
-#hp-fill {
+.m-hp-fill {
     height: 100%;
-    background: #0f0;
-    transition: width 0.2s;
+    background: #f00;
+    width: 100%;
 }
 
+/* Menu Selection */
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 2000;
     display: flex;
     justify-content: center;
@@ -214,51 +170,55 @@ body {
 .pixel-window {
     background: #111;
     border: 4px solid #444;
-    padding: 25px;
+    padding: 30px;
     text-align: center;
+    max-width: 600px;
 }
 
 .grid-left {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .class-item {
-    width: 60px;
-    height: 60px;
-    border: 2px solid #333;
+    width: 80px;
+    height: 80px;
+    border: 3px solid #333;
     cursor: pointer;
-    background: #222;
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
 }
 
 .class-item.active {
     border-color: var(--neon);
+    transform: scale(1.1);
 }
 
 .pixel-btn {
     font-family: inherit;
-    background: #333;
+    background: #222;
     color: #fff;
-    padding: 10px;
     border: 2px solid #555;
+    padding: 10px;
     cursor: pointer;
+    margin: 5px;
     font-size: 10px;
 }
 
 .main-btn {
-    width: 100%;
-    padding: 15px;
+    padding: 15px 50px;
     font-family: inherit;
     background: var(--neon);
     border: none;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.shop-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
+.platform {
+    position: absolute;
+    background: #1a1a1a;
+    border-top: 4px solid #444;
 }

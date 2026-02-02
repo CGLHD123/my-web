@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: BOSS & DISTANCE</title>
+    <title>THE ABYSS PROTOCOL: PROJECTILE</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -11,45 +11,46 @@
 <body id="body-main">
     <div id="game-stage">
         <div id="parallax-far"></div>
-        <div id="parallax-mid"></div>
         <div id="world" style="display: none;">
             <div id="player-container">
                 <div id="player-sprite">
                     <div id="weapon-visual"></div>
                 </div>
-                <div class="hp-label">
-                    <div id="hp-fill"></div>
-                </div>
             </div>
+            <div id="projectile-layer"></div>
             <div id="entity-layer"></div>
             <div id="drop-layer"></div>
         </div>
     </div>
 
-    <div id="distance-meter">DISTANCE: <span id="dist-val">0</span>m</div>
+    <div id="distance-meter"><span id="dist-val">0</span>m</div>
 
     <div class="hud-left-top">
-        <div class="stat-unit">LVL: <span id="ui-lvl">1</span></div>
-        <div class="exp-bar">
-            <div id="exp-fill"></div>
+        <div class="stat-unit">LVL: <span id="ui-lvl">1</span> | GOLD: <span id="ui-coin">0</span></div>
+        <div class="exp-container">
+            <div class="label-tiny">EXP</div>
+            <div class="exp-bar">
+                <div id="exp-fill"></div>
+            </div>
+            <div class="label-tiny">HP</div>
+            <div class="hp-bar-main">
+                <div id="hp-fill-main"></div>
+            </div>
         </div>
-        <div id="quest-box" class="stat-unit">QUEST: <span id="quest-desc">...</span></div>
+        <div id="quest-box" class="stat-unit">Nhiệm vụ: <span id="quest-desc">DIỆT 5 QUÁI</span></div>
     </div>
 
     <div class="hud-right-top">
-        <div class="stat-unit">GOLD: <span id="ui-coin">0</span></div>
-        <div class="menu-btns">
-            <button class="pixel-btn" onclick="toggleStats()">STATS (C)</button>
-            <button class="pixel-btn" onclick="toggleShop()">SHOP (B)</button>
-        </div>
+        <button class="pixel-btn" onclick="toggleStats()">STATS (C)</button>
+        <button class="pixel-btn" onclick="toggleShop()">SHOP (B)</button>
     </div>
 
     <div id="gui-selection" class="overlay">
         <div class="pixel-window">
-            <h2 class="title">SELECT OPERATIVE</h2>
+            <h2 class="title">CHỌN CLASS ĐỂ BẮT ĐẦU</h2>
             <div id="class-grid" class="grid-left"></div>
-            <div id="class-details" style="margin: 20px 0; min-height: 40px;">CHỌN NHÂN VẬT...</div>
-            <button id="start-btn" class="main-btn" disabled onclick="initGame()">DEPLOY</button>
+            <div id="class-details" style="margin: 20px 0; color: #00f2ff; font-size: 10px;">XIN MỜI CHỌN...</div>
+            <button id="start-btn" class="main-btn" disabled onclick="initGame()">START</button>
         </div>
     </div>
 
@@ -57,20 +58,12 @@
         <div class="pixel-window" style="width:400px">
             <h2>CYBER SHOP</h2>
             <div class="shop-item">
-                <p>UPGRADE ATK (+25)</p><button class="pixel-btn" onclick="buyUpgrade('atk', 250)">250G</button>
+                <p>TĂNG ATK (+25)</p><button class="pixel-btn" onclick="buyUpgrade('atk', 250)">250G</button>
             </div>
             <div class="shop-item">
-                <p>NANO REPAIR (MAX HP)</p><button class="pixel-btn" onclick="buyUpgrade('heal', 100)">100G</button>
+                <p>HỒI MÁU (MAX)</p><button class="pixel-btn" onclick="buyUpgrade('heal', 100)">100G</button>
             </div>
-            <button class="main-btn" onclick="toggleShop()">CLOSE</button>
-        </div>
-    </div>
-
-    <div id="gui-stats" class="overlay" style="display:none">
-        <div class="pixel-window" style="width:350px">
-            <h2>OPERATIVE STATS</h2>
-            <div id="stats-content" style="text-align:left; line-height:2; font-size:12px; margin:20px 0;"></div>
-            <button class="main-btn" onclick="toggleStats()">CLOSE</button>
+            <button class="main-btn" onclick="toggleShop()">QUAY LẠI</button>
         </div>
     </div>
 
