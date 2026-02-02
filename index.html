@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: COMBAT EVOLUTION</title>
+    <title>THE ABYSS PROTOCOL: QUEST & COMBAT</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -14,6 +14,14 @@
             <div class="layer bg-grid"></div>
         </div>
         <div id="danger-overlay">DANGER: <span id="danger-val">1</span> | <span id="time-val">00:00</span></div>
+
+        <div id="quest-tracker">
+            <div id="quest-desc">ĐANG TẢI NHIỆM VỤ...</div>
+            <div class="bar-bg" style="width:100%">
+                <div id="quest-fill" class="fill"></div>
+            </div>
+        </div>
+
         <div id="camera">
             <div id="world" style="display: none;">
                 <div id="player-container">
@@ -28,21 +36,25 @@
         </div>
     </div>
 
-    <div id="gui-tutorial" class="overlay">
-        <div class="pixel-window">
-            <h2 class="pixel-text">HỆ THỐNG CHIẾN ĐẤU</h2>
-            <p>🖱️ CHUỘT TRÁI: TẤN CÔNG (CẬN CHIẾN/TẦM XA)</p>
-            <p>⌨️ B: CỬA HÀNG | U: TUYỆT KỸ</p>
-            <button class="pixel-btn" onclick="closeTutorial()">BẮT ĐẦU</button>
+    <div id="gui-selection" class="overlay">
+        <div class="pixel-window selection-window">
+            <h2 class="pixel-text">CHỌN CHIẾN BINH</h2>
+            <div class="selection-flex">
+                <div id="class-grid" class="grid-layout"></div>
+                <div id="info-box" class="stats-sidebar">
+                    <div id="info-content">Rê chuột vào class...</div>
+                </div>
+            </div>
+            <button id="start-btn" class="pixel-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
         </div>
     </div>
 
-    <div id="gui-selection" class="overlay" style="display: none;">
-        <div class="pixel-window selection-window">
-            <h2 class="pixel-text">CHỌN CHIẾN BINH</h2>
-            <div id="class-grid" class="grid-layout"></div>
-            <button id="start-btn" class="pixel-btn" disabled onclick="initGame()" style="margin-top:20px">XUẤT
-                QUÂN</button>
+    <div id="gui-help" class="overlay" style="display: none;">
+        <div class="pixel-window">
+            <h2 class="pixel-text">HƯỚNG DẪN</h2>
+            <p>🖱️ CHUỘT TRÁI: TẤN CÔNG | ⌨️ A-D: DI CHUYỂN | ⌨️ SPACE: NHẢY</p>
+            <p>⌨️ B: SHOP | ⌨️ U: TUYỆT KỸ | ⌨️ H: ĐÓNG HƯỚNG DẪN</p>
+            <button class="pixel-btn" onclick="toggleHelp()">ĐÃ HIỂU</button>
         </div>
     </div>
 
@@ -50,12 +62,14 @@
         <div class="pixel-window shop-window">
             <div class="shop-flex">
                 <div class="shop-main">
-                    <h2 class="pixel-text" style="color: #ffd700;">CHỢ ĐEN</h2>
+                    <h2 class="pixel-text" style="color: #ffd700;">BLACK MARKET</h2>
                     <div id="shop-items"></div>
                 </div>
                 <div class="stats-sidebar">
                     <h2 class="pixel-text">CHỈ SỐ</h2>
                     <div id="full-stats"></div>
+                    <button class="pixel-btn" onclick="toggleHelp()"
+                        style="margin-top:10px; font-size:10px; background:#444">XEM HELP (H)</button>
                 </div>
             </div>
             <button class="pixel-btn" onclick="toggleShop()" style="background:#ff4444; margin-top:15px;">ĐÓNG
