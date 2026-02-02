@@ -1,7 +1,7 @@
 :root {
     --gold: #c5a059;
-    --blood: #8e0000;
-    --dark: #0a0a0c;
+    --blood: #7a0000;
+    --exp: #004488;
 }
 
 body {
@@ -12,23 +12,41 @@ body {
     color: #fff;
 }
 
-#bg-void {
+/* PARALLAX */
+#parallax-bg {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle, #151515 0%, #000 100%);
     z-index: -1;
 }
 
-/* HUD GÓC TRÊN */
-#hud-fixed {
+.layer {
+    position: absolute;
+    width: 400%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.bg-deep {
+    background: #050505;
+}
+
+.bg-mid {
+    background: url('assets/icons/Brick_Wall.png') repeat-x;
+    background-size: 500px;
+    opacity: 0.1;
+}
+
+/* HUD */
+#hud {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 25px 40px;
+    padding: 25px;
     display: flex;
     justify-content: space-between;
-    z-index: 1000;
+    z-index: 100;
     pointer-events: none;
 }
 
@@ -38,28 +56,25 @@ body {
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--gold);
     padding: 12px;
-    border-radius: 2px;
 }
 
-.stat-container {
+.stat {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
-.stat-tag {
-    width: 40px;
+.lbl {
+    width: 35px;
     color: var(--gold);
     font-size: 0.8rem;
-    letter-spacing: 1px;
 }
 
-.bar-frame {
-    width: 200px;
+.bar {
+    width: 180px;
     height: 10px;
     background: #111;
     border: 1px solid #333;
-    overflow: hidden;
 }
 
 .fill {
@@ -67,50 +82,48 @@ body {
     transition: 0.3s;
 }
 
-.hp-red {
-    background: linear-gradient(90deg, #600, #f00);
-    box-shadow: 0 0 10px #f00;
+.hp {
+    background: var(--blood);
+    box-shadow: 0 0 10px red;
 }
 
-.exp-blue {
-    background: linear-gradient(90deg, #004, #00f);
-    box-shadow: 0 0 10px #00f;
+.exp {
+    background: var(--exp);
+    box-shadow: 0 0 10px #04f;
 }
 
-#mission-log {
-    color: #888;
-    font-size: 0.85rem;
-    border-top: 1px solid #222;
-    margin-top: 5px;
-    padding-top: 5px;
-}
-
-.val-unit {
+#lvl-tag {
     font-size: 1.2rem;
     color: var(--gold);
-    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-/* THẾ GIỚI GAME SÁT ĐÁY */
+/* WORLD & PLAYER */
 #camera {
     position: absolute;
     inset: 0;
 }
 
-#player-entity {
+#world {
+    position: absolute;
+    inset: 0;
+}
+
+#player {
     position: absolute;
     width: 50px;
     height: 50px;
-    z-index: 10;
+    z-index: 50;
 }
 
-#sprite {
+#p-sprite {
     width: 100%;
     height: 100%;
     border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-#weapon {
+#p-weapon {
     position: absolute;
     width: 45px;
     height: 45px;
@@ -120,7 +133,7 @@ body {
     background-repeat: no-repeat;
 }
 
-#atk-fx {
+#p-slash {
     position: absolute;
     width: 100px;
     height: 100px;
@@ -129,10 +142,27 @@ body {
     border-right: 5px solid #fff;
     border-radius: 50%;
     opacity: 0;
+    pointer-events: none;
+}
+
+#lvl-up-fx {
+    position: absolute;
+    top: -40px;
+    width: 100px;
+    left: -25px;
+    color: yellow;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
 }
 
 .slash-anim {
-    animation: slash 0.15s ease-out;
+    animation: slash 0.12s linear;
+}
+
+.lvl-anim {
+    animation: lvlUp 1s ease-out;
 }
 
 @keyframes slash {
@@ -143,95 +173,123 @@ body {
 
     100% {
         opacity: 0;
-        transform: rotate(45deg);
+        transform: rotate(50deg);
     }
 }
 
+@keyframes lvlUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+/* ENTITIES */
 .platform {
     position: absolute;
     background: #1a1a1a;
-    border-top: 3px solid #333;
+    border-top: 3px solid #444;
 }
 
 .enemy {
     position: absolute;
     width: 45px;
     height: 45px;
-    background: #200;
-    border: 1px solid #f00;
+    background: #300;
+    border: 2px solid #f00;
 }
 
-/* GRID CHỌN CLASS 5 CỘT x 2 DÒNG */
+.chest {
+    position: absolute;
+    width: 40px;
+    height: 35px;
+    background: var(--gold);
+    border: 2px solid #000;
+    box-shadow: 0 0 15px var(--gold);
+}
+
+/* GUI OVERLAYS */
 .overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.95);
-    z-index: 2000;
+    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.scroll-box {
-    background: var(--dark);
+.win {
+    background: #0a0a0a;
     border: 4px double var(--gold);
     padding: 40px;
     text-align: center;
-    max-width: 950px;
 }
 
-.grid-5x2 {
+.small {
+    padding: 25px;
+    min-width: 300px;
+}
+
+.sel-grid-wrap {
+    display: flex;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+#class-grid {
     display: grid;
-    grid-template-columns: repeat(5, 100px);
-    grid-template-rows: repeat(2, 100px);
-    gap: 15px;
+    grid-template-columns: repeat(5, 95px);
+    grid-template-rows: repeat(2, 95px);
+    gap: 12px;
 }
 
-.class-card {
-    width: 100px;
-    height: 100px;
+.card {
+    width: 95px;
+    height: 95px;
     border: 2px solid #333;
     cursor: pointer;
     background-size: cover;
-    background-position: center;
-    transition: 0.3s;
     filter: grayscale(1);
 }
 
-.class-card:hover,
-.class-card.active {
-    filter: grayscale(0);
+.card.active {
     border-color: var(--gold);
-    box-shadow: 0 0 15px var(--gold);
+    filter: grayscale(0);
     transform: scale(1.05);
 }
 
-.selection-container {
-    display: flex;
-    gap: 40px;
-    margin: 30px 0;
-    align-items: flex-start;
-}
-
-#detail-panel {
-    width: 280px;
+#class-info {
+    width: 220px;
     text-align: left;
-    border-left: 2px solid var(--gold);
-    padding-left: 30px;
-    min-height: 200px;
+    border-left: 1px solid var(--gold);
+    padding-left: 20px;
 }
 
-#launch-btn {
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    background: #111;
+    padding: 10px;
+    border: 1px solid #333;
+}
+
+button {
     background: var(--blood);
     color: #fff;
-    border: 2px solid var(--gold);
-    padding: 15px 50px;
+    border: 1px solid var(--gold);
+    padding: 12px 30px;
     cursor: pointer;
     font-family: 'MedievalSharp';
-    font-size: 1.1rem;
-}
-
-#launch-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }

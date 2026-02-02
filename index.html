@@ -3,43 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: DEFINITIVE PROTOCOL</title>
+    <title>THE ABYSS: EVOLUTION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 
 <body oncontextmenu="return false;">
     <div id="game-stage">
-        <div id="bg-void"></div>
+        <div id="parallax-bg">
+            <div class="layer bg-deep"></div>
+            <div class="layer bg-mid"></div>
+        </div>
 
-        <div id="hud-fixed">
+        <div id="hud">
             <div class="hud-left">
-                <div class="stat-container">
-                    <span class="stat-tag">VIT</span>
-                    <div class="bar-frame">
-                        <div id="hp-bar" class="fill hp-red"></div>
+                <div class="stat"><span class="lbl">VIT</span>
+                    <div class="bar">
+                        <div id="hp-bar" class="fill hp"></div>
                     </div>
                 </div>
-                <div class="stat-container">
-                    <span class="stat-tag">EXP</span>
-                    <div class="bar-frame">
-                        <div id="exp-bar" class="fill exp-blue"></div>
+                <div class="stat"><span class="lbl">EXP</span>
+                    <div class="bar">
+                        <div id="exp-bar" class="fill exp"></div>
                     </div>
                 </div>
-                <div id="mission-log">⚔️ TIẾN ĐỘ: <span id="kill-count">0/5</span></div>
+                <div id="lvl-tag">LV. 1</div>
             </div>
             <div class="hud-right">
-                <div class="val-unit">💰 <span id="gold-val">0</span></div>
-                <div class="val-unit">DEPTH: <span id="depth-val">1</span></div>
+                <div class="gold-ui">💰 <span id="gold-val">0</span></div>
+                <div class="danger-ui">DANGER: <span id="danger-val">1</span></div>
+                <div class="keys-ui">[H] HELP | [B] SHOP</div>
             </div>
         </div>
 
         <div id="camera">
             <div id="world">
-                <div id="player-entity">
-                    <div id="sprite"></div>
-                    <div id="weapon"></div>
-                    <div id="atk-fx"></div>
+                <div id="player">
+                    <div id="p-sprite"></div>
+                    <div id="p-weapon"></div>
+                    <div id="p-slash"></div>
+                    <div id="lvl-up-fx">LEVEL UP!</div>
                 </div>
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
@@ -48,16 +51,39 @@
         </div>
     </div>
 
-    <div id="gui-selection" class="overlay">
-        <div class="scroll-box">
-            <h1 class="fantasy-title">CHỌN LINH HỒN CHIẾN BINH</h1>
-            <div class="selection-container">
-                <div id="class-grid" class="grid-5x2"></div>
-                <div id="detail-panel">
-                    <div id="detail-content">Chọn một anh hùng để xem chỉ số...</div>
-                </div>
+    <div id="gui-select" class="overlay">
+        <div class="win">
+            <h1 class="f-title">CHỌN CHIẾN BINH</h1>
+            <div class="sel-grid-wrap">
+                <div id="class-grid"></div>
+                <div id="class-info"></div>
             </div>
-            <button id="launch-btn" disabled onclick="startGame()">BẮT ĐẦU HÀNH TRÌNH</button>
+            <button id="start-btn" disabled onclick="startGame()">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <div id="gui-help" class="overlay" style="display:none">
+        <div class="win small">
+            <h2>HƯỚNG DẪN</h2>
+            <p>[A][D]: Di chuyển | [Space]: Nhảy</p>
+            <p>[Chuột trái]: Tấn công</p>
+            <p>[B]: Cửa hàng | [H]: Đóng</p>
+            <button onclick="toggleGUI('gui-help')">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div id="gui-shop" class="overlay" style="display:none">
+        <div class="win small">
+            <h2 style="color:var(--gold)">CỬA HÀNG</h2>
+            <div class="shop-item">
+                <span>Hồi máu (100%)</span>
+                <button onclick="buy('heal')">200 💰</button>
+            </div>
+            <div class="shop-item">
+                <span>Tăng Công (+20)</span>
+                <button onclick="buy('atk')">500 💰</button>
+            </div>
+            <button onclick="toggleGUI('gui-shop')" style="margin-top:20px">THOÁT</button>
         </div>
     </div>
 
