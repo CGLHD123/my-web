@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: TOTAL INTEGRATION V2</title>
+    <title>THE ABYSS PROTOCOL: NEON EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -20,13 +20,10 @@
 
         <div id="quest-tracker">
             <div id="quest-title">📜 NHIỆM VỤ</div>
-            <div id="quest-desc">ĐANG TẢI...</div>
+            <div id="quest-desc">CHỜ KHỞI TẠO...</div>
             <div class="bar-bg" style="width:100%">
                 <div id="quest-fill" class="fill"></div>
             </div>
-        </div>
-
-        <div id="buff-timer" style="display:none">BUFF: <span id="buff-name"></span> (<span id="buff-val">0</span>s)
         </div>
 
         <div id="camera">
@@ -45,36 +42,31 @@
     </div>
 
     <div id="gui-selection" class="overlay">
-        <div class="pixel-window selection-window">
-            <h2 class="pixel-text">CHỌN CHIẾN BINH</h2>
-            <div class="selection-flex">
-                <div id="class-grid" class="grid-layout"></div>
-                <div id="info-box" class="stats-sidebar">
-                    <div id="info-content">Rê chuột vào class...</div>
+        <div class="pixel-window neon-window">
+            <h2 class="pixel-text neon-text">CHỌN CHIẾN BINH</h2>
+            <div class="selection-container">
+                <div id="class-grid" class="class-grid-2rows"></div>
+                <div id="info-box" class="neon-info-box">
+                    <div id="info-content">Rê chuột vào một class để xem chi tiết thông số...</div>
                 </div>
             </div>
-            <button id="start-btn" class="pixel-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
+            <button id="start-btn" class="pixel-btn neon-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
         </div>
     </div>
 
     <div id="gui-shop" class="overlay" style="display: none;">
-        <div class="pixel-window shop-window">
-            <h2 class="pixel-text" style="color:#ffd700">TIỆM RÈN VŨ KHÍ</h2>
+        <div class="pixel-window shop-window neon-window">
+            <h2 class="pixel-text" style="color:#ffd700">BLACK MARKET</h2>
             <div id="shop-items" class="shop-grid"></div>
-            <hr style="border:1px solid #333; margin:15px 0">
-            <div id="full-stats" style="text-align:left; font-size:12px"></div>
+            <div id="full-stats"></div>
             <button class="pixel-btn" onclick="toggleShop()"
-                style="background:#ff4444; width:100%; margin-top:10px">THOÁT (B)</button>
+                style="background:#ff4444; width:100%; margin-top:10px">ĐÓNG (B)</button>
         </div>
     </div>
 
     <div id="hud" style="display:none">
         <div class="hud-group">HP <div class="bar-bg">
                 <div id="hp-fill" class="fill hp"></div>
-            </div>
-        </div>
-        <div class="hud-group">XP <div class="bar-bg">
-                <div id="xp-fill" class="fill xp"></div>
             </div>
         </div>
         <div id="stats-line">💰 <span id="gold-val">0</span> | LVL: <span id="lvl-val">1</span></div>

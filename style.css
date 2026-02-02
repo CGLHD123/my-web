@@ -12,7 +12,7 @@ body {
     color: #fff;
 }
 
-/* XỬ LÝ NỀN KÍN MÀN HÌNH */
+/* NỀN KÍN */
 #bg-layers {
     position: fixed;
     inset: 0;
@@ -23,8 +23,7 @@ body {
     position: absolute;
     inset: 0;
     background-image: url('assets/icons/Brick_Wall.png');
-    background-size: 150px;
-    /* Lặp lại để kín nền */
+    background-size: 100px;
     background-repeat: repeat;
 }
 
@@ -32,103 +31,81 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 50%;
+    height: 60%;
     background-image: url('assets/icons/Stone_Path.png');
     background-size: cover;
-    /* Kéo dãn kín phần dưới */
-    opacity: 0.3;
+    opacity: 0.4;
 }
 
-#camera {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-}
-
-#world {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-
+/* GUI CHỌN CLASS */
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.pixel-window {
-    background: #1a1a1a;
-    padding: 25px;
-    border: 4px solid #444;
+.neon-window {
+    background: #000;
+    border: 3px solid var(--neon);
+    box-shadow: 0 0 20px var(--neon);
+    padding: 30px;
+    text-align: center;
 }
 
-#quest-tracker {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    width: 220px;
-    background: rgba(20, 20, 20, 0.9);
-    border: 2px solid #555;
-    padding: 10px;
+.selection-container {
+    display: flex;
+    gap: 30px;
+    margin: 20px 0;
+    align-items: flex-start;
 }
 
-#quest-title {
-    font-weight: bold;
-    color: #ffd700;
-    margin-bottom: 5px;
-    font-size: 12px;
-}
-
-/* QUÁI VẬT & MÁU TRÊN ĐẦU */
-.enemy-container {
-    position: absolute;
-    width: 45px;
-    height: 45px;
-}
-
-.enemy-sprite {
-    width: 100%;
-    height: 100%;
-    background: #911;
-    border: 2px solid #f00;
-}
-
-.health-bar-mini {
-    position: absolute;
-    top: -12px;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: #333;
-    border: 1px solid #000;
-}
-
-.health-fill-mini {
-    height: 100%;
-    background: #f00;
-    transition: 0.1s;
-}
-
-/* SHOP */
-.shop-grid {
+.class-grid-2rows {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(5, 80px);
+    grid-template-rows: repeat(2, 80px);
+    gap: 15px;
 }
 
-.shop-card {
-    background: #252525;
-    padding: 10px;
-    border: 1px solid #444;
-    font-size: 12px;
+.class-item {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #333;
+    cursor: pointer;
+    background-size: cover;
+    transition: 0.2s;
 }
 
-/* WEAPON & PLAYER */
+.class-item:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+}
+
+.class-item.active {
+    border-color: var(--neon);
+    box-shadow: 0 0 15px var(--neon);
+}
+
+.neon-info-box {
+    width: 250px;
+    height: 180px;
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid var(--neon);
+    padding: 15px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.neon-text {
+    color: var(--neon);
+    text-shadow: 0 0 10px var(--neon);
+    margin-bottom: 20px;
+}
+
+/* IN-GAME ELEMENTS */
 #player-container {
     position: absolute;
     width: 48px;
@@ -156,21 +133,49 @@ body {
     transform: rotate(15deg);
 }
 
+.enemy-container {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+}
+
+.enemy-sprite {
+    width: 100%;
+    height: 100%;
+    background: #911;
+    border: 2px solid #f00;
+}
+
+.health-bar-mini {
+    position: absolute;
+    top: -12px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: #222;
+    border: 1px solid #000;
+}
+
+.health-fill-mini {
+    height: 100%;
+    background: #f00;
+}
+
 .platform {
     position: absolute;
     background: #222;
-    border-top: 5px solid #666;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border-top: 4px solid #555;
 }
 
 .projectile {
     position: absolute;
-    pointer-events: none;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .pj-arrow {
     width: 20px;
-    height: 4px;
+    height: 5px;
     background: #d2b48c;
 }
 
@@ -182,13 +187,38 @@ body {
     box-shadow: 0 0 10px #44f;
 }
 
+#hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border: 1px solid var(--neon);
+}
+
 .pixel-btn {
-    padding: 8px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.neon-btn {
     background: var(--neon);
     color: #000;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
+    margin-top: 20px;
+}
+
+.neon-btn:disabled {
+    background: #444;
+    cursor: not-allowed;
+}
+
+.bar-bg {
+    width: 140px;
+    height: 10px;
+    background: #222;
+    display: inline-block;
 }
 
 .fill {
@@ -198,8 +228,4 @@ body {
 
 .hp {
     background: var(--hp);
-}
-
-.xp {
-    background: var(--xp);
 }
