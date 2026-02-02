@@ -1,59 +1,46 @@
 const classes = [
-    { id: 'scout', hp: 120, atk: 25, type: 'bow' },
-    { id: 'warrior', hp: 180, atk: 35, type: 'bow' },
-    { id: 'tanker', hp: 500, atk: 20, type: 'staff' },
-    { id: 'mage', hp: 100, atk: 90, type: 'staff' },
-    { id: 'rogue', hp: 130, atk: 60, type: 'bow' },
-    { id: 'cleric', hp: 160, atk: 35, type: 'staff' },
-    { id: 'berserker', hp: 250, atk: 70, type: 'bow' },
-    { id: 'archer', hp: 110, atk: 55, type: 'bow' },
-    { id: 'paladin', hp: 300, atk: 40, type: 'staff' },
-    { id: 'necro', hp: 120, atk: 60, type: 'staff' }
+    { id: 'scout', name: 'Trinh Sát', hp: 120, atk: 25, type: 'bow', desc: 'Tốc độ cực nhanh, chuyên gia bắn xa và cơ động.' },
+    { id: 'warrior', name: 'Chiến Binh', hp: 180, atk: 35, type: 'bow', desc: 'Dũng sĩ cận vệ với khả năng công thủ toàn diện.' },
+    { id: 'tanker', name: 'Đấu Sĩ', hp: 550, atk: 22, type: 'staff', desc: 'Lượng sinh mệnh khổng lồ, là bức tường thép.' },
+    { id: 'mage', name: 'Pháp Sư', hp: 100, atk: 98, type: 'staff', desc: 'Sức mạnh phép thuật hủy diệt nhưng sinh mệnh mỏng manh.' },
+    { id: 'rogue', name: 'Sát Thủ', hp: 140, atk: 68, type: 'bow', desc: 'Kẻ ám sát trong bóng đêm với những mũi tên chí mạng.' },
+    { id: 'cleric', name: 'Tu Sĩ', hp: 170, atk: 38, type: 'staff', desc: 'Người nắm giữ quyền năng năng lượng cổ đại.' },
+    { id: 'berserker', name: 'Cuồng Chiến', hp: 260, atk: 78, type: 'bow', desc: 'Càng chiến đấu càng hăng máu, sức mạnh vô song.' },
+    { id: 'archer', name: 'Cung Thủ', hp: 115, atk: 62, type: 'bow', desc: 'Bậc thầy cung nghệ với độ chính xác tuyệt đối.' },
+    { id: 'paladin', name: 'Hộ Vệ', hp: 320, atk: 48, type: 'staff', desc: 'Được các vị thần bảo hộ, sở hữu trượng năng lượng.' },
+    { id: 'necro', name: 'Pháp Sư Tối', hp: 130, atk: 68, type: 'staff', desc: 'Triệu hồi sức mạnh từ vực thẳm đen tối.' }
 ];
 
 let g = {
-    active: false, diff: 1, lastGenX: 0,
-    player: { x: 100, y: 300, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, coin: 0, lvl: 1, exp: 0, nextExp: 100, dir: 1, type: 'bow', canAtk: true, canDash: true, isDashing: false, combo: 0, berserkActive: false },
-    keys: {}, platforms: [], entities: [], projectiles: [], selected: null,
-    dashCooldownTimer: null, berserkTimer: null, comboResetTimer: null
+    active: false, lastGenX: 0,
+    player: { x: 100, y: 300, vx: 0, vy: 0, hp: 100, maxH: 100, atk: 10, coin: 0, lvl: 1, exp: 0, nextExp: 100, dir: 1, type: 'bow', canAtk: true, ground: false, combo: 0, berserk: false },
+    keys: {}, platforms: [], entities: [], projectiles: [], selected: null
 };
 
-// --- CONTROLS ---
-window.addEventListener('keydown', e => {
-    g.keys[e.code] = true;
-    if (e.code === 'KeyB') toggleShop();
-    if (e.code === 'KeyC') toggleStats();
-    if (e.code === 'ShiftLeft' && g.player.canDash && g.player.ground && !g.player.isDashing) {
-        dash();
-    }
-});
-window.addEventListener('keyup', e => g.keys[e.code] = false);
-window.addEventListener('mousedown', e => { if (e.button === 0) shoot(); });
-
-// --- UI TOGGLES ---
-function toggleShop() {
-    const s = document.getElementById('gui-shop');
-    s.style.display = s.style.display === 'none' ? 'flex' : 'none';
-    g.active = s.style.display === 'none';
-    if (g.active) loop();
-}
-
-function toggleStats() {
-    alert(`LEVEL: ${g.player.lvl}\nATK: ${g.player.atk}\nHP: ${Math.floor(g.player.hp)}/${g.player.maxH}`);
-}
-
-// --- GAME INITIALIZATION ---
+// --- CHỌN NHÂN VẬT ---
 function initSelection() {
     const grid = document.getElementById('class-grid');
+    const info = document.getElementById('info-content');
+
     classes.forEach(c => {
         const item = document.createElement('div');
         item.className = 'class-item';
         item.style.backgroundImage = `url('assets/thumbs/${c.id}.png')`;
+
+        item.onmouseenter = () => {
+            info.innerHTML = `
+                <div style="font-size: 22px; color: var(--neon); font-weight: bold; margin-bottom: 10px;">${c.name}</div>
+                <div style="color: #00ff00; margin-bottom: 5px;">MÁU: ${c.hp}</div>
+                <div style="color: #ff3e3e; margin-bottom: 5px;">CÔNG: ${c.atk}</div>
+                <div style="color: #ffcc00; margin-bottom: 15px;">VŨ KHÍ: ${c.type === 'bow' ? 'Cung Gỗ' : 'Trượng Phép'}</div>
+                <div style="font-style: italic; color: #aaa; line-height: 1.5; font-size: 14px;">"${c.desc}"</div>
+            `;
+        };
+
         item.onclick = () => {
             document.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
             item.classList.add('active');
             g.selected = c;
-            document.getElementById('class-details').innerHTML = `<strong>${c.id.toUpperCase()}</strong><br>Vũ khí: ${c.type === 'bow' ? 'Cung' : 'Trượng'}`;
             document.getElementById('start-btn').disabled = false;
         };
         grid.appendChild(item);
@@ -61,22 +48,59 @@ function initSelection() {
 }
 
 function initGame() {
-    const p = g.player;
-    const s = g.selected;
-    p.hp = p.maxH = s.hp;
-    p.atk = s.atk;
-    p.type = s.type;
+    const p = g.player; const s = g.selected;
+    p.hp = p.maxH = s.hp; p.atk = s.atk; p.type = s.type;
     document.getElementById('player-sprite').style.backgroundImage = `url('assets/thumbs/${s.id}.png')`;
     document.getElementById('weapon-visual').className = s.type === 'bow' ? 'weapon-bow' : 'weapon-staff';
     document.getElementById('gui-selection').style.display = 'none';
     document.getElementById('world').style.display = 'block';
-    createPlatform(0, 0, 2000, 50);
-    g.lastGenX = 2000;
-    g.active = true;
-    loop();
+    createPlatform(0, 0, 2500, 60); g.lastGenX = 2500;
+    g.active = true; loop();
 }
 
-// --- GAME CORE LOOP ---
+// --- CHIẾN ĐẤU & HIỆU ỨNG ---
+function shoot() {
+    if (!g.active || !g.player.canAtk) return;
+    g.player.canAtk = false;
+    const p = g.player;
+    const el = document.createElement('div');
+    const isBerserk = p.berserk;
+    el.className = `projectile ${p.type === 'bow' ? 'arrow' : 'magic-orb'}`;
+    if (isBerserk) el.style.filter = 'hue-rotate(150deg) brightness(1.5)';
+
+    document.getElementById('projectile-layer').appendChild(el);
+    g.projectiles.push({
+        x: p.x + (p.dir === 1 ? 50 : -20),
+        y: p.y + 25,
+        vx: p.dir * (isBerserk ? 25 : 18),
+        el: el,
+        atk: p.atk * (isBerserk ? 1.5 : 1),
+        active: true
+    });
+
+    setTimeout(() => g.player.canAtk = true, isBerserk ? 150 : 350);
+}
+
+function createParticles(x, y, color) {
+    for (let i = 0; i < 8; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = x + 'px'; p.style.bottom = y + 'px';
+        p.style.width = p.style.height = Math.random() * 6 + 2 + 'px';
+        p.style.background = color;
+        document.getElementById('particle-layer').appendChild(p);
+
+        const vx = (Math.random() - 0.5) * 10;
+        const vy = (Math.random() - 0.5) * 10;
+
+        p.animate([
+            { transform: 'translate(0,0)', opacity: 1 },
+            { transform: `translate(${vx * 15}px, ${vy * 15}px)`, opacity: 0 }
+        ], { duration: 600, easing: 'ease-out' }).onfinish = () => p.remove();
+    }
+}
+
+// --- LOGIC CHÍNH ---
 function loop() {
     if (!g.active) return;
     updatePlayer();
@@ -86,107 +110,29 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-// --- PLAYER ACTIONS ---
-function dash() {
-    const p = g.player;
-    p.canDash = false;
-    p.isDashing = true;
-    p.vx = p.dir * 30; // Tốc độ dash
-    // Tạo bóng mờ
-    for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-            const clone = document.createElement('div');
-            clone.className = 'dash-clone';
-            clone.style.backgroundImage = document.getElementById('player-sprite').style.backgroundImage;
-            clone.style.left = p.x + 'px';
-            clone.style.bottom = p.y + 'px';
-            clone.style.transform = `scaleX(${p.dir})`;
-            document.getElementById('player-container').appendChild(clone);
-            setTimeout(() => clone.remove(), 200);
-        }, i * 50);
-    }
-
-    // Thời gian dash ngắn
-    setTimeout(() => { p.isDashing = false; }, 150);
-
-    // Cooldown cho dash
-    document.getElementById('dash-cooldown').style.display = 'block';
-    let cd = 2;
-    document.getElementById('dash-cd-val').innerText = cd + 's';
-    g.dashCooldownTimer = setInterval(() => {
-        cd--;
-        document.getElementById('dash-cd-val').innerText = cd + 's';
-        if (cd <= 0) {
-            clearInterval(g.dashCooldownTimer);
-            p.canDash = true;
-            document.getElementById('dash-cooldown').style.display = 'none';
-        }
-    }, 1000);
-}
-
-
-function shoot() {
-    if (!g.active || !g.player.canAtk) return;
-    g.player.canAtk = false;
-
-    const p = g.player;
-    const el = document.createElement('div');
-    let projectileType = p.type === 'bow' ? 'arrow' : 'magic-orb';
-    let projectileColor = p.type === 'bow' ? 'gold' : 'neon'; // Màu mặc định cho particle
-    let atkMultiplier = 1;
-    let shootDelay = 350;
-
-    if (p.berserkActive) {
-        projectileType = p.type === 'bow' ? 'berserk-arrow' : 'berserk-orb';
-        projectileColor = 'berserk'; // Đỏ rực
-        atkMultiplier = 1.5; // Tăng sát thương
-        shootDelay = 150; // Tăng tốc độ bắn
-    }
-
-    el.className = `projectile ${projectileType}`;
-    document.getElementById('projectile-layer').appendChild(el);
-
-    g.projectiles.push({
-        x: p.x + (p.dir === 1 ? 50 : -20),
-        y: p.y + 25,
-        vx: p.dir * 18,
-        el: el,
-        atk: p.atk * atkMultiplier,
-        active: true,
-        color: projectileColor // Lưu màu particle
-    });
-
-    setTimeout(() => g.player.canAtk = true, shootDelay);
-}
-
-
-// --- UPDATE GAME STATE ---
 function updatePlayer() {
     const p = g.player;
-    if (g.keys['KeyA'] && !p.isDashing) { p.vx = -8; p.dir = -1; }
-    else if (g.keys['KeyD'] && !p.isDashing) { p.vx = 8; p.dir = 1; }
-    else if (!p.isDashing) p.vx *= 0.85;
+    if (g.keys['KeyA']) { p.vx = -8; p.dir = -1; }
+    else if (g.keys['KeyD']) { p.vx = 8; p.dir = 1; }
+    else p.vx *= 0.85;
 
-    if (g.keys['Space'] && p.ground) { p.vy = 20; p.ground = false; }
-    p.vy -= 0.9;
-    p.x += p.vx;
-    p.y += p.vy;
+    // DASH (Shift)
+    if (g.keys['ShiftLeft'] && Math.abs(p.vx) > 1) p.vx *= 1.5;
 
-    // Rơi vực tức thì
-    if (p.y < -200) die();
+    if (g.keys['Space'] && p.ground) { p.vy = 21; p.ground = false; }
+    p.vy -= 1.0; p.x += p.vx; p.y += p.vy;
+
+    if (p.y < -300) die();
 
     p.ground = false;
     g.platforms.forEach(plat => {
         if (p.x + 40 > plat.x && p.x < plat.x + plat.w) {
             if (p.vy <= 0 && p.y >= plat.y + plat.h - 15 && p.y <= plat.y + plat.h + 5) {
-                p.y = plat.y + plat.h;
-                p.vy = 0;
-                p.ground = true;
+                p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
             }
         }
     });
 
-    // Cập nhật UI
     const camX = -p.x + window.innerWidth / 2;
     document.getElementById('world').style.transform = `translateX(${camX}px)`;
     document.getElementById('player-container').style.left = p.x + 'px';
@@ -194,19 +140,9 @@ function updatePlayer() {
     document.getElementById('player-container').style.transform = `scaleX(${p.dir})`;
     document.getElementById('dist-val').innerText = Math.floor(p.x / 10);
     document.getElementById('hp-fill-main').style.width = (p.hp / p.maxH * 100) + '%';
+
     if (p.hp <= 0) die();
-
-    // Reset combo nếu không bắn trúng trong 1 giây
-    clearTimeout(g.comboResetTimer);
-    g.comboResetTimer = setTimeout(() => {
-        if (p.combo > 0) {
-            p.combo = 0;
-            document.getElementById('combo-meter').style.display = 'none';
-            if (p.berserkActive) disableBerserk();
-        }
-    }, 1000);
 }
-
 
 function updateProjectiles() {
     g.projectiles.forEach((pj, idx) => {
@@ -218,22 +154,16 @@ function updateProjectiles() {
         g.entities.forEach(en => {
             if (en.active && Math.abs(pj.x - en.x) < 40 && Math.abs(pj.y - en.y) < 60) {
                 en.hp -= pj.atk;
-                pj.active = false;
-                pj.el.remove();
-                createParticles(pj.x, pj.y, 10, pj.color); // Tạo hạt khi trúng đòn
+                createParticles(pj.x, pj.y, '#fff');
+                pj.active = false; pj.el.remove();
 
                 g.player.combo++;
-                updateComboUI();
-                if (g.player.combo >= 10 && !g.player.berserkActive) {
-                    activateBerserk();
-                }
+                updateCombo();
 
                 if (en.hp <= 0) {
-                    en.active = false;
-                    en.el.remove();
-                    g.player.coin += en.isBoss ? 200 : 50;
-                    g.player.exp += en.isBoss ? 250 : 60;
-                    createParticles(en.x, en.y, en.isBoss ? 50 : 20, en.isBoss ? 'berserk' : 'green'); // Nổ lớn hơn khi chết
+                    en.active = false; en.el.remove();
+                    createParticles(en.x, en.y, '#f00');
+                    g.player.coin += 50; g.player.exp += 50;
                     if (g.player.exp >= g.player.nextExp) levelUp();
                     updateUI();
                 } else {
@@ -241,80 +171,78 @@ function updateProjectiles() {
                 }
             }
         });
-        // Xóa đạn bay quá xa
-        if (Math.abs(pj.x - g.player.x) > 1000) {
-            pj.active = false;
-            pj.el.remove();
-            g.player.combo = 0; // Combo reset khi bắn trượt/đạn biến mất
-            updateComboUI();
-            if (g.player.berserkActive) disableBerserk();
-        }
+        if (Math.abs(pj.x - g.player.x) > 1200) { pj.active = false; pj.el.remove(); resetCombo(); }
     });
-    g.projectiles = g.projectiles.filter(pj => pj.active);
 }
 
 function updateEntities() {
     g.entities.forEach(en => {
         if (!en.active) return;
         let d = g.player.x - en.x;
-
-        if (en.type === 'normal') {
-            if (Math.abs(d) < 600) en.x += Math.sign(d) * 2.2;
-            if (Math.abs(d) < 45 && Math.abs(g.player.y - en.y) < 60 && !g.player.isDashing) g.player.hp -= 0.8;
-        } else if (en.type === 'sniper') {
-            if (Math.abs(d) < 800) {
-                if (en.canShoot && Math.abs(g.player.y - en.y) < 100) {
-                    shootEnemyProjectile(en.x, en.y + 20, Math.sign(d));
-                    en.canShoot = false;
-                    setTimeout(() => en.canShoot = true, 2000); // 2 giây cooldown
-                }
-            }
-        } else if (en.type === 'flying') {
-            en.y += Math.sin(en.x * 0.05) * 1.5; // Bay lượn sóng
-            if (Math.abs(d) < 700) {
-                en.x += Math.sign(d) * 1.5;
-                if (en.canBomb && Math.abs(g.player.y - en.y) < 300) {
-                    dropBomb(en.x, en.y);
-                    en.canBomb = false;
-                    setTimeout(() => en.canBomb = true, 3000); // 3 giây cooldown
-                }
-            }
+        if (Math.abs(d) < 600) en.x += Math.sign(d) * (2 + g.player.lvl * 0.2);
+        if (Math.abs(d) < 45 && Math.abs(g.player.y - en.y) < 60) {
+            g.player.hp -= 1.2;
+            resetCombo();
         }
-
-        en.el.style.left = en.x + 'px';
-        en.el.style.bottom = en.y + 'px';
+        en.el.style.left = en.x + 'px'; en.el.style.bottom = en.y + 'px';
     });
 }
 
-function createParticles(x, y, count, color) {
-    const particleLayer = document.getElementById('particle-layer');
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = `particle ${color}`;
-        p.style.left = x + 'px';
-        p.style.bottom = y + 'px';
-        const angle = Math.random() * 2 * Math.PI;
-        const speed = Math.random() * 5 + 2;
-        p.style.setProperty('--vx', `${Math.cos(angle) * speed}px`);
-        p.style.setProperty('--vy', `${Math.sin(angle) * speed}px`);
-        particleLayer.appendChild(p);
-        p.animate([
-            { transform: `translate(-50%, -50%) translate(0,0)`, opacity: 1 },
-            { transform: `translate(-50%, -50%) translate(${Math.cos(angle) * speed * 20}px, ${Math.sin(angle) * speed * 20}px)`, opacity: 0 }
-        ], {
-            duration: 800 + Math.random() * 400,
-            easing: 'ease-out',
-            fill: 'forwards'
-        }).onfinish = () => p.remove();
+function generateMap() {
+    if (g.player.x + 1200 > g.lastGenX) {
+        let x = g.lastGenX + 280;
+        let w = 500 + Math.random() * 500;
+        let y = Math.random() * 250;
+        createPlatform(x, y, w, 50);
+        if (Math.random() > 0.4) createEntity(x + w / 2, y + 70);
+        g.lastGenX = x + w;
     }
 }
 
+function createPlatform(x, y, w, h) {
+    const el = document.createElement('div'); el.className = 'platform';
+    el.style.left = x + 'px'; el.style.bottom = y + 'px';
+    el.style.width = w + 'px'; el.style.height = h + 'px';
+    document.getElementById('world').appendChild(el);
+    g.platforms.push({ x, y, w, h, el });
+}
 
-function shootEnemyProjectile(x, y, dir) {
-    const el = document.createElement('div');
-    el.className = 'projectile enemy-bullet'; // Thêm class cho đạn địch
-    document.getElementById('projectile-layer').appendChild(el);
-    g.projectiles.push({
-        x, y,
-        vx: dir * 10,
-        el,
+function createEntity(x, y) {
+    const el = document.createElement('div'); el.className = 'entity';
+    el.style.width = '45px'; el.style.height = '50px'; el.style.position = 'absolute';
+    const hp = 80 + (g.player.lvl * 20);
+    el.innerHTML = `<div class="monster-sprite" style="width:100%;height:100%;background:#1a5e1a;border:2px solid #000"></div><div class="m-hp-bar"><div class="m-hp-fill"></div></div>`;
+    document.getElementById('entity-layer').appendChild(el);
+    g.entities.push({ x, y, hp, mH: hp, el, active: true });
+}
+
+function updateUI() {
+    document.getElementById('ui-lvl').innerText = g.player.lvl;
+    document.getElementById('ui-coin').innerText = g.player.coin;
+    document.getElementById('exp-fill').style.width = (g.player.exp / g.player.nextExp * 100) + '%';
+}
+
+function updateCombo() {
+    const c = document.getElementById('combo-meter');
+    c.style.display = 'block';
+    document.getElementById('combo-val').innerText = g.player.combo;
+    if (g.player.combo >= 10) {
+        g.player.berserk = true;
+        document.getElementById('berserk-mode').style.display = 'block';
+    }
+}
+
+function resetCombo() {
+    g.player.combo = 0;
+    g.player.berserk = false;
+    document.getElementById('combo-meter').style.display = 'none';
+    document.getElementById('berserk-mode').style.display = 'none';
+}
+
+function die() { alert("NHIỆM VỤ THẤT BẠI!"); location.reload(); }
+function levelUp() { g.player.lvl++; g.player.exp -= g.player.nextExp; g.player.nextExp *= 1.7; g.player.maxH += 60; g.player.hp = g.player.maxH; }
+
+window.addEventListener('keydown', e => g.keys[e.code] = true);
+window.addEventListener('keyup', e => g.keys[e.code] = false);
+window.addEventListener('mousedown', e => { if (e.button === 0) shoot(); });
+window.onload = initSelection;

@@ -1,23 +1,22 @@
 :root {
     --neon: #00f2ff;
     --exp: #ff00ff;
-    --danger: #ff4444;
-    --gold: #ffd700;
     --hp: #00ff00;
-    --berserk: #ff0000;
-    /* Màu cho Berserk Mode */
+    --gold: #ffd700;
+    --danger: #ff4444;
+    --berserk: #ff3e3e;
 }
 
 body {
     margin: 0;
     background: #000;
     overflow: hidden;
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Lexend', sans-serif;
     color: #fff;
     user-select: none;
 }
 
-/* --- HUD & Thanh trạng thái --- */
+/* UI Game */
 .hud-left-top {
     position: fixed;
     top: 20px;
@@ -29,24 +28,29 @@ body {
 }
 
 .exp-container {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 12px;
     border: 2px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .label-tiny {
-    font-size: 8px;
-    margin-bottom: 2px;
-    color: #aaa;
+    font-size: 10px;
+    margin-bottom: 4px;
+    color: #bbb;
+    font-weight: bold;
 }
 
 .exp-bar,
 .hp-bar-main {
-    width: 220px;
-    height: 12px;
+    width: 260px;
+    height: 14px;
     background: #222;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    overflow: hidden;
     border: 1px solid #555;
-    margin-bottom: 5px;
 }
 
 #exp-fill {
@@ -68,282 +72,45 @@ body {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
+    font-weight: bold;
     color: var(--neon);
-    font-size: 20px;
-    text-shadow: 2px 2px #000;
+    font-size: 22px;
     z-index: 1000;
+    text-shadow: 0 0 10px var(--neon);
 }
 
-.hud-right-top {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-/* --- Combo & Berserk Mode --- */
 #combo-meter {
     position: fixed;
-    top: 70px;
-    /* Dưới distance meter */
+    top: 80px;
     left: 50%;
     transform: translateX(-50%);
     color: var(--gold);
-    font-size: 16px;
-    text-shadow: 1px 1px #000;
-    z-index: 1001;
+    font-size: 18px;
     display: none;
-    /* Mặc định ẩn */
 }
 
 #berserk-mode {
     position: fixed;
-    top: 100px;
+    top: 110px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 36px;
     color: var(--berserk);
-    text-shadow: 0 0 15px var(--berserk);
-    animation: berserkPulse 0.5s infinite alternate;
-    z-index: 1002;
-    display: none;
+    font-size: 30px;
+    font-weight: bold;
+    animation: pulse 0.5s infinite alternate;
 }
 
-@keyframes berserkPulse {
+@keyframes pulse {
     from {
         transform: translateX(-50%) scale(1);
-        opacity: 1;
     }
 
     to {
         transform: translateX(-50%) scale(1.1);
-        opacity: 0.8;
     }
 }
 
-
-/* --- Thế giới & Nền --- */
-#game-stage {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    /* Quan trọng để giữ particle trong khung */
-}
-
-#parallax-far {
-    position: absolute;
-    width: 500%;
-    height: 100%;
-    background: radial-gradient(circle, #161625 0%, #000 80%);
-    z-index: 1;
-}
-
-#world {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-    z-index: 10;
-}
-
-.platform {
-    position: absolute;
-    background: #1a1a1a;
-    border-top: 4px solid #444;
-}
-
-/* --- Player & Vũ khí --- */
-#player-container {
-    position: absolute;
-    width: 50px;
-    height: 70px;
-    z-index: 100;
-}
-
-#player-sprite {
-    width: 50px;
-    height: 50px;
-    background-size: cover;
-    background-position: center;
-    image-rendering: pixelated;
-    border: 2px solid #fff;
-    position: relative;
-}
-
-/* Hiệu ứng bóng mờ Dash */
-.dash-clone {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background-size: cover;
-    background-position: center;
-    image-rendering: pixelated;
-    opacity: 0.4;
-    transition: transform 0.2s, opacity 0.2s;
-    z-index: 99;
-    filter: brightness(0.5);
-}
-
-
-#weapon-visual {
-    position: absolute;
-    right: -10px;
-    top: 15px;
-    width: 30px;
-    height: 30px;
-}
-
-.weapon-bow {
-    border-radius: 50% 0 0 50%;
-    border-left: 5px solid #8b4513;
-    border-top: 2px solid transparent;
-    border-bottom: 2px solid transparent;
-}
-
-.weapon-staff {
-    width: 6px !important;
-    height: 45px !important;
-    background: #4b0082;
-    border: 2px solid var(--neon);
-    box-shadow: 0 0 10px var(--neon);
-    top: 0 !important;
-}
-
-/* Projectiles */
-.projectile {
-    position: absolute;
-    z-index: 99;
-    pointer-events: none;
-}
-
-.arrow {
-    width: 20px;
-    height: 4px;
-    background: var(--gold);
-    border-radius: 2px;
-}
-
-.magic-orb {
-    width: 16px;
-    height: 16px;
-    background: var(--neon);
-    border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon);
-}
-
-.projectile.berserk-arrow {
-    background: var(--berserk);
-    box-shadow: 0 0 15px var(--berserk);
-}
-
-.projectile.berserk-orb {
-    background: var(--berserk);
-    box-shadow: 0 0 20px var(--berserk);
-}
-
-/* --- Entities (Quái vật) --- */
-.entity {
-    position: absolute;
-    width: 45px;
-    height: 50px;
-    z-index: 50;
-}
-
-.monster-sprite {
-    width: 100%;
-    height: 100%;
-    background: #1a5e1a;
-    /* Default Goblin color */
-    border: 2px solid #000;
-    image-rendering: pixelated;
-}
-
-/* Quái bắn tỉa */
-.entity.sniper-goblin .monster-sprite {
-    background: #5e1a1a;
-    /* Màu khác để phân biệt */
-}
-
-/* Quái bay */
-.entity.flying-eye {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #8e44ad;
-    /* Màu tím */
-    border: 2px solid #000;
-    box-shadow: 0 0 10px #8e44ad;
-}
-
-.m-hp-bar {
-    width: 100%;
-    height: 6px;
-    background: #333;
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    border: 1px solid #000;
-}
-
-.m-hp-fill {
-    height: 100%;
-    background: #f00;
-    width: 100%;
-}
-
-/* --- Particle System --- */
-#particle-layer {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    /* Không chặn click */
-}
-
-.particle {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background: white;
-    border-radius: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    /* căn giữa */
-    animation: fadeOut 0.8s forwards;
-}
-
-.particle.red {
-    background: var(--berserk);
-}
-
-.particle.neon {
-    background: var(--neon);
-}
-
-.particle.gold {
-    background: var(--gold);
-}
-
-.particle.green {
-    background: var(--hp);
-}
-
-/* Màu xanh lá khi quái thường chết */
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-
-    to {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.5);
-    }
-}
-
-/* --- Menu & Overlay --- */
+/* Selection Interface */
 .overlay {
     position: fixed;
     inset: 0;
@@ -354,52 +121,167 @@ body {
     align-items: center;
 }
 
-.pixel-window {
-    background: #111;
-    border: 4px solid #444;
-    padding: 30px;
-    text-align: center;
-    max-width: 600px;
+.selection-window {
+    width: 950px;
+    border-radius: 20px;
+    border: 3px solid #333;
+    background: #0f0f0f;
 }
 
-.grid-left {
+.selection-flex {
+    display: flex;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.grid-layout {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 15px;
-    margin-top: 20px;
 }
 
 .class-item {
-    width: 80px;
-    height: 80px;
-    border: 3px solid #333;
+    width: 100px;
+    height: 100px;
+    border: 3px solid #444;
+    border-radius: 12px;
     cursor: pointer;
     background-size: cover;
     background-position: center;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     image-rendering: pixelated;
+}
+
+.class-item:hover {
+    border-color: #fff;
+    transform: translateY(-5px);
 }
 
 .class-item.active {
     border-color: var(--neon);
-    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--neon);
+    transform: scale(1.05);
 }
 
-.pixel-btn {
-    font-family: inherit;
-    background: #222;
-    color: #fff;
-    border: 2px solid #555;
-    padding: 10px;
-    cursor: pointer;
-    margin: 5px;
-    font-size: 10px;
+.stats-sidebar {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid #333;
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 250px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.stats-sidebar h3 {
+    color: var(--gold);
+    margin-top: 0;
+    border-bottom: 2px solid #444;
+    padding-bottom: 15px;
+    letter-spacing: 2px;
 }
 
 .main-btn {
-    padding: 15px 50px;
+    padding: 15px 80px;
     font-family: inherit;
+    font-weight: bold;
+    font-size: 20px;
     background: var(--neon);
     border: none;
     cursor: pointer;
-    font-weight: bold;
+    border-radius: 50px;
+    transition: 0.3s;
+    color: #000;
+    box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
+}
+
+.main-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    background: #fff;
+}
+
+.main-btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Game Elements */
+#player-sprite {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    position: relative;
+}
+
+.weapon-bow {
+    position: absolute;
+    right: -10px;
+    top: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50% 0 0 50%;
+    border-left: 5px solid #8b4513;
+}
+
+.weapon-staff {
+    position: absolute;
+    right: -5px;
+    top: 5px;
+    width: 8px;
+    height: 45px;
+    background: #4b0082;
+    border: 2px solid var(--neon);
+    box-shadow: 0 0 10px var(--neon);
+}
+
+.projectile {
+    position: absolute;
+    border-radius: 10px;
+}
+
+.arrow {
+    width: 25px;
+    height: 5px;
+    background: var(--gold);
+}
+
+.magic-orb {
+    width: 18px;
+    height: 18px;
+    background: var(--neon);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--neon);
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.m-hp-bar {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.m-hp-fill {
+    height: 100%;
+    background: #f00;
+    width: 100%;
+}
+
+.platform {
+    position: absolute;
+    background: #1a1a1a;
+    border-top: 4px solid #555;
 }
