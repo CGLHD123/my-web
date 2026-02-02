@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ABYSS PROTOCOL: ULTIMATE FANTASY</title>
+    <title>THE ABYSS PROTOCOL: DARK EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
@@ -11,28 +11,30 @@
 <body oncontextmenu="return false;">
     <div id="game-stage">
         <div id="bg-layers">
-            <div class="bg-wall"></div>
-            <div class="bg-floor"></div>
+            <div class="bg-dark-void"></div>
+            <div class="bg-wall-texture"></div>
         </div>
 
-        <div id="hud-top">
-            <div id="stats-left">
-                <div class="stat-bar"><span class="label">HP</span>
-                    <div class="bar">
-                        <div id="hp-fill" class="fill hp"></div>
+        <div id="hud-top-fixed">
+            <div class="hud-left">
+                <div class="hud-unit">
+                    <span class="hud-label">VIT</span>
+                    <div class="hud-bar-frame hp-frame">
+                        <div id="hp-fill" class="fill hp-gradient"></div>
                     </div>
                 </div>
-                <div class="stat-bar"><span class="label">EXP</span>
-                    <div class="bar">
-                        <div id="exp-fill" class="fill exp"></div>
+                <div class="hud-unit">
+                    <span class="hud-label">EXP</span>
+                    <div class="hud-bar-frame exp-frame">
+                        <div id="exp-fill" class="fill exp-gradient"></div>
                     </div>
                 </div>
-                <div id="quest-box">📜 <span id="quest-text">Khởi hành...</span></div>
+                <div id="quest-tag">📜 <span id="quest-desc">Searching Abyss...</span></div>
             </div>
-            <div id="stats-right">
-                <div>💰 <span id="gold-val">0</span></div>
-                <div>☠️ TẦNG <span id="danger-val">1</span></div>
-                <div class="hint">[H] TRỢ GIÚP | [B] SHOP</div>
+            <div class="hud-right">
+                <div class="gold-counter">💰 <span id="gold-val">0</span></div>
+                <div class="floor-counter">DEPTH: <span id="danger-val">1</span></div>
+                <div class="system-hints">[H] HELP | [B] SHOP</div>
             </div>
         </div>
 
@@ -53,21 +55,12 @@
 
     <div id="gui-selection" class="overlay">
         <div class="fantasy-window">
-            <h1 class="title">CHỌN CHIẾN BINH</h1>
-            <div class="selection-flex">
+            <h1 class="ornate-title">SELECT ARCHETYPE</h1>
+            <div class="selection-grid-wrap">
                 <div id="class-grid" class="class-grid"></div>
-                <div id="info-panel" class="info-panel">Chọn linh hồn...</div>
+                <div id="info-side" class="info-side">Select your soul...</div>
             </div>
-            <button id="start-btn" class="fantasy-btn" disabled onclick="initGame()">BẮT ĐẦU</button>
-        </div>
-    </div>
-
-    <div id="gui-help" class="overlay" style="display:none">
-        <div class="fantasy-window small">
-            <h2>HƯỚNG DẪN</h2>
-            <p>[A][D]: Di chuyển | [Space]: Nhảy</p>
-            <p>[Chuột trái]: Tấn công | [B]: Cửa hàng</p>
-            <button class="fantasy-btn" onclick="toggleHelp()">ĐÓNG</button>
+            <button id="start-btn" class="start-btn" disabled onclick="initGame()">ENTER THE ABYSS</button>
         </div>
     </div>
 

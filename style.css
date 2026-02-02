@@ -1,7 +1,7 @@
 :root {
-    --gold: #ffd700;
-    --red: #8b0000;
-    --bg: #0d0d0d;
+    --gold: #c5a059;
+    --blood: #7b0000;
+    --void: #050505;
 }
 
 body {
@@ -9,126 +9,150 @@ body {
     background: #000;
     overflow: hidden;
     font-family: 'MedievalSharp', cursive;
-    color: #fff;
 }
 
-/* NỀN ĐA LỚP */
+/* NỀN ĐEN THẨM MỸ */
 #bg-layers div {
     position: absolute;
     inset: 0;
 }
 
-.bg-wall {
-    background: url('assets/icons/Brick_Wall.png') repeat;
-    background-size: 100px;
-    filter: brightness(0.2);
+.bg-dark-void {
+    background: radial-gradient(circle at center, #111 0%, #000 100%);
     z-index: -2;
 }
 
-.bg-floor {
-    background: url('assets/icons/Stone_Path.png') repeat-x bottom;
-    background-size: contain;
-    opacity: 0.4;
+.bg-wall-texture {
+    background: url('assets/icons/Brick_Wall.png') repeat;
+    background-size: 150px;
+    opacity: 0.1;
+    filter: brightness(0.5);
     z-index: -1;
 }
 
-/* HUD GÓC TRÊN */
-#hud-top {
+/* HUD GÓC TRÊN CỐ ĐỊNH */
+#hud-top-fixed {
     position: fixed;
-    top: 20px;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 100px;
     display: flex;
     justify-content: space-between;
-    padding: 0 30px;
+    align-items: flex-start;
+    padding: 20px 40px;
     z-index: 1000;
     pointer-events: none;
 }
 
-#stats-left,
-#stats-right {
+.hud-left,
+.hud-right {
     pointer-events: all;
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid var(--gold);
-    padding: 10px;
-    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--gold);
+    padding: 12px;
+    border-radius: 4px;
 }
 
-.stat-bar {
+.hud-unit {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
-.label {
-    width: 40px;
+.hud-label {
     color: var(--gold);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    width: 35px;
+    letter-spacing: 1px;
 }
 
-.bar {
-    width: 150px;
+.hud-bar-frame {
+    width: 180px;
     height: 10px;
-    background: #222;
-    border: 1px solid #444;
+    background: #111;
+    border: 1px solid #333;
+    overflow: hidden;
+    position: relative;
 }
 
 .fill {
     height: 100%;
-    transition: 0.3s;
+    transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
-.hp {
-    background: #f00;
-    box-shadow: 0 0 10px #f00;
+.hp-gradient {
+    background: linear-gradient(90deg, #600, #f22);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
 }
 
-.exp {
-    background: #00f;
-    box-shadow: 0 0 10px #00f;
+.exp-gradient {
+    background: linear-gradient(90deg, #004, #04f);
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.4);
 }
 
-#quest-box {
+#quest-tag {
+    color: #888;
+    font-size: 0.85rem;
+    border-top: 1px solid #333;
+    padding-top: 5px;
     margin-top: 5px;
-    font-size: 0.9rem;
-    color: #ccc;
 }
 
-.hint {
+.hud-right {
+    text-align: right;
+    color: var(--gold);
+}
+
+.gold-counter {
+    font-size: 1.2rem;
+    color: #ffd700;
+    text-shadow: 0 0 5px #000;
+}
+
+.system-hints {
     font-size: 0.7rem;
-    color: #aaa;
+    opacity: 0.6;
     margin-top: 5px;
 }
 
-/* GAMEPLAY */
+/* THẾ GIỚI GAME SÁT MÉP DƯỚI */
+#camera {
+    position: absolute;
+    inset: 0;
+}
+
 #player-container {
     position: absolute;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
+    z-index: 100;
 }
 
 #player-sprite {
     width: 100%;
     height: 100%;
     background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #weapon-sprite {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     right: -15px;
     top: 0;
     background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #melee-effect {
     position: absolute;
-    width: 80px;
-    height: 80px;
-    right: -65px;
-    top: -15px;
-    border-right: 5px solid #fff;
+    width: 90px;
+    height: 90px;
+    right: -75px;
+    top: -20px;
+    border-right: 6px solid rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     opacity: 0;
 }
@@ -140,49 +164,52 @@ body {
 @keyframes slash {
     0% {
         opacity: 1;
-        transform: rotate(-30deg);
+        transform: rotate(-35deg);
     }
 
     100% {
         opacity: 0;
-        transform: rotate(40deg);
+        transform: rotate(45deg);
     }
 }
 
+/* PHƯƠNG TIỆN VÀ VẬT THỂ */
 .platform {
     position: absolute;
-    background: #1a1a1a;
-    border-top: 4px solid #443;
-    box-shadow: 0 -5px 15px #000;
+    background: #151515;
+    border-top: 3px solid #333;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 1);
 }
 
-.boss {
+.boss-unit {
     transform: scale(2);
-    border: 2px solid #f00 !important;
+    border: 2px solid var(--blood) !important;
+    filter: hue-rotate(-20deg) brightness(0.8);
 }
 
-.chest {
+.chest-unit {
     position: absolute;
     width: 40px;
-    height: 30px;
+    height: 35px;
     background: var(--gold);
-    border: 2px solid #432;
-    box-shadow: 0 0 10px var(--gold);
+    border: 2px solid #321;
+    box-shadow: 0 0 15px var(--gold);
 }
 
-.spark {
+.spark-fx {
     position: absolute;
     width: 4px;
     height: 4px;
-    background: #ff0;
+    background: #ffd700;
     border-radius: 50%;
+    pointer-events: none;
 }
 
-/* GUI */
+/* SELECTION UI */
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     z-index: 2000;
     display: flex;
     justify-content: center;
@@ -190,40 +217,60 @@ body {
 }
 
 .fantasy-window {
-    background: var(--bg);
+    background: #0a0a0a;
     border: 4px double var(--gold);
-    padding: 30px;
+    padding: 40px;
+    max-width: 900px;
     text-align: center;
+}
+
+.ornate-title {
+    font-size: 2.2rem;
+    color: var(--gold);
+    text-shadow: 0 0 10px #000;
+    margin-bottom: 30px;
+}
+
+.selection-grid-wrap {
+    display: flex;
+    gap: 30px;
 }
 
 .class-grid {
     display: grid;
-    grid-template-columns: repeat(5, 85px);
-    gap: 10px;
+    grid-template-columns: repeat(5, 90px);
+    gap: 15px;
 }
 
 .class-item {
-    width: 85px;
-    height: 85px;
-    border: 2px solid #444;
+    width: 90px;
+    height: 90px;
+    border: 2px solid #333;
     cursor: pointer;
     background-size: cover;
-    filter: grayscale(1);
-    transition: 0.2s;
+    filter: grayscale(0.8);
+    transition: 0.3s;
 }
 
 .class-item.active {
     border-color: var(--gold);
     filter: grayscale(0);
-    box-shadow: 0 0 15px var(--gold);
+    box-shadow: 0 0 20px var(--gold);
 }
 
-.fantasy-btn {
-    background: var(--red);
+.info-side {
+    width: 250px;
+    border-left: 2px solid var(--gold);
+    padding-left: 25px;
+    text-align: left;
+}
+
+.start-btn {
+    background: var(--blood);
     color: #fff;
     border: 2px solid var(--gold);
-    padding: 10px 30px;
+    padding: 12px 50px;
+    margin-top: 30px;
     cursor: pointer;
-    margin-top: 20px;
     font-family: 'MedievalSharp';
 }
