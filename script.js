@@ -1,191 +1,184 @@
 const classes = [
-    { id: 'scout', hp: 160, atk: 35, color: '#1a432e', type: 'ranged', wp: 'Hunting_Bow.png', thumb: 'Scout.png' },
-    { id: 'warrior', hp: 450, atk: 95, color: '#4a0e0e', type: 'melee', wp: 'Nihonto.png', thumb: 'Warrior.png' },
-    { id: 'tanker', hp: 1400, atk: 45, color: '#2b2b2b', type: 'melee', wp: 'Battle_Axe.png', thumb: 'Tanker.png' },
-    { id: 'mage', hp: 150, atk: 240, color: '#0a1a4a', type: 'ranged', wp: 'Wandering_Staff.png', thumb: 'Mage.png' },
-    { id: 'rogue', hp: 220, atk: 170, color: '#1a0d0a', type: 'melee', wp: 'Knife.png', thumb: 'Rogue.png' },
-    { id: 'cleric', hp: 380, atk: 85, color: '#b8860b', type: 'ranged', wp: 'Wandering_Staff.png', thumb: 'Cleric.png' },
-    { id: 'archer', hp: 200, atk: 150, color: '#5c4033', type: 'ranged', wp: 'Hunting_Bow.png', thumb: 'Archer.png' },
-    { id: 'necro', hp: 280, atk: 190, color: '#1a0033', type: 'ranged', wp: 'Wandering_Staff.png', thumb: 'Necromancer.png' },
-    { id: 'paladin', hp: 700, atk: 115, color: '#d3d3d3', type: 'melee', wp: 'Nihonto.png', thumb: 'Paladin.png' },
-    { id: 'berserker', hp: 550, atk: 210, color: '#800000', type: 'melee', wp: 'Battle_Axe.png', thumb: 'Berserker.png' }
+    { id: 'warrior', hp: 500, atk: 80, wp: 'Nihonto.png', thumb: 'Warrior.png', type: 'melee', color: '#600' },
+    { id: 'mage', hp: 150, atk: 200, wp: 'Wandering_Staff.png', thumb: 'Mage.png', type: 'ranged', color: '#006' },
+    { id: 'scout', hp: 200, atk: 60, wp: 'Hunting_Bow.png', thumb: 'Scout.png', type: 'ranged', color: '#060' },
+    { id: 'tanker', hp: 1200, atk: 40, wp: 'Battle_Axe.png', thumb: 'Tanker.png', type: 'melee', color: '#444' },
+    { id: 'rogue', hp: 250, atk: 120, wp: 'Knife.png', thumb: 'Rogue.png', type: 'melee', color: '#222' },
+    { id: 'cleric', hp: 300, atk: 70, wp: 'Wandering_Staff.png', thumb: 'Cleric.png', type: 'ranged', color: '#860' },
+    { id: 'archer', hp: 220, atk: 130, wp: 'Hunting_Bow.png', thumb: 'Archer.png', type: 'ranged', color: '#530' },
+    { id: 'necro', hp: 280, atk: 150, wp: 'Wandering_Staff.png', thumb: 'Necromancer.png', type: 'ranged', color: '#304' },
+    { id: 'paladin', hp: 700, atk: 100, wp: 'Nihonto.png', thumb: 'Paladin.png', type: 'melee', color: '#ddd' },
+    { id: 'berserker', hp: 550, atk: 180, wp: 'Battle_Axe.png', thumb: 'Berserker.png', type: 'melee', color: '#a00' }
 ];
 
 let g = {
-    active: false, time: 0, danger: 1,
-    player: { x: 100, y: 50, vx: 0, vy: 0, hp: 100, maxH: 100, exp: 0, atk: 10, speed: 7, gold: 0, dir: 1, ground: false },
-    quest: { target: 5, current: 0 },
-    keys: {}, platforms: [], enemies: [], projectiles: [], items: [], lastX: 0, lastY: 0
+    active: false,
+    player: { x: 100, y: 50, vx: 0, vy: 0, hp: 100, maxH: 100, exp: 0, gold: 0, dir: 1, ground: false },
+    platforms: [], enemies: [], pjs: [],
+    keys: {}, lastX: 0, danger: 1, time: 0
 };
 
 window.onload = () => {
     const grid = document.getElementById('class-grid');
     classes.forEach(c => {
-        const el = document.createElement('div'); el.className = 'class-item';
-        el.style.backgroundImage = `url('assets/thumbs/${c.thumb}')`;
-        el.onclick = () => {
-            document.querySelectorAll('.class-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active'); g.selected = c;
+        const btn = document.createElement('div');
+        btn.className = 'class-btn';
+        btn.style.backgroundImage = `url('assets/thumbs/${c.thumb}')`;
+        btn.onclick = () => {
+            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            g.selected = c;
             document.getElementById('start-btn').disabled = false;
-            document.getElementById('info-side').innerHTML = `<h2 style="color:var(--gold)">${c.id.toUpperCase()}</h2><p>TYPE: ${c.type.toUpperCase()}</p><p>HP: ${c.hp}<br>ATK: ${c.atk}</p>`;
+            document.getElementById('class-info').innerHTML = `<h3>${c.id.toUpperCase()}</h3><p>HP: ${c.hp}<br>ATK: ${c.atk}</p>`;
         };
-        grid.appendChild(el);
+        grid.appendChild(btn);
     });
 };
 
-function initGame() {
+function startGame() {
     const s = g.selected;
-    Object.assign(g.player, { hp: s.hp, maxH: s.hp, atk: s.atk });
-    document.getElementById('weapon-sprite').style.backgroundImage = `url('assets/weapons/${s.wp}')`;
+    Object.assign(g.player, { hp: s.hp, maxH: s.hp });
     document.getElementById('player-sprite').style.backgroundColor = s.color;
+    document.getElementById('weapon-sprite').style.backgroundImage = `url('assets/weapons/${s.wp}')`;
+    document.getElementById('gui-select').style.display = 'none';
 
-    // Khởi tạo sàn sát đáy màn hình (y: 0)
-    createPlatform(0, 0, 2000, 50);
-    g.lastX = 2000; g.lastY = 0;
-    for (let i = 0; i < 6; i++) generateNextPlatform();
+    // Tạo map ban đầu
+    createPlat(0, 0, 2000, 50); g.lastX = 2000;
+    for (let i = 0; i < 5; i++) spawnMap();
 
-    document.getElementById('gui-selection').style.display = 'none';
-    document.getElementById('world').style.display = 'block';
     g.active = true;
-    setInterval(() => { if (g.active) { g.time++; updateWorld(); } }, 1000);
     requestAnimationFrame(loop);
+    setInterval(() => { if (g.active) g.time++; g.danger = Math.floor(g.time / 60) + 1; }, 1000);
 }
 
-function generateNextPlatform() {
-    const gapX = 160 + Math.random() * 120, gapY = (Math.random() - 0.5) * 40;
-    let newY = Math.max(0, Math.min(100, g.lastY + gapY)); // Giữ map ở tầm thấp
-    const newW = 500 + Math.random() * 300;
-    createPlatform(g.lastX + gapX, newY, newW, 50);
+function spawnMap() {
+    const w = 400 + Math.random() * 300;
+    const x = g.lastX + 150 + Math.random() * 100;
+    const y = Math.random() * 80; // Giữ map ở tầm thấp
+    createPlat(x, y, w, 50);
 
-    if (g.platforms.length % 5 === 0) spawnEnemy(g.lastX + gapX + 250, newY + 50, true);
-    else {
-        spawnEnemy(g.lastX + gapX + 150, newY + 50, false);
-        if (Math.random() > 0.6) spawnChest(g.lastX + gapX + 350, newY + 50);
-    }
-    g.lastX += gapX + newW; g.lastY = newY;
+    // Spawn quái hoặc rương
+    if (Math.random() > 0.3) spawnEnemy(x + w / 2, y + 50);
+    else spawnChest(x + w / 2, y + 50);
+
+    g.lastX = x + w;
 }
 
-function spawnEnemy(x, y, isBoss) {
-    const el = document.createElement('div'); el.className = 'enemy-container' + (isBoss ? ' boss-unit' : '');
-    el.style.cssText = `position:absolute; width:45px; height:45px; bottom:${y}px; left:${x}px; background:#200; border:1px solid #900;`;
-    document.getElementById('entity-layer').appendChild(el);
-    g.enemies.push({ x, y, hp: (isBoss ? 800 : 100) * g.danger, el, active: true, dir: 1, isBoss, start: x - 120, end: x + 120 });
-}
-
-function spawnChest(x, y) {
-    const el = document.createElement('div'); el.className = 'chest-unit';
-    el.style.left = x + 'px'; el.style.bottom = y + 'px';
-    document.getElementById('entity-layer').appendChild(el);
-    g.items.push({ x, y, el, active: true });
-}
-
-function handleAttack() {
-    if (!g.active) return;
-    const p = g.player; const s = g.selected;
-    if (s.type === 'melee') {
-        document.getElementById('melee-effect').classList.add('slash-anim');
-        setTimeout(() => document.getElementById('melee-effect').classList.remove('slash-anim'), 150);
-        g.enemies.forEach(en => {
-            if (en.active && Math.abs((p.x + p.dir * 50) - en.x) < 95 && Math.abs(p.y - en.y) < 60) damageEnemy(en);
-        });
-    } else {
-        const pj = document.createElement('div');
-        pj.style.cssText = `position:absolute; background:var(--gold); width:25px; height:4px; left:${p.x + 20}px; bottom:${p.y + 25}px; box-shadow:0 0 10px gold;`;
-        document.getElementById('projectile-layer').appendChild(pj);
-        g.projectiles.push({ x: p.x + 20, y: p.y + 25, vx: p.dir * 22, startX: p.x, el: pj });
-    }
-}
-
-function damageEnemy(en) {
-    en.hp -= g.player.atk; createSpark(en.x + 20, en.y + 20);
-    if (en.hp <= 0) {
-        en.active = false; en.el.remove();
-        g.player.gold += en.isBoss ? 800 : 70;
-        g.player.exp += en.isBoss ? 200 : 40;
-        g.quest.current++; updateQuest();
-    }
-}
-
-function createSpark(x, y) {
-    for (let i = 0; i < 6; i++) {
-        const s = document.createElement('div'); s.className = 'spark-fx';
-        document.getElementById('fx-layer').appendChild(s);
-        let sx = x, sy = y, vx = (Math.random() - 0.5) * 15, vy = (Math.random() - 0.5) * 15;
-        const anim = setInterval(() => { sx += vx; sy += vy; vy -= 0.5; s.style.left = sx + 'px'; s.style.bottom = sy + 'px'; }, 20);
-        setTimeout(() => { s.remove(); clearInterval(anim); }, 400);
-    }
-}
-
-function update() {
-    const p = g.player;
-    if (g.keys['KeyD']) { p.vx = p.speed; p.dir = 1; }
-    else if (g.keys['KeyA']) { p.vx = -p.speed; p.dir = -1; }
-    else p.vx *= 0.82;
-    if (g.keys['Space'] && p.ground) { p.vy = 16; p.ground = false; }
-    p.vy -= 0.85; p.x += p.vx; p.y += p.vy;
-
-    p.ground = false;
-    g.platforms.forEach(plat => {
-        if (p.x + 30 > plat.x && p.x < plat.x + plat.w && p.vy <= 0 && p.y >= plat.y + plat.h - 10 && p.y <= plat.y + plat.h + 5) {
-            p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
-        }
-    });
-
-    g.enemies.forEach(en => {
-        if (!en.active) return;
-        en.x += en.dir * (en.isBoss ? 1.8 : 2.8);
-        if (en.x > en.end || en.x < en.start) en.dir *= -1;
-        en.el.style.left = en.x + 'px';
-        if (Math.abs(p.x - en.x) < 40 && Math.abs(p.y - en.y) < 40) p.hp -= en.isBoss ? 2.5 : 0.7;
-    });
-
-    g.items.forEach((it, i) => {
-        if (it.active && Math.abs(p.x - it.x) < 45 && Math.abs(p.y - it.y) < 45) {
-            it.active = false; it.el.remove(); g.player.gold += 400;
-        }
-    });
-
-    g.projectiles.forEach((pj, i) => {
-        pj.x += pj.vx; pj.el.style.left = pj.x + 'px';
-        g.enemies.forEach(en => {
-            if (en.active && Math.abs(pj.x - en.x) < 40 && Math.abs(pj.y - en.y) < 40) {
-                damageEnemy(en); pj.el.remove(); g.projectiles.splice(i, 1);
-            }
-        });
-        if (Math.abs(pj.x - pj.startX) > 850) { pj.el.remove(); g.projectiles.splice(i, 1); }
-    });
-
-    if (p.x + 1200 > g.lastX) generateNextPlatform();
-    if (p.y < -300 || p.hp <= 0) location.reload();
-}
-
-function updateQuest() {
-    if (g.quest.current >= g.quest.target) { g.player.gold += 1200; g.quest.target += 5; g.quest.current = 0; }
-    document.getElementById('quest-desc').innerText = `Slaying Entities: ${g.quest.current}/${g.quest.target}`;
-}
-
-function draw() {
-    const p = g.player;
-    const cont = document.getElementById('player-container');
-    cont.style.left = p.x + 'px'; cont.style.bottom = p.y + 'px';
-    cont.style.transform = `scaleX(${p.dir})`;
-    document.getElementById('world').style.transform = `translateX(${-p.x + 200}px)`;
-    document.getElementById('hp-fill').style.width = (p.hp / p.maxH * 100) + '%';
-    document.getElementById('exp-fill').style.width = (p.exp % 100) + '%';
-    document.getElementById('gold-val').innerText = g.player.gold;
-    document.getElementById('danger-val').innerText = g.danger;
-}
-
-function createPlatform(x, y, w, h) {
-    const el = document.createElement('div'); el.className = 'platform';
-    el.style.left = x + 'px'; el.style.bottom = y + 'px'; el.style.width = w + 'px'; el.style.height = h + 'px';
+function createPlat(x, y, w, h) {
+    const el = document.createElement('div');
+    el.className = 'platform';
+    el.style.cssText = `left:${x}px; bottom:${y}px; width:${w}px; height:${h}px;`;
     document.getElementById('platform-layer').appendChild(el);
     g.platforms.push({ x, y, w, h });
 }
 
-function updateWorld() { g.danger = Math.floor(g.time / 60) + 1; }
-function loop() { if (g.active) { update(); draw(); requestAnimationFrame(loop); } }
+function spawnEnemy(x, y) {
+    const isBoss = Math.random() > 0.8;
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute; left:${x}px; bottom:${y}px; width:40px; height:40px; background:#300; border:2px solid red;`;
+    if (isBoss) el.style.transform = 'scale(2)';
+    document.getElementById('entity-layer').appendChild(el);
+    g.enemies.push({ x, y, hp: isBoss ? 500 : 100, el, active: true, isBoss });
+}
 
-window.addEventListener('mousedown', e => { if (e.button === 0) handleAttack(); });
-window.addEventListener('keydown', e => g.keys[e.code] = true);
-window.addEventListener('keyup', e => g.keys[e.code] = false);
+function spawnChest(x, y) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute; left:${x}px; bottom:${y}px; width:30px; height:25px; background:gold; border:2px solid #540;`;
+    document.getElementById('entity-layer').appendChild(el);
+    g.enemies.push({ x, y, hp: 1, el, active: true, isChest: true });
+}
+
+function attack() {
+    const p = g.player; const s = g.selected;
+    if (s.type === 'melee') {
+        const fx = document.getElementById('slash-fx');
+        fx.classList.add('slash-active');
+        setTimeout(() => fx.classList.remove('slash-active'), 150);
+        g.enemies.forEach(en => {
+            if (en.active && Math.abs((p.x + p.dir * 50) - en.x) < 80 && Math.abs(p.y - en.y) < 60) damage(en);
+        });
+    } else {
+        const pjEl = document.createElement('div');
+        pjEl.style.cssText = `position:absolute; left:${p.x}px; bottom:${p.y + 20}px; width:20px; height:5px; background:yellow;`;
+        document.getElementById('fx-layer').appendChild(pjEl);
+        g.pjs.push({ x: p.x, y: p.y + 20, vx: p.dir * 15, el: pjEl });
+    }
+}
+
+function damage(en) {
+    en.hp -= g.selected.atk;
+    if (en.hp <= 0 && en.active) {
+        en.active = false; en.el.remove();
+        if (en.isChest) g.player.gold += 200;
+        else { g.player.gold += 50; g.player.exp += 30; }
+        updateQuest();
+    }
+}
+
+function updateQuest() {
+    const count = g.enemies.filter(e => !e.active && !e.isChest).length;
+    document.getElementById('quest-val').innerText = `${count % 5}/5`;
+    if (count > 0 && count % 5 === 0) g.player.gold += 500;
+}
+
+function loop() {
+    if (!g.active) return;
+    const p = g.player;
+
+    // Di chuyển
+    if (g.keys['KeyD']) { p.vx = 7; p.dir = 1; }
+    else if (g.keys['KeyA']) { p.vx = -7; p.dir = -1; }
+    else p.vx *= 0.8;
+
+    if (g.keys['Space'] && p.ground) { p.vy = 15; p.ground = false; }
+
+    p.vy -= 0.8; p.x += p.vx; p.y += p.vy;
+    p.ground = false;
+
+    // Va chạm sàn
+    g.platforms.forEach(plat => {
+        if (p.x + 40 > plat.x && p.x < plat.x + plat.w && p.vy <= 0 && p.y >= plat.y + plat.h - 10 && p.y <= plat.y + plat.h + 5) {
+            p.y = plat.y + plat.h; p.vy = 0; p.ground = true;
+        }
+    });
+
+    // Đạn
+    g.pjs.forEach((pj, i) => {
+        pj.x += pj.vx; pj.el.style.left = pj.x + 'px';
+        g.enemies.forEach(en => {
+            if (en.active && Math.abs(pj.x - en.x) < 40 && Math.abs(pj.y - en.y) < 40) {
+                damage(en); pj.el.remove(); g.pjs.splice(i, 1);
+            }
+        });
+    });
+
+    // Camera & Sinh Map
+    if (p.x + 1000 > g.lastX) spawnMap();
+    if (p.y < -200 || p.hp <= 0) location.reload();
+
+    draw();
+    requestAnimationFrame(loop);
+}
+
+function draw() {
+    const p = g.player;
+    const node = document.getElementById('player-node');
+    node.style.left = p.x + 'px';
+    node.style.bottom = p.y + 'px';
+    node.style.transform = `scaleX(${p.dir})`;
+
+    document.getElementById('world').style.transform = `translateX(${-p.x + 100}px)`;
+    document.getElementById('hp-fill').style.width = (p.hp / p.maxH * 100) + '%';
+    document.getElementById('exp-fill').style.width = (p.exp % 100) + '%';
+    document.getElementById('gold-val').innerText = p.gold;
+    document.getElementById('danger-val').innerText = g.danger;
+}
+
+function toggleHelp() {
+    const h = document.getElementById('gui-help');
+    h.style.display = h.style.display === 'none' ? 'flex' : 'none';
+}
+
+window.onkeydown = e => { g.keys[e.code] = true; if (e.code === 'KeyH') toggleHelp(); };
+window.onkeyup = e => g.keys[e.code] = false;
+window.onmousedown = e => { if (e.button === 0) attack(); };
