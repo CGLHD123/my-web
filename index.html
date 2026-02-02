@@ -3,16 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: ULTIMATE</title>
+    <title>THE ABYSS PROTOCOL: ASSET EDITION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body oncontextmenu="return false;">
     <div id="game-stage">
-        <div id="parallax-bg">
-            <div class="layer bg-grid"></div>
+        <div id="bg-layers">
+            <div class="bg-wall"></div>
+            <div class="bg-path"></div>
         </div>
+
         <div id="danger-overlay">DANGER: <span id="danger-val">1</span> | <span id="time-val">00:00</span></div>
 
         <div id="quest-tracker">
@@ -29,6 +31,7 @@
             <div id="world" style="display: none;">
                 <div id="player-container">
                     <div id="player-sprite"></div>
+                    <div id="weapon-sprite"></div>
                     <div id="melee-effect"></div>
                 </div>
                 <div id="platform-layer"></div>
@@ -71,12 +74,9 @@
                 <div class="stats-sidebar">
                     <h2 class="pixel-text">CHỈ SỐ</h2>
                     <div id="full-stats"></div>
-                    <button class="pixel-btn" onclick="toggleHelp()"
-                        style="margin-top:10px; font-size:10px; background:#444">HELP (H)</button>
                 </div>
             </div>
-            <button class="pixel-btn" onclick="toggleShop()" style="background:#ff4444; margin-top:15px;">ĐÓNG
-                (B)</button>
+            <button class="pixel-btn" onclick="toggleShop()" style="background:#ff4444; margin-top:15px;">ĐÓNG</button>
         </div>
     </div>
 
@@ -87,10 +87,6 @@
         </div>
         <div class="hud-group">XP <div class="bar-bg">
                 <div id="xp-fill" class="fill xp"></div>
-            </div>
-        </div>
-        <div class="hud-group">ULT <div class="bar-bg">
-                <div id="ult-fill" class="fill ult"></div>
             </div>
         </div>
         <div id="stats-line">💰 <span id="gold-val">0</span> | LVL: <span id="lvl-val">1</span></div>

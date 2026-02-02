@@ -2,16 +2,39 @@
     --neon: #00f2ff;
     --hp: #ff3e3e;
     --xp: #e100ff;
-    --ult: #ff8c00;
 }
 
 body {
     margin: 0;
-    background: #000;
+    background: #111;
     overflow: hidden;
     font-family: 'Lexend', sans-serif;
     color: #fff;
-    user-select: none;
+}
+
+/* Nền tạo từ nhiều Assets xếp chồng */
+#bg-layers {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+.bg-wall {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/icons/Brick_Wall.png');
+    background-repeat: repeat;
+    opacity: 0.4;
+}
+
+.bg-path {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 300px;
+    background-image: url('assets/icons/Stone_Path.png');
+    background-repeat: repeat-x;
+    opacity: 0.2;
 }
 
 #camera {
@@ -29,7 +52,7 @@ body {
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.85);
     z-index: 2000;
     display: flex;
     justify-content: center;
@@ -37,9 +60,9 @@ body {
 }
 
 .pixel-window {
-    background: #111;
+    background: #1a1a1a;
     padding: 25px;
-    border: 4px solid #333;
+    border: 4px solid #444;
     text-align: center;
 }
 
@@ -47,69 +70,21 @@ body {
     position: fixed;
     top: 10px;
     right: 20px;
-    width: 220px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #444;
-    padding: 10px;
+    width: 200px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #555;
+    padding: 8px;
     font-size: 11px;
-    z-index: 1000;
 }
 
 #buff-timer {
     position: fixed;
-    top: 75px;
+    top: 80px;
     right: 20px;
     background: #004400;
     border: 1px solid #0f0;
-    padding: 5px 10px;
+    padding: 5px;
     font-size: 12px;
-    z-index: 1000;
-}
-
-#quest-fill {
-    background: #ffd700;
-    width: 0%;
-    height: 5px;
-    transition: 0.3s;
-}
-
-.selection-window {
-    width: 750px;
-}
-
-.selection-flex {
-    display: flex;
-    gap: 20px;
-    margin-top: 15px;
-}
-
-.grid-layout {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-}
-
-.class-item {
-    width: 75px;
-    height: 75px;
-    border: 2px solid #444;
-    cursor: pointer;
-    background-size: cover;
-    image-rendering: pixelated;
-}
-
-.class-item.active {
-    border-color: var(--neon);
-    box-shadow: 0 0 10px var(--neon);
-}
-
-.stats-sidebar {
-    width: 220px;
-    background: #0a0a0a;
-    border: 1px solid #333;
-    padding: 15px;
-    text-align: left;
-    font-size: 13px;
 }
 
 #player-container {
@@ -127,16 +102,28 @@ body {
     background-repeat: no-repeat;
 }
 
+/* Vũ khí trên tay */
+#weapon-sprite {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    right: -10px;
+    top: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    transform: rotate(15deg);
+}
+
 #melee-effect {
     position: absolute;
-    width: 65px;
-    height: 65px;
-    top: -8px;
-    right: -45px;
+    width: 70px;
+    height: 70px;
+    top: -10px;
+    right: -50px;
     border-radius: 50%;
     border-right: 6px solid #fff;
     opacity: 0;
-    pointer-events: none;
 }
 
 .slash-anim {
@@ -147,81 +134,101 @@ body {
 
 .platform {
     position: absolute;
-    background: #1a1a1a;
-    border-top: 4px solid #444;
+    background: #222;
+    border-top: 5px solid #555;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .enemy {
     position: absolute;
-    width: 42px;
-    height: 42px;
-    background: #600;
-    border: 2px solid #f00;
-}
-
-.boss {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    background: #300;
-    border: 4px solid #f00;
-    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    background: #822;
+    border: 2px solid #f22;
 }
 
 .chest {
     position: absolute;
-    width: 40px;
-    height: 35px;
-    background: #864;
+    width: 35px;
+    height: 30px;
+    background: #b82;
     border: 2px solid #ffd700;
+    color: #ffd700;
+    font-size: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffd700;
-    font-size: 9px;
 }
 
+/* Projectiles từ assets/weapons/ */
 .projectile {
     position: absolute;
-    pointer-events: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
 }
 
 .pj-arrow {
     width: 25px;
-    height: 3px;
-    background: #d2b48c;
+    height: 8px;
+    background-image: url('assets/weapons/Hunting_Bow.png');
 }
 
 .pj-magic {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    background-image: url('assets/weapons/Wandering_Staff.png');
     border-radius: 50%;
-    background: #4444ff;
-    box-shadow: 0 0 15px #4444ff;
+    box-shadow: 0 0 10px #44f;
 }
 
 .pj-fire {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
+    background: #f40;
     border-radius: 50%;
-    background: #ff4500;
+    box-shadow: 0 0 20px #f00;
 }
 
-#hud {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
+.selection-window {
+    width: 700px;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.class-item {
+    width: 70px;
+    height: 70px;
     border: 2px solid #333;
+    cursor: pointer;
+    background-size: cover;
+    image-rendering: pixelated;
 }
 
-.bar-bg {
-    width: 140px;
-    height: 10px;
-    background: #222;
-    display: inline-block;
-    margin-left: 8px;
+.class-item.active {
+    border-color: var(--neon);
+    box-shadow: 0 0 15px var(--neon);
+}
+
+.stats-sidebar {
+    width: 200px;
+    background: #000;
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #333;
+}
+
+.pixel-btn {
+    padding: 10px 20px;
+    background: var(--neon);
+    color: #000;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .fill {
@@ -235,17 +242,4 @@ body {
 
 .xp {
     background: var(--xp);
-}
-
-.ult {
-    background: var(--ult);
-}
-
-.pixel-btn {
-    padding: 10px 20px;
-    background: var(--neon);
-    color: #000;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
 }
