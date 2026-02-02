@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS PROTOCOL: NEON EDITION</title>
+    <title>THE ABYSS PROTOCOL: STABLE ORIGIN</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -15,12 +15,11 @@
             <div class="bg-path-stretch"></div>
         </div>
 
-        <div id="danger-overlay">KHU VỰC NGUY HIỂM: <span id="danger-val">1</span> | <span id="time-val">00:00</span>
-        </div>
+        <div id="danger-overlay">DANGER: <span id="danger-val">1</span> | <span id="time-val">00:00</span></div>
 
         <div id="quest-tracker">
-            <div id="quest-title">📜 NHIỆM VỤ</div>
-            <div id="quest-desc">CHỜ KHỞI TẠO...</div>
+            <div id="quest-title">📜 NHIỆM VỤ AUTO</div>
+            <div id="quest-desc">KHỞI TẠO...</div>
             <div class="bar-bg" style="width:100%">
                 <div id="quest-fill" class="fill"></div>
             </div>
@@ -31,12 +30,10 @@
                 <div id="player-container">
                     <div id="player-sprite"></div>
                     <div id="weapon-sprite"></div>
-                    <div id="melee-effect"></div>
                 </div>
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
                 <div id="projectile-layer"></div>
-                <div id="drop-layer"></div>
             </div>
         </div>
     </div>
@@ -47,7 +44,7 @@
             <div class="selection-container">
                 <div id="class-grid" class="class-grid-2rows"></div>
                 <div id="info-box" class="neon-info-box">
-                    <div id="info-content">Rê chuột vào một class để xem chi tiết thông số...</div>
+                    <div id="info-content">Rê chuột vào Class...</div>
                 </div>
             </div>
             <button id="start-btn" class="pixel-btn neon-btn" disabled onclick="initGame()">XUẤT QUÂN</button>
@@ -58,7 +55,6 @@
         <div class="pixel-window shop-window neon-window">
             <h2 class="pixel-text" style="color:#ffd700">BLACK MARKET</h2>
             <div id="shop-items" class="shop-grid"></div>
-            <div id="full-stats"></div>
             <button class="pixel-btn" onclick="toggleShop()"
                 style="background:#ff4444; width:100%; margin-top:10px">ĐÓNG (B)</button>
         </div>
@@ -67,6 +63,10 @@
     <div id="hud" style="display:none">
         <div class="hud-group">HP <div class="bar-bg">
                 <div id="hp-fill" class="fill hp"></div>
+            </div>
+        </div>
+        <div class="hud-group">ULT <div class="bar-bg">
+                <div id="ult-fill" class="fill ult"></div>
             </div>
         </div>
         <div id="stats-line">💰 <span id="gold-val">0</span> | LVL: <span id="lvl-val">1</span></div>
