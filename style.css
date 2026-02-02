@@ -1,52 +1,65 @@
+:root {
+    --gold: #c5a059;
+    --blood: #8e0000;
+    --dark: #0a0a0c;
+}
+
 body {
     margin: 0;
     background: #000;
     overflow: hidden;
-    font-family: 'MedievalSharp', serif;
+    font-family: 'MedievalSharp', cursive;
     color: #fff;
 }
 
-#bg-black {
+#bg-void {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle, #111, #000);
+    background: radial-gradient(circle, #151515 0%, #000 100%);
     z-index: -1;
 }
 
 /* HUD GÓC TRÊN */
-#hud-top {
+#hud-fixed {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px;
+    padding: 25px 40px;
     display: flex;
     justify-content: space-between;
-    z-index: 100;
+    z-index: 1000;
     pointer-events: none;
 }
 
-.hud-group {
+.hud-left,
+.hud-right {
     pointer-events: auto;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #c5a059;
-    padding: 10px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--gold);
+    padding: 12px;
+    border-radius: 2px;
 }
 
-.stat-line {
+.stat-container {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
-    font-size: 12px;
-    color: #c5a059;
+    margin-bottom: 8px;
 }
 
-.bar {
-    width: 150px;
-    height: 8px;
-    background: #222;
-    margin-left: 10px;
-    border: 1px solid #444;
+.stat-tag {
+    width: 40px;
+    color: var(--gold);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.bar-frame {
+    width: 200px;
+    height: 10px;
+    background: #111;
+    border: 1px solid #333;
+    overflow: hidden;
 }
 
 .fill {
@@ -54,74 +67,71 @@ body {
     transition: 0.3s;
 }
 
-.hp {
-    background: #b00;
+.hp-red {
+    background: linear-gradient(90deg, #600, #f00);
     box-shadow: 0 0 10px #f00;
 }
 
-.exp {
-    background: #00b;
+.exp-blue {
+    background: linear-gradient(90deg, #004, #00f);
     box-shadow: 0 0 10px #00f;
 }
 
-#quest-ui {
-    pointer-events: auto;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 10px;
-    border: 1px solid #c5a059;
-    height: fit-content;
+#mission-log {
+    color: #888;
+    font-size: 0.85rem;
+    border-top: 1px solid #222;
+    margin-top: 5px;
+    padding-top: 5px;
 }
 
-/* THẾ GIỚI - MAP SÁT ĐÁY */
+.val-unit {
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 5px;
+}
+
+/* THẾ GIỚI GAME SÁT ĐÁY */
 #camera {
     position: absolute;
     inset: 0;
 }
 
-#player-node {
+#player-entity {
     position: absolute;
     width: 50px;
     height: 50px;
-    transition: transform 0.1s;
+    z-index: 10;
 }
 
-#player-sprite {
+#sprite {
     width: 100%;
     height: 100%;
-    background: #444;
     border-radius: 4px;
 }
 
-#weapon-sprite {
+#weapon {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     right: -15px;
     top: 0;
     background-size: contain;
     background-repeat: no-repeat;
 }
 
-.platform {
+#atk-fx {
     position: absolute;
-    background: #1a1a1a;
-    border-top: 3px solid #c5a059;
-}
-
-/* HIỆU ỨNG */
-#slash-fx {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    right: -60px;
-    top: -15px;
-    border-right: 4px solid #fff;
+    width: 100px;
+    height: 100px;
+    right: -75px;
+    top: -25px;
+    border-right: 5px solid #fff;
     border-radius: 50%;
     opacity: 0;
-    pointer-events: none;
 }
 
-.slash-active {
+.slash-anim {
     animation: slash 0.15s ease-out;
 }
 
@@ -133,60 +143,95 @@ body {
 
     100% {
         opacity: 0;
-        transform: rotate(30deg);
+        transform: rotate(45deg);
     }
 }
 
-/* GUI */
+.platform {
+    position: absolute;
+    background: #1a1a1a;
+    border-top: 3px solid #333;
+}
+
+.enemy {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background: #200;
+    border: 1px solid #f00;
+}
+
+/* GRID CHỌN CLASS 5 CỘT x 2 DÒNG */
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
-.window {
-    background: #0a0a0a;
-    border: 3px double #c5a059;
-    padding: 30px;
+.scroll-box {
+    background: var(--dark);
+    border: 4px double var(--gold);
+    padding: 40px;
     text-align: center;
+    max-width: 950px;
 }
 
-.select-layout {
-    display: flex;
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.class-grid {
+.grid-5x2 {
     display: grid;
-    grid-template-columns: repeat(5, 80px);
-    gap: 10px;
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(2, 100px);
+    gap: 15px;
 }
 
-.class-btn {
-    width: 80px;
-    height: 80px;
+.class-card {
+    width: 100px;
+    height: 100px;
     border: 2px solid #333;
     cursor: pointer;
     background-size: cover;
+    background-position: center;
+    transition: 0.3s;
     filter: grayscale(1);
 }
 
-.class-btn.active {
-    border-color: #c5a059;
+.class-card:hover,
+.class-card.active {
     filter: grayscale(0);
-    box-shadow: 0 0 15px #c5a059;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold);
+    transform: scale(1.05);
 }
 
-button {
-    background: #7b0000;
+.selection-container {
+    display: flex;
+    gap: 40px;
+    margin: 30px 0;
+    align-items: flex-start;
+}
+
+#detail-panel {
+    width: 280px;
+    text-align: left;
+    border-left: 2px solid var(--gold);
+    padding-left: 30px;
+    min-height: 200px;
+}
+
+#launch-btn {
+    background: var(--blood);
     color: #fff;
-    border: 1px solid #c5a059;
-    padding: 10px 20px;
+    border: 2px solid var(--gold);
+    padding: 15px 50px;
     cursor: pointer;
     font-family: 'MedievalSharp';
+    font-size: 1.1rem;
+}
+
+#launch-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

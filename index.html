@@ -3,41 +3,43 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>THE ABYSS: FIXED PROTOCOL</title>
+    <title>THE ABYSS: DEFINITIVE PROTOCOL</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     <div id="game-stage">
-        <div id="bg-black"></div>
+        <div id="bg-void"></div>
 
-        <div id="hud-top">
-            <div class="hud-group">
-                <div class="stat-line"><span>VIT</span>
-                    <div class="bar">
-                        <div id="hp-fill" class="fill hp"></div>
+        <div id="hud-fixed">
+            <div class="hud-left">
+                <div class="stat-container">
+                    <span class="stat-tag">VIT</span>
+                    <div class="bar-frame">
+                        <div id="hp-bar" class="fill hp-red"></div>
                     </div>
                 </div>
-                <div class="stat-line"><span>EXP</span>
-                    <div class="bar">
-                        <div id="exp-fill" class="fill exp"></div>
+                <div class="stat-container">
+                    <span class="stat-tag">EXP</span>
+                    <div class="bar-frame">
+                        <div id="exp-bar" class="fill exp-blue"></div>
                     </div>
                 </div>
+                <div id="mission-log">⚔️ TIẾN ĐỘ: <span id="kill-count">0/5</span></div>
             </div>
-            <div id="quest-ui">📜 MISSION: <span id="quest-val">0/5</span></div>
-            <div class="hud-group" style="text-align:right">
-                <div id="gold-ui">💰 <span id="gold-val">0</span></div>
-                <div id="lv-ui">DEPTH: <span id="danger-val">1</span></div>
+            <div class="hud-right">
+                <div class="val-unit">💰 <span id="gold-val">0</span></div>
+                <div class="val-unit">DEPTH: <span id="depth-val">1</span></div>
             </div>
         </div>
 
         <div id="camera">
             <div id="world">
-                <div id="player-node">
-                    <div id="player-sprite"></div>
-                    <div id="weapon-sprite"></div>
-                    <div id="slash-fx"></div>
+                <div id="player-entity">
+                    <div id="sprite"></div>
+                    <div id="weapon"></div>
+                    <div id="atk-fx"></div>
                 </div>
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
@@ -46,23 +48,16 @@
         </div>
     </div>
 
-    <div id="gui-select" class="overlay">
-        <div class="window">
-            <h2>CHỌN CHIẾN BINH</h2>
-            <div class="select-layout">
-                <div id="class-grid"></div>
-                <div id="class-info"></div>
+    <div id="gui-selection" class="overlay">
+        <div class="scroll-box">
+            <h1 class="fantasy-title">CHỌN LINH HỒN CHIẾN BINH</h1>
+            <div class="selection-container">
+                <div id="class-grid" class="grid-5x2"></div>
+                <div id="detail-panel">
+                    <div id="detail-content">Chọn một anh hùng để xem chỉ số...</div>
+                </div>
             </div>
-            <button id="start-btn" disabled onclick="startGame()">VÀO CÕI CHẾT</button>
-        </div>
-    </div>
-
-    <div id="gui-help" class="overlay" style="display:none">
-        <div class="window small">
-            <h3>HƯỚNG DẪN</h3>
-            <p>[A][D]: Di chuyển | [Space]: Nhảy</p>
-            <p>[Chuột trái]: Tấn công | [H]: Đóng</p>
-            <button onclick="toggleHelp()">ĐÓNG</button>
+            <button id="launch-btn" disabled onclick="startGame()">BẮT ĐẦU HÀNH TRÌNH</button>
         </div>
     </div>
 
