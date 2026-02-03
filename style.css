@@ -38,24 +38,111 @@ body {
 
 .bg-deep {
     background: linear-gradient(180deg, #0a0015 0%, #1a0030 50%, #0a0015 100%);
+    transition: background 2s ease;
 }
 
 .bg-mountains {
-    background: repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(100, 100, 150, 0.1) 40px, rgba(100, 100, 150, 0.1) 80px);
+    background: repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 40px,
+            rgba(100, 100, 150, 0.1) 40px,
+            rgba(100, 100, 150, 0.1) 80px);
+    transition: background 2s ease;
 }
 
 .bg-clouds {
-    background: radial-gradient(ellipse 100px 30px at 20% 30%, rgba(255, 255, 255, 0.02), transparent),
-        radial-gradient(ellipse 150px 40px at 60% 60%, rgba(255, 255, 255, 0.02), transparent);
+    background:
+        radial-gradient(ellipse 100px 30px at 20% 30%, rgba(255, 255, 255, 0.02), transparent),
+        radial-gradient(ellipse 150px 40px at 60% 60%, rgba(255, 255, 255, 0.02), transparent),
+        radial-gradient(ellipse 120px 35px at 80% 40%, rgba(255, 255, 255, 0.015), transparent);
+    transition: background 2s ease;
 }
 
 .bg-stars {
     background-image:
         radial-gradient(2px 2px at 20% 30%, white, transparent),
         radial-gradient(2px 2px at 60% 70%, white, transparent),
-        radial-gradient(1px 1px at 50% 50%, white, transparent);
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 20%, white, transparent),
+        radial-gradient(2px 2px at 30% 80%, white, transparent);
     background-size: 200% 200%;
     animation: twinkle 4s infinite;
+}
+
+/* Zone 1 - Purple Abyss */
+.zone-1 .bg-deep {
+    background: linear-gradient(180deg, #0a0015 0%, #1a0030 50%, #0a0015 100%);
+}
+
+/* Zone 2 - Dark Forest */
+.zone-2 .bg-deep {
+    background: linear-gradient(180deg, #001a0a 0%, #003315 50%, #001a0a 100%);
+}
+
+.zone-2 .bg-mountains {
+    background: repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 40px,
+            rgba(50, 150, 100, 0.15) 40px,
+            rgba(50, 150, 100, 0.15) 80px);
+}
+
+/* Zone 3 - Volcanic Wasteland */
+.zone-3 .bg-deep {
+    background: linear-gradient(180deg, #1a0500 0%, #331100 50%, #1a0500 100%);
+}
+
+.zone-3 .bg-mountains {
+    background: repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 40px,
+            rgba(200, 100, 50, 0.15) 40px,
+            rgba(200, 100, 50, 0.15) 80px);
+}
+
+.zone-3 .bg-clouds {
+    background:
+        radial-gradient(ellipse 100px 30px at 20% 30%, rgba(255, 100, 0, 0.05), transparent),
+        radial-gradient(ellipse 150px 40px at 60% 60%, rgba(255, 50, 0, 0.04), transparent);
+}
+
+/* Zone 4 - Ice Cavern */
+.zone-4 .bg-deep {
+    background: linear-gradient(180deg, #000a1a 0%, #001533 50%, #000a1a 100%);
+}
+
+.zone-4 .bg-mountains {
+    background: repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 40px,
+            rgba(150, 200, 255, 0.1) 40px,
+            rgba(150, 200, 255, 0.1) 80px);
+}
+
+.zone-4 .bg-stars {
+    animation: twinkle 2s infinite;
+}
+
+/* Zone 5+ - Void */
+.zone-5 .bg-deep {
+    background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+}
+
+.zone-5 .bg-mountains {
+    background: repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 40px,
+            rgba(100, 0, 150, 0.2) 40px,
+            rgba(100, 0, 150, 0.2) 80px);
+}
+
+.zone-5 .bg-stars {
+    background-image:
+        radial-gradient(3px 3px at 20% 30%, #ff00ff, transparent),
+        radial-gradient(2px 2px at 60% 70%, #00ffff, transparent),
+        radial-gradient(2px 2px at 50% 50%, #ffff00, transparent),
+        radial-gradient(2px 2px at 80% 20%, #ff0000, transparent);
+    animation: twinkle 1.5s infinite;
 }
 
 @keyframes twinkle {
@@ -76,23 +163,38 @@ body {
     left: 0;
     width: 100%;
     padding: 15px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-areas:
+        "left center right"
+        "left center right";
+    grid-template-columns: 1fr auto 1fr;
     z-index: 100;
     pointer-events: none;
     gap: 15px;
 }
 
-.hud-left,
-.hud-center,
-.hud-right {
-    pointer-events: auto;
-}
-
 .hud-left {
+    grid-area: left;
+    pointer-events: auto;
     display: flex;
     gap: 10px;
     align-items: flex-start;
+}
+
+.hud-center {
+    grid-area: center;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-self: center;
+}
+
+.hud-right {
+    grid-area: right;
+    pointer-events: auto;
+    justify-self: end;
 }
 
 .player-portrait {
@@ -198,13 +300,15 @@ body {
 }
 
 #quest-panel {
-    min-width: 300px;
+    min-width: 350px;
+    max-width: 450px;
 }
 
 #distance-counter {
     font-size: 8px;
     padding: 5px 10px;
     text-align: center;
+    min-width: 150px;
 }
 
 .panel-header {
@@ -305,6 +409,10 @@ body {
     border-radius: 4px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 #p-weapon {
@@ -858,8 +966,23 @@ kbd {
     }
 
     #hud {
-        flex-direction: column;
-        gap: 10px;
+        grid-template-areas:
+            "left"
+            "center"
+            "right";
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .hud-left,
+    .hud-center,
+    .hud-right {
+        justify-self: center;
+    }
+
+    #quest-panel {
+        min-width: 280px;
+        max-width: 320px;
     }
 }
 

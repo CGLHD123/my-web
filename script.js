@@ -83,7 +83,6 @@ window.onload = () => {
                 <p><strong>HP:</strong> ${c.hp}</p>
                 <p><strong>ATK:</strong> ${c.atk}</p>
                 <p><strong>Type:</strong> ${c.type === 'melee' ? 'Cận chiến' : 'Tầm xa'}</p>
-                <p><strong>Icon:</strong> ${c.icon}</p>
             `;
         };
         grid.appendChild(card);
@@ -158,13 +157,23 @@ function startGame() {
         combo: 0, maxCombo: 0, comboTimer: 0, lifeSteal: 0
     });
 
-    document.getElementById('p-sprite').style.backgroundColor = s.color;
+    // Sprite avec couleur et icône
+    const spriteEl = document.getElementById('p-sprite');
+    spriteEl.style.backgroundColor = s.color;
+    spriteEl.innerHTML = `<div style="font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%;">${s.icon}</div>`;
+
+    // Portrait avec icône
     document.getElementById('portrait-img').textContent = s.icon;
     document.getElementById('portrait-img').style.fontSize = '3rem';
     document.getElementById('portrait-img').style.display = 'flex';
     document.getElementById('portrait-img').style.alignItems = 'center';
     document.getElementById('portrait-img').style.justifyContent = 'center';
     document.getElementById('portrait-img').style.backgroundColor = s.color;
+
+    // Arme du personnage
+    const weaponEl = document.getElementById('p-weapon');
+    weaponEl.style.backgroundImage = `url('assets/weapons/${s.wp}')`;
+    weaponEl.style.display = 'block';
 
     document.getElementById('gui-select').style.display = 'none';
 
@@ -205,26 +214,28 @@ function startGame() {
 }
 
 function spawnMap() {
-    const w = 300 + Math.random() * 500;
-    const gap = 100 + Math.random() * 200;
+    const w = 350 + Math.random() * 450;
+    const gap = 80 + Math.random() * 120; // Gaps plus petits
     const x = g.lastX + gap;
     const lastY = g.plats.length > 0 ? g.plats[g.plats.length - 1].y : 50;
 
-    // Zone-based difficulty - platforms get harder
-    const zoneMultiplier = Math.min(g.zone * 0.1, 1);
-    const y = Math.max(30, Math.min(250, lastY + (-80 + Math.random() * 160) * (1 + zoneMultiplier)));
+    // Variation de hauteur plus douce pour permettre les sauts
+    const maxHeightChange = 60; // Max 60px de différence
+    const y = Math.max(40, Math.min(180, lastY + (-maxHeightChange + Math.random() * (maxHeightChange * 2))));
 
     addPlat(x, y, w, 50);
 
     const rng = Math.random();
-    const mobChance = 0.5 + (g.zone * 0.05); // More mobs in higher zones
 
-    if (rng > (1 - mobChance)) {
-        const count = g.danger > 3 ? (Math.random() > 0.5 ? 2 : 1) : 1;
-        for (let i = 0; i < count; i++) spawnMob(x + (w / (count + 1)) * (i + 1), y + 50, 'enemy');
-    } else if (rng > 0.45 && rng <= 0.6) {
+    // Augmentation de la fréquence des mobs (70%+ de chance)
+    if (rng > 0.25) {
+        const count = 1 + Math.floor(Math.random() * 3); // 1-3 ennemis
+        for (let i = 0; i < count; i++) {
+            spawnMob(x + (w / (count + 1)) * (i + 1), y + 50, 'enemy');
+        }
+    } else if (rng > 0.15 && rng <= 0.25) {
         spawnMob(x + w / 2, y + 50, 'chest');
-    } else if (rng > 0.3 && rng <= 0.45) {
+    } else if (rng > 0.05 && rng <= 0.15) {
         spawnPotion(x + w / 2, y + 50);
     }
 
@@ -234,7 +245,26 @@ function spawnMap() {
 function addPlat(x, y, w, h) {
     const el = document.createElement('div');
     el.className = 'platform';
-    el.style.cssText = `left:${x}px; bottom:${y}px; width:${w}px; height:${h}px;`;
+
+    // Couleur des plateformes selon la zone
+    let platColor = 'linear-gradient(180deg, #3a3a3a, #1a1a1a)';
+    let borderColor = '#666';
+
+    if (g.zone >= 5) {
+        platColor = 'linear-gradient(180deg, #2a1a3a, #0a0a1a)';
+        borderColor = '#a0a';
+    } else if (g.zone >= 4) {
+        platColor = 'linear-gradient(180deg, #1a2a3a, #0a1520)';
+        borderColor = '#6af';
+    } else if (g.zone >= 3) {
+        platColor = 'linear-gradient(180deg, #3a2a1a, #1a0a0a)';
+        borderColor = '#f80';
+    } else if (g.zone >= 2) {
+        platColor = 'linear-gradient(180deg, #1a3a2a, #0a1a0a)';
+        borderColor = '#6a6';
+    }
+
+    el.style.cssText = `left:${x}px; bottom:${y}px; width:${w}px; height:${h}px; background: ${platColor}; border-top-color: ${borderColor};`;
     document.getElementById('platform-layer').appendChild(el);
     g.plats.push({ x, y, w, h, el });
 }
@@ -781,6 +811,15 @@ function loop() {
     document.getElementById('timer-val').textContent = formatTime(g.timer);
     document.getElementById('kills-val').textContent = p.kills;
     document.getElementById('zone-val').textContent = g.zone;
+
+    // Update background based on zone
+    const bgEl = document.getElementById('parallax-bg');
+    bgEl.className = '';
+    if (g.zone >= 5) bgEl.classList.add('zone-5');
+    else if (g.zone >= 4) bgEl.classList.add('zone-4');
+    else if (g.zone >= 3) bgEl.classList.add('zone-3');
+    else if (g.zone >= 2) bgEl.classList.add('zone-2');
+    else bgEl.classList.add('zone-1');
 
     // Combo display
     const comboEl = document.getElementById('combo-val');
