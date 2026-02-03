@@ -563,6 +563,160 @@ body {
     font-size: 3rem;
 }
 
+.mini-boss {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, #a00, #600);
+    border: 3px solid #f80;
+    border-radius: 6px;
+    box-shadow: 0 0 30px rgba(255, 136, 0, 0.7);
+    animation: miniBossGlow 1.5s ease-in-out infinite;
+}
+
+.mini-boss::before {
+    content: '⚡';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+}
+
+@keyframes miniBossGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(255, 136, 0, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 50px rgba(255, 136, 0, 1);
+    }
+}
+
+.trap {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f00, #800);
+    border: 2px solid #f80;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: trapBlink 1s ease-in-out infinite;
+    cursor: pointer;
+}
+
+@keyframes trapBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.bonus-platform {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #ffd700, #ff8);
+    border: 3px solid #ff0;
+    border-radius: 50%;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bonusSpin 3s linear infinite;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes bonusSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.portal {
+    position: absolute;
+    width: 60px;
+    height: 80px;
+    background: radial-gradient(ellipse, #0ff, #08f, #004);
+    border: 3px solid #0ff;
+    border-radius: 50%;
+    animation: portalPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+}
+
+.portal::before {
+    content: '🌀';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    animation: portalRotate 3s linear infinite;
+}
+
+@keyframes portalPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes portalRotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.decoration {
+    position: absolute;
+    font-size: 1.8rem;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 1;
+    animation: decoFloat 4s ease-in-out infinite;
+}
+
+@keyframes decoFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
 @keyframes bossGlow {
 
     0%,

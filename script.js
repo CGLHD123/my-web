@@ -30,16 +30,17 @@ let g = {
         x: 100, y: 150, vx: 0, vy: 0, hp: 100, maxH: 100, exp: 0, lvl: 1, gold: 0,
         kills: 0, dir: 1, ground: false, attackCooldown: 0, critChance: 0.15,
         invulnerable: 0, moveSpeed: 1, chestOpened: 0, potionsCollected: 0,
-        bossKilled: 0, combo: 0, maxCombo: 0, comboTimer: 0, lifeSteal: 0
+        bossKilled: 0, combo: 0, maxCombo: 0, comboTimer: 0, lifeSteal: 0,
+        dashCooldown: 0, doubleJump: false, hasDoubleJump: false
     },
     plats: [], mobs: [], pjs: [], items: [], keys: {},
-    lastX: 0, danger: 1, timer: 0, startTime: 0, bossSpawned: false,
+    lastX: 0, danger: 1, timer: 0, startTime: 0, bossSpawned: false, miniBossNearby: false,
     upgrades: { atkSpeed: 1, comboDuration: 100 },
     quests: [], questsCompleted: 0, currentQuest: null,
     zone: 1, totalDistance: 0,
     // Infinite map management
-    platformBuffer: 3000, // Distance ahead to generate
-    cleanupDistance: 2000 // Distance behind to cleanup
+    platformBuffer: 3000,
+    cleanupDistance: 2000
 };
 
 window.onload = () => {
@@ -215,31 +216,146 @@ function startGame() {
 
 function spawnMap() {
     const w = 350 + Math.random() * 450;
-    const gap = 80 + Math.random() * 120; // Gaps plus petits
+    const gap = 80 + Math.random() * 120;
     const x = g.lastX + gap;
     const lastY = g.plats.length > 0 ? g.plats[g.plats.length - 1].y : 50;
 
-    // Variation de hauteur plus douce pour permettre les sauts
-    const maxHeightChange = 60; // Max 60px de différence
+    const maxHeightChange = 60;
     const y = Math.max(40, Math.min(180, lastY + (-maxHeightChange + Math.random() * (maxHeightChange * 2))));
 
     addPlat(x, y, w, 50);
 
     const rng = Math.random();
 
-    // Augmentation de la fréquence des mobs (70%+ de chance)
-    if (rng > 0.25) {
-        const count = 1 + Math.floor(Math.random() * 3); // 1-3 ennemis
+    // Plus de variété dans les spawns
+    if (rng > 0.65) {
+        // Ennemis multiples
+        const count = 1 + Math.floor(Math.random() * 3);
         for (let i = 0; i < count; i++) {
             spawnMob(x + (w / (count + 1)) * (i + 1), y + 50, 'enemy');
         }
-    } else if (rng > 0.15 && rng <= 0.25) {
-        spawnMob(x + w / 2, y + 50, 'chest');
-    } else if (rng > 0.05 && rng <= 0.15) {
+    } else if (rng > 0.50) {
+        // Coffres précieux
+        spawnChest(x + w / 2, y + 50);
+    } else if (rng > 0.35) {
+        // Potions magiques
         spawnPotion(x + w / 2, y + 50);
+    } else if (rng > 0.25) {
+        // Pièges dangereux
+        spawnTrap(x + w / 2, y + 50);
+    } else if (rng > 0.15) {
+        // Plateformes bonus avec récompenses
+        spawnBonusPlatform(x + w / 2, y + 80);
+    } else if (rng > 0.08) {
+        // Boss mini
+        if (!g.miniBossNearby) spawnMiniBoss(x + w / 2, y + 50);
+    } else {
+        // Portails de téléportation
+        spawnPortal(x + w / 2, y + 50);
+    }
+
+    // Décorations environnementales
+    if (Math.random() > 0.7) {
+        spawnDecoration(x + Math.random() * w, y + 50);
     }
 
     g.lastX = x + w;
+}
+
+function spawnChest(x, y) {
+    const el = document.createElement('div');
+    el.className = 'chest';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+
+    const gold = Math.floor(150 + Math.random() * 300 + g.zone * 100);
+    const hasSpecialItem = Math.random() > 0.7;
+
+    document.getElementById('entity-layer').appendChild(el);
+    g.mobs.push({
+        el, x, y, type: 'chest', active: true,
+        gold, hasSpecialItem, hp: 1, maxH: 1
+    });
+}
+
+function spawnTrap(x, y) {
+    const el = document.createElement('div');
+    el.className = 'trap';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+    el.innerHTML = '⚠️';
+
+    document.getElementById('entity-layer').appendChild(el);
+    g.items.push({
+        el, x, y, type: 'trap', active: true,
+        damage: 30 + g.zone * 10
+    });
+}
+
+function spawnBonusPlatform(x, y) {
+    const el = document.createElement('div');
+    el.className = 'bonus-platform';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+    el.innerHTML = '⭐';
+
+    document.getElementById('item-layer').appendChild(el);
+    g.items.push({
+        el, x, y, type: 'bonus', active: true,
+        reward: 200 + g.zone * 50
+    });
+}
+
+function spawnMiniBoss(x, y) {
+    const el = document.createElement('div');
+    el.className = 'mini-boss';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+
+    const hp = 200 + g.danger * 100 + g.zone * 150;
+    const maxH = hp;
+
+    const hpBar = document.createElement('div');
+    hpBar.className = 'hp-bar-entity';
+    hpBar.style.display = 'block';
+    const hpFill = document.createElement('div');
+    hpFill.className = 'hp-bar-fill';
+    hpBar.appendChild(hpFill);
+    el.appendChild(hpBar);
+
+    document.getElementById('entity-layer').appendChild(el);
+    g.mobs.push({
+        el, x, y, hp, maxH, type: 'miniboss',
+        active: true, ai: 'aggressive', dir: -1
+    });
+    g.miniBossNearby = true;
+    setTimeout(() => g.miniBossNearby = false, 10000);
+}
+
+function spawnPortal(x, y) {
+    const el = document.createElement('div');
+    el.className = 'portal';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+
+    document.getElementById('item-layer').appendChild(el);
+    g.items.push({
+        el, x, y, type: 'portal', active: true,
+        teleportDistance: 500 + Math.random() * 300
+    });
+}
+
+function spawnDecoration(x, y) {
+    const decorations = ['🌳', '🗿', '💀', '🔥', '❄️', '⚡', '🌙', '☀️', '🌟'];
+    const deco = decorations[Math.floor(Math.random() * decorations.length)];
+
+    const el = document.createElement('div');
+    el.className = 'decoration';
+    el.style.left = x + 'px';
+    el.style.bottom = y + 'px';
+    el.innerHTML = deco;
+
+    document.getElementById('fx-layer').appendChild(el);
 }
 
 function addPlat(x, y, w, h) {
@@ -360,14 +476,15 @@ function spawnBoss() {
 }
 
 function updateEnemyAI(m) {
-    if (!m.active || m.type !== 'enemy' && m.type !== 'boss') return;
+    if (!m.active || (m.type !== 'enemy' && m.type !== 'boss' && m.type !== 'miniboss')) return;
 
     const p = g.player;
     const dist = Math.abs(m.x - p.x);
 
-    if (m.ai === 'chase' || m.type === 'boss') {
-        if (dist < 600) {
-            const moveSpeed = m.type === 'boss' ? 3 : 2;
+    if (m.ai === 'chase' || m.type === 'boss' || m.ai === 'aggressive' || m.type === 'miniboss') {
+        const chaseDistance = m.type === 'boss' ? 800 : m.type === 'miniboss' ? 700 : 600;
+        if (dist < chaseDistance) {
+            const moveSpeed = m.type === 'boss' ? 3 : m.type === 'miniboss' ? 2.5 : 2;
             m.x += (p.x > m.x ? moveSpeed : -moveSpeed);
             m.dir = p.x > m.x ? 1 : -1;
         }
@@ -381,7 +498,10 @@ function updateEnemyAI(m) {
 
     // Enemy attack player
     if (dist < 60 && Math.abs(m.y - p.y) < 60 && p.invulnerable === 0) {
-        const dmg = m.type === 'boss' ? 50 : 20;
+        let dmg = 20;
+        if (m.type === 'boss') dmg = 50;
+        else if (m.type === 'miniboss') dmg = 35;
+
         p.hp -= dmg;
         p.invulnerable = 30;
         showDamageNumber(p.x, p.y + 30, `-${dmg}`, 'normal');
@@ -422,10 +542,48 @@ function shootProjectile() {
     el.className = 'projectile';
     el.style.left = (p.x + 40) + 'px';
     el.style.bottom = (p.y + 20) + 'px';
+
+    // Augmenter la vitesse et portée selon la classe
+    let speed = 15;
+    let size = 25;
+
+    if (g.selected.id === 'Mage') {
+        speed = 20;
+        size = 30;
+        el.style.background = 'radial-gradient(circle, #88f, #44f)';
+        el.style.boxShadow = '0 0 15px #44f';
+    } else if (g.selected.id === 'Archer' || g.selected.id === 'Scout') {
+        speed = 25;
+        size = 20;
+        el.style.background = 'linear-gradient(90deg, #ff8, #fa0)';
+        el.style.boxShadow = '0 0 10px #fa0';
+    } else if (g.selected.id === 'Necromancer') {
+        speed = 18;
+        size = 28;
+        el.style.background = 'radial-gradient(circle, #a0a, #505)';
+        el.style.boxShadow = '0 0 20px #a0a';
+    } else if (g.selected.id === 'Cleric') {
+        speed = 16;
+        size = 26;
+        el.style.background = 'radial-gradient(circle, #ffa, #ff8)';
+        el.style.boxShadow = '0 0 12px #ff8';
+    }
+
+    el.style.width = size + 'px';
+
     document.getElementById('fx-layer').appendChild(el);
 
     const comboMult = 1 + Math.min(p.combo * 0.1, 2);
-    g.pjs.push({ el, x: p.x + 40, y: p.y + 20, vx: p.dir * 15, comboMult });
+    const baseRange = 800 + (g.player.lvl * 50);
+    const rangeBonus = p.rangeBonus || 0;
+    const finalRange = baseRange * (1 + rangeBonus);
+
+    g.pjs.push({
+        el, x: p.x + 40, y: p.y + 20,
+        vx: p.dir * speed, comboMult,
+        maxDistance: finalRange,
+        startX: p.x + 40
+    });
 }
 
 function hit(mob, hitX, hitY, comboMult = 1) {
@@ -464,11 +622,22 @@ function killMob(mob) {
 
     const p = g.player;
 
-    if (mob.type === 'enemy' || mob.type === 'boss') {
+    if (mob.type === 'enemy' || mob.type === 'boss' || mob.type === 'miniboss') {
         p.kills++;
-        p.exp += mob.type === 'boss' ? 50 : 10;
 
-        const goldDrop = mob.type === 'boss' ? 500 + g.zone * 100 : 50 + Math.floor(Math.random() * 50);
+        let expGain = 10;
+        let goldDrop = 50 + Math.floor(Math.random() * 50);
+
+        if (mob.type === 'boss') {
+            expGain = 50;
+            goldDrop = 500 + g.zone * 100;
+        } else if (mob.type === 'miniboss') {
+            expGain = 30;
+            goldDrop = 200 + g.zone * 50;
+            showDamageNumber(mob.x, mob.y + 50, '⚡ MINI-BOSS DOWN! ⚡', 'crit');
+        }
+
+        p.exp += expGain;
         p.gold += goldDrop;
 
         // Combo system
@@ -487,14 +656,40 @@ function killMob(mob) {
             showDamageNumber(mob.x, mob.y + 50, '👑 BOSS DEFEATED! 👑', 'crit');
         }
 
+        // Chance de drop d'items
+        if (Math.random() > 0.7) {
+            spawnPotion(mob.x, mob.y);
+        }
+
         if (p.exp >= p.lvl * 100) levelUp();
         createParticles(mob.x, mob.y + 20, 15, '#ffd700');
+
     } else if (mob.type === 'chest') {
         p.gold += mob.gold;
         p.chestOpened++;
         updateQuestProgress('chest', 1);
         showDamageNumber(mob.x, mob.y + 30, `+${mob.gold}💰`, 'crit');
-        createParticles(mob.x, mob.y + 20, 20, '#ffd700');
+
+        // Items spéciaux dans les coffres
+        if (mob.hasSpecialItem) {
+            const specialRewards = [
+                { type: 'health', msg: '+50 MAX HP!' },
+                { type: 'strength', msg: '+20 ATK!' },
+                { type: 'speed', msg: '+SPEED!' },
+                { type: 'gold', msg: '+500💰 JACKPOT!' }
+            ];
+
+            const reward = specialRewards[Math.floor(Math.random() * specialRewards.length)];
+
+            if (reward.type === 'health') p.maxH += 50;
+            else if (reward.type === 'strength') g.selected.atk += 20;
+            else if (reward.type === 'speed') p.moveSpeed += 0.15;
+            else if (reward.type === 'gold') p.gold += 500;
+
+            showDamageNumber(mob.x, mob.y + 60, reward.msg, 'crit');
+        }
+
+        createParticles(mob.x, mob.y + 20, 25, '#ffd700');
     }
 }
 
@@ -606,6 +801,21 @@ function buy(type) {
                 p.lifeSteal += 0.1;
                 p.gold -= 1500;
                 showDamageNumber(p.x, p.y + 40, '+LIFESTEAL', 'crit');
+            }
+            break;
+        case 'doublejump':
+            if (p.gold >= 1000 && !p.hasDoubleJump) {
+                p.hasDoubleJump = true;
+                p.gold -= 1000;
+                showDamageNumber(p.x, p.y + 40, '💨 DOUBLE JUMP!', 'crit');
+                createParticles(p.x, p.y + 30, 25, '#0ff');
+            }
+            break;
+        case 'range':
+            if (p.gold >= 900) {
+                g.player.rangeBonus = (g.player.rangeBonus || 0) + 0.3;
+                p.gold -= 900;
+                showDamageNumber(p.x, p.y + 40, '+RANGE', 'crit');
             }
             break;
     }
@@ -728,10 +938,32 @@ function loop() {
     else if (g.keys['KeyA'] || g.keys['ArrowLeft']) { p.vx = -speed; p.dir = -1; }
     else p.vx *= 0.8;
 
-    // Jump
-    if ((g.keys['Space'] || g.keys['KeyW'] || g.keys['ArrowUp']) && p.ground) {
-        p.vy = 16;
-        p.ground = false;
+    // Dash mechanic (Shift key)
+    if (g.keys['ShiftLeft'] || g.keys['ShiftRight']) {
+        if (p.dashCooldown === 0) {
+            p.vx = p.dir * 25;
+            p.dashCooldown = 60;
+            p.invulnerable = 15;
+            createParticles(p.x, p.y + 20, 15, '#0ff');
+            showDamageNumber(p.x, p.y + 50, '💨 DASH!', 'crit');
+        }
+    }
+
+    // Jump with double jump
+    if ((g.keys['Space'] || g.keys['KeyW'] || g.keys['ArrowUp'])) {
+        if (p.ground) {
+            p.vy = 16;
+            p.ground = false;
+            p.doubleJump = false;
+        } else if (!p.doubleJump && p.hasDoubleJump && !g.keys._spaceReleased) {
+            p.vy = 16;
+            p.doubleJump = true;
+            createParticles(p.x, p.y, 10, '#fff');
+            showDamageNumber(p.x, p.y + 40, '✨ DOUBLE JUMP!', 'crit');
+        }
+        g.keys._spaceReleased = false;
+    } else {
+        g.keys._spaceReleased = true;
     }
 
     // Physics
@@ -758,6 +990,16 @@ function loop() {
         pj.x += pj.vx;
         pj.el.style.left = pj.x + 'px';
 
+        // Distance traveled check
+        const startX = pj.startX || pj.x;
+        if (!pj.startX) pj.startX = startX;
+
+        if (Math.abs(pj.x - startX) > (pj.maxDistance || 800)) {
+            pj.el.remove();
+            g.pjs.splice(i, 1);
+            return;
+        }
+
         g.mobs.forEach(m => {
             if (m.active && Math.abs(pj.x - m.x) < 45 && Math.abs(pj.y - m.y) < 45) {
                 hit(m, pj.x, pj.y, pj.comboMult || 1);
@@ -767,10 +1009,44 @@ function loop() {
         });
     });
 
-    // Item collection
-    g.items.forEach(item => {
-        if (item.active && Math.abs(p.x - item.x) < 50 && Math.abs(p.y - item.y) < 50) {
-            collectPotion(item);
+    // Item collection and interactions
+    g.items.forEach((item, idx) => {
+        if (!item.active) return;
+
+        const dist = Math.abs(p.x - item.x);
+        const distY = Math.abs(p.y - item.y);
+
+        if (dist < 50 && distY < 50) {
+            if (item.type === 'trap') {
+                // Piège
+                if (p.invulnerable === 0) {
+                    p.hp -= item.damage;
+                    p.invulnerable = 40;
+                    showDamageNumber(p.x, p.y + 30, `-${item.damage} TRAP!`, 'normal');
+                    createParticles(item.x, item.y, 20, '#f00');
+                    item.active = false;
+                    item.el.remove();
+                    if (p.hp <= 0) gameOver();
+                }
+            } else if (item.type === 'bonus') {
+                // Plateforme bonus
+                p.gold += item.reward;
+                p.exp += 20;
+                showDamageNumber(item.x, item.y, `+${item.reward}💰 BONUS!`, 'crit');
+                createParticles(item.x, item.y, 30, '#ffd700');
+                item.active = false;
+                item.el.remove();
+            } else if (item.type === 'portal') {
+                // Portail
+                p.x += item.teleportDistance * p.dir;
+                showDamageNumber(p.x, p.y + 50, '🌀 TELEPORT!', 'crit');
+                createParticles(item.x, item.y, 40, '#0ff');
+                item.active = false;
+                item.el.remove();
+            } else {
+                // Potions normales
+                collectPotion(item);
+            }
         }
     });
 
@@ -788,6 +1064,10 @@ function loop() {
     // Cooldowns
     if (p.attackCooldown > 0) p.attackCooldown--;
     if (p.invulnerable > 0) p.invulnerable--;
+    if (p.dashCooldown > 0) p.dashCooldown--;
+
+    // Reset double jump when grounded
+    if (p.ground) p.doubleJump = false;
 
     // Render player
     const playerEl = document.getElementById('player');

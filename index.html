@@ -130,17 +130,21 @@
             <h2>📖 HƯỚNG DẪN</h2>
             <div class="help-section">
                 <p><kbd>A</kbd><kbd>D</kbd> Di chuyển | <kbd>SPACE</kbd> Nhảy</p>
-                <p><kbd>CLICK</kbd> Tấn công | <kbd>B</kbd> Shop</p>
-                <p><kbd>Q</kbd> Nhiệm vụ | <kbd>P</kbd> Pause</p>
+                <p><kbd>SHIFT</kbd> Dash (mới!) | <kbd>CLICK</kbd> Tấn công</p>
+                <p><kbd>B</kbd> Shop | <kbd>Q</kbd> Nhiệm vụ | <kbd>P</kbd> Pause</p>
                 <h3>Mục tiêu:</h3>
                 <p>⚔️ Tiêu diệt quái vật lên cấp</p>
-                <p>💰 Mở rương nhận vàng</p>
+                <p>📦 Mở rương nhận vàng và items đặc biệt</p>
                 <p>💊 Thu thập lọ thuốc tăng sức mạnh</p>
-                <p>📜 Hoàn thành nhiệm vụ</p>
-                <p>🌍 Khám phá map vô tận!</p>
-                <h3>Combo System:</h3>
-                <p>🔥 Giết quái liên tục để tăng combo</p>
-                <p>⚡ Combo cao = Damage x2-x5!</p>
+                <p>⭐ Nhặt bonus platforms cho gold</p>
+                <p>🌀 Sử dụng portals để teleport</p>
+                <p>⚠️ Tránh bẫy nguy hiểm!</p>
+                <p>⚡ Đánh bại Mini-Boss</p>
+                <h3>Tính năng mới:</h3>
+                <p>💨 Dash: Tăng tốc và invul tạm thời</p>
+                <p>✨ Double Jump: Mua tại shop để nhảy 2 lần</p>
+                <p>🎯 Range Boost: Tăng tầm bắn cho class tầm xa</p>
+                <p>🔥 Combo cao = Damage x2-x5!</p>
             </div>
             <button class="pixel-btn" onclick="toggleGUI('gui-help')">ĐÓNG</button>
         </div>
@@ -205,6 +209,20 @@
                         <h4>Vampire</h4>
                         <p>Life Steal +10%</p>
                     </div><button class="pixel-btn" onclick="buy('lifesteal')">1500💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">💨</div>
+                    <div class="shop-desc">
+                        <h4>Double Jump</h4>
+                        <p>Nhảy 2 lần trên không</p>
+                    </div><button class="pixel-btn" onclick="buy('doublejump')">1000💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">🎯</div>
+                    <div class="shop-desc">
+                        <h4>Range Boost</h4>
+                        <p>Projectile Range +30%</p>
+                    </div><button class="pixel-btn" onclick="buy('range')">900💰</button>
                 </div>
             </div>
             <button class="pixel-btn" onclick="toggleGUI('gui-shop')">ĐÓNG</button>
