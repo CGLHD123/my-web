@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ABYSS: EVOLUTION - Enhanced Edition</title>
+    <title>THE ABYSS: EVOLUTION - Infinite Edition</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -39,6 +39,7 @@
                         </div>
                     </div>
                     <div id="lvl-tag">LV. 1</div>
+                    <div id="combo-display">COMBO: <span id="combo-val">0</span></div>
                 </div>
             </div>
 
@@ -57,6 +58,9 @@
                             <div class="quest-reward" id="quest-reward">Phần thưởng: 500💰</div>
                         </div>
                     </div>
+                </div>
+                <div id="distance-counter" class="pixel-panel">
+                    <span>📏 KHU VỰC:</span> <span id="zone-val">1</span>
                 </div>
             </div>
 
@@ -133,6 +137,10 @@
                 <p>💰 Mở rương nhận vàng</p>
                 <p>💊 Thu thập lọ thuốc tăng sức mạnh</p>
                 <p>📜 Hoàn thành nhiệm vụ</p>
+                <p>🌍 Khám phá map vô tận!</p>
+                <h3>Combo System:</h3>
+                <p>🔥 Giết quái liên tục để tăng combo</p>
+                <p>⚡ Combo cao = Damage x2-x5!</p>
             </div>
             <button class="pixel-btn" onclick="toggleGUI('gui-help')">ĐÓNG</button>
         </div>
@@ -140,7 +148,7 @@
 
     <div id="gui-shop" class="overlay" style="display:none">
         <div class="win pixel-win">
-            <h2>🏪 CỬA HÀNG</h2>
+            <h2>🪙 CỬA HÀNG</h2>
             <div class="shop-grid">
                 <div class="shop-item">
                     <div class="shop-icon">💊</div>
@@ -184,6 +192,20 @@
                         <p>Move Speed +20%</p>
                     </div><button class="pixel-btn" onclick="buy('movespeed')">700💰</button>
                 </div>
+                <div class="shop-item">
+                    <div class="shop-icon">🔥</div>
+                    <div class="shop-desc">
+                        <h4>Combo Master</h4>
+                        <p>Combo Duration +50%</p>
+                    </div><button class="pixel-btn" onclick="buy('combo')">1200💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">🌟</div>
+                    <div class="shop-desc">
+                        <h4>Vampire</h4>
+                        <p>Life Steal +10%</p>
+                    </div><button class="pixel-btn" onclick="buy('lifesteal')">1500💰</button>
+                </div>
             </div>
             <button class="pixel-btn" onclick="toggleGUI('gui-shop')">ĐÓNG</button>
         </div>
@@ -205,6 +227,7 @@
                 <p>Vàng: <span id="pause-gold">0</span></p>
                 <p>Thời gian: <span id="pause-time">0:00</span></p>
                 <p>Tiêu diệt: <span id="pause-kills">0</span></p>
+                <p>Khu vực: <span id="pause-zone">1</span></p>
             </div>
             <button class="pixel-btn" onclick="togglePause()">TIẾP TỤC</button>
             <button class="pixel-btn" onclick="saveGame()">💾 LƯU</button>
@@ -222,7 +245,8 @@
                 <p>Thời gian: <span id="final-time">0:00</span></p>
                 <p>Tiêu diệt: <span id="final-kills">0</span></p>
                 <p>Nhiệm vụ: <span id="final-quests">0</span></p>
-                <p>Danger: <span id="final-danger">1</span></p>
+                <p>Khu vực: <span id="final-zone">1</span></p>
+                <p>Max Combo: <span id="final-combo">0</span></p>
             </div>
             <button class="pixel-btn" onclick="location.reload()">🔄 CHƠI LẠI</button>
         </div>

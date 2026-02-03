@@ -172,6 +172,24 @@ body {
     text-shadow: 0 0 10px var(--pixel-gold);
 }
 
+#combo-display {
+    font-size: 8px;
+    color: #fff;
+    text-align: center;
+    margin-top: 5px;
+    padding: 3px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+.hud-center {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
 .pixel-panel {
     background: var(--pixel-darker);
     border: 3px solid var(--border-color);
@@ -181,6 +199,12 @@ body {
 
 #quest-panel {
     min-width: 300px;
+}
+
+#distance-counter {
+    font-size: 8px;
+    padding: 5px 10px;
+    text-align: center;
 }
 
 .panel-header {
@@ -419,15 +443,28 @@ body {
     border: 3px solid #ff0;
     border-radius: 8px;
     box-shadow: 0 0 40px rgba(255, 255, 0, 0.8);
+    animation: bossGlow 2s ease-in-out infinite;
 }
 
 .boss::before {
-    content: '👺';
+    content: '👑';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 3rem;
+}
+
+@keyframes bossGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 40px rgba(255, 255, 0, 0.8);
+    }
+
+    50% {
+        box-shadow: 0 0 60px rgba(255, 255, 0, 1);
+    }
 }
 
 .potion {
@@ -605,6 +642,7 @@ body {
     filter: grayscale(1) brightness(0.5);
     transition: all 0.3s;
     position: relative;
+    overflow: hidden;
 }
 
 .card:hover {
@@ -619,6 +657,14 @@ body {
     box-shadow: 0 0 30px var(--pixel-gold);
 }
 
+.class-icon {
+    transition: transform 0.3s;
+}
+
+.card:hover .class-icon {
+    transform: scale(1.2);
+}
+
 #class-info {
     min-width: 250px;
     text-align: left;
@@ -630,16 +676,6 @@ body {
     color: var(--pixel-gold);
     font-size: 10px;
     margin-top: 0;
-}
-
-#class-weapon-preview {
-    margin-top: 15px;
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    border: 2px solid var(--border-color);
 }
 
 .shop-grid {
@@ -764,23 +800,8 @@ kbd {
     text-shadow: 3px 3px 0 #000, 0 0 30px var(--pixel-red) !important;
 }
 
-#quest-log {
-    max-height: 400px;
-    overflow-y: auto;
-    font-size: 8px;
+.pause-stats {
     text-align: left;
-}
-
-.quest-log-item {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    margin: 10px 0;
-    border-left: 3px solid var(--pixel-gold);
-}
-
-.quest-log-item.completed {
-    opacity: 0.6;
-    border-left-color: var(--pixel-green);
 }
 
 #mobile-controls {
@@ -834,6 +855,11 @@ kbd {
 
     .shop-grid {
         grid-template-columns: 1fr;
+    }
+
+    #hud {
+        flex-direction: column;
+        gap: 10px;
     }
 }
 
