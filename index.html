@@ -3,87 +3,184 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE ABYSS: EVOLUTION</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 
 <body oncontextmenu="return false;">
+    <!-- GAME STAGE -->
     <div id="game-stage">
         <div id="parallax-bg">
             <div class="layer bg-deep"></div>
             <div class="layer bg-mid"></div>
+            <div class="layer bg-front"></div>
         </div>
 
+        <!-- HUD -->
         <div id="hud">
             <div class="hud-left">
-                <div class="stat"><span class="lbl">VIT</span>
+                <div class="stat">
+                    <span class="lbl">VIT</span>
                     <div class="bar">
                         <div id="hp-bar" class="fill hp"></div>
+                        <span class="bar-text" id="hp-text">100/100</span>
                     </div>
                 </div>
-                <div class="stat"><span class="lbl">EXP</span>
+                <div class="stat">
+                    <span class="lbl">EXP</span>
                     <div class="bar">
                         <div id="exp-bar" class="fill exp"></div>
+                        <span class="bar-text" id="exp-text">0/100</span>
                     </div>
                 </div>
                 <div id="lvl-tag">LV. 1</div>
             </div>
             <div class="hud-right">
                 <div class="gold-ui">💰 <span id="gold-val">0</span></div>
-                <div class="danger-ui">DANGER: <span id="danger-val">1</span></div>
-                <div class="keys-ui">[H] HELP | [B] SHOP</div>
+                <div class="danger-ui">⚔️ DANGER: <span id="danger-val">1</span></div>
+                <div class="timer-ui">⏱️ <span id="timer-val">0:00</span></div>
+                <div class="keys-ui">[H] HELP | [B] SHOP | [P] PAUSE</div>
             </div>
         </div>
 
+        <!-- CAMERA & WORLD -->
         <div id="camera">
             <div id="world">
                 <div id="player">
                     <div id="p-sprite"></div>
                     <div id="p-weapon"></div>
                     <div id="p-slash"></div>
-                    <div id="lvl-up-fx">LEVEL UP!</div>
+                    <div id="lvl-up-fx">⭐ LEVEL UP! ⭐</div>
+                    <div class="hp-bar-entity" id="player-hp-bar">
+                        <div class="hp-bar-fill"></div>
+                    </div>
                 </div>
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
                 <div id="fx-layer"></div>
+                <div id="damage-layer"></div>
+            </div>
+        </div>
+
+        <!-- MOBILE CONTROLS -->
+        <div id="mobile-controls">
+            <div class="control-left">
+                <button class="btn-control" id="btn-left">◀</button>
+                <button class="btn-control" id="btn-right">▶</button>
+            </div>
+            <div class="control-right">
+                <button class="btn-control" id="btn-jump">⬆</button>
+                <button class="btn-control" id="btn-attack">⚔</button>
             </div>
         </div>
     </div>
 
+    <!-- GUI: CLASS SELECT -->
     <div id="gui-select" class="overlay">
         <div class="win">
-            <h1 class="f-title">CHỌN CHIẾN BINH</h1>
+            <h1 class="f-title">⚔️ CHỌN CHIẾN BINH ⚔️</h1>
             <div class="sel-grid-wrap">
                 <div id="class-grid"></div>
-                <div id="class-info"></div>
+                <div id="class-info">
+                    <h3>Chọn class để xem thông tin</h3>
+                    <div id="class-stats"></div>
+                </div>
             </div>
-            <button id="start-btn" disabled onclick="startGame()">XÁC NHẬN</button>
+            <div class="btn-row">
+                <button id="start-btn" disabled onclick="startGame()">🎮 BẮT ĐẦU</button>
+                <button onclick="loadGame()" id="continue-btn" style="display:none">📂 TIẾP TỤC</button>
+            </div>
         </div>
     </div>
 
+    <!-- GUI: HELP -->
     <div id="gui-help" class="overlay" style="display:none">
         <div class="win small">
-            <h2>HƯỚNG DẪN</h2>
-            <p>[A][D]: Di chuyển | [Space]: Nhảy</p>
-            <p>[Chuột trái]: Tấn công</p>
-            <p>[B]: Cửa hàng | [H]: Đóng</p>
+            <h2>📖 HƯỚNG DẪN</h2>
+            <div class="help-section">
+                <h3>Điều khiển PC:</h3>
+                <p>🎮 [A][D]: Di chuyển</p>
+                <p>🎮 [Space]: Nhảy</p>
+                <p>🎮 [Chuột trái]: Tấn công</p>
+                <p>🎮 [B]: Cửa hàng</p>
+                <p>🎮 [P]: Tạm dừng</p>
+            </div>
+            <div class="help-section">
+                <h3>Mục tiêu:</h3>
+                <p>⚔️ Tiêu diệt quái vật để lên level</p>
+                <p>💰 Mở rương để nhận vàng</p>
+                <p>📈 Nâng cấp trang bị tại cửa hàng</p>
+                <p>🏆 Sống sót càng lâu càng tốt!</p>
+            </div>
             <button onclick="toggleGUI('gui-help')">ĐÓNG</button>
         </div>
     </div>
 
+    <!-- GUI: SHOP -->
     <div id="gui-shop" class="overlay" style="display:none">
-        <div class="win small">
-            <h2 style="color:var(--gold)">CỬA HÀNG</h2>
-            <div class="shop-item">
-                <span>Hồi máu (100%)</span>
-                <button onclick="buy('heal')">200 💰</button>
-            </div>
-            <div class="shop-item">
-                <span>Tăng Công (+20)</span>
-                <button onclick="buy('atk')">500 💰</button>
+        <div class="win">
+            <h2 style="color:var(--gold)">🏪 CỬA HÀNG</h2>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <div class="shop-icon">💊</div>
+                    <div class="shop-desc">
+                        <h4>Hồi Máu Toàn Phần</h4>
+                        <p>Hồi 100% HP</p>
+                    </div>
+                    <button onclick="buy('heal')" class="btn-buy">200 💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">⚔️</div>
+                    <div class="shop-desc">
+                        <h4>Tăng Sức Mạnh</h4>
+                        <p>ATK +25</p>
+                    </div>
+                    <button onclick="buy('atk')" class="btn-buy">500 💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">🛡️</div>
+                    <div class="shop-desc">
+                        <h4>Tăng Sinh Lực</h4>
+                        <p>Max HP +100</p>
+                    </div>
+                    <button onclick="buy('hp')" class="btn-buy">600 💰</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">⚡</div>
+                    <div class="shop-desc">
+                        <h4>Tốc Độ Tấn Công</h4>
+                        <p>Cooldown -10%</p>
+                    </div>
+                    <button onclick="buy('speed')" class="btn-buy">800 💰</button>
+                </div>
             </div>
             <button onclick="toggleGUI('gui-shop')" style="margin-top:20px">THOÁT</button>
+        </div>
+    </div>
+
+    <!-- GUI: PAUSE -->
+    <div id="gui-pause" class="overlay" style="display:none">
+        <div class="win small">
+            <h2>⏸️ TẠM DỪNG</h2>
+            <button onclick="togglePause()" style="margin:10px">TIẾP TỤC</button>
+            <button onclick="saveGame()" style="margin:10px">💾 LƯU GAME</button>
+            <button onclick="location.reload()" style="margin:10px">🏠 MENU CHÍNH</button>
+        </div>
+    </div>
+
+    <!-- GUI: GAME OVER -->
+    <div id="gui-gameover" class="overlay" style="display:none">
+        <div class="win">
+            <h1 style="color:#f00">💀 GAME OVER 💀</h1>
+            <div class="stats-summary">
+                <p>🏆 Level đạt được: <span id="final-lvl">1</span></p>
+                <p>💰 Vàng thu thập: <span id="final-gold">0</span></p>
+                <p>⏱️ Thời gian chơi: <span id="final-time">0:00</span></p>
+                <p>⚔️ Kẻ địch tiêu diệt: <span id="final-kills">0</span></p>
+            </div>
+            <button onclick="location.reload()" style="margin-top:20px">🔄 CHƠI LẠI</button>
         </div>
     </div>
 
