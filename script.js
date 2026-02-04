@@ -425,25 +425,16 @@ function spawnChest(x, y) {
 }
 
 function spawnTrap(x, y) {
-    const trapTypes = [
-        { class: 'trap-spike', icon: '⚠️', damage: 30, effect: 'normal' },
-        { class: 'trap-poison', icon: '☠️', damage: 20, effect: 'poison' },
-        { class: 'trap-freeze', icon: '❄️', damage: 15, effect: 'freeze' }
-    ];
-
-    const trap = trapTypes[Math.floor(Math.random() * trapTypes.length)];
-
     const el = document.createElement('div');
-    el.className = 'trap ' + trap.class;
+    el.className = 'trap';
     el.style.left = x + 'px';
     el.style.bottom = y + 'px';
-    el.innerHTML = trap.icon;
+    el.innerHTML = '⚠️';
 
     document.getElementById('entity-layer').appendChild(el);
     g.items.push({
         el, x, y, type: 'trap', active: true,
-        damage: trap.damage + g.zone * 10,
-        effect: trap.effect
+        damage: 30 + g.zone * 10
     });
 }
 
@@ -517,40 +508,25 @@ function addPlat(x, y, w, h) {
     const el = document.createElement('div');
     el.className = 'platform';
 
-    // Pixel dungeon colors based on zone
+    // Couleur des plateformes selon la zone
     let platColor = 'linear-gradient(180deg, #3a3a3a, #1a1a1a)';
     let borderColor = '#666';
-    let pattern = '';
 
     if (g.zone >= 5) {
         platColor = 'linear-gradient(180deg, #2a1a3a, #0a0a1a)';
         borderColor = '#a0a';
-        pattern = 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(160,0,160,0.3) 8px, rgba(160,0,160,0.3) 16px)';
     } else if (g.zone >= 4) {
         platColor = 'linear-gradient(180deg, #1a2a3a, #0a1520)';
         borderColor = '#6af';
-        pattern = 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(102,170,255,0.3) 8px, rgba(102,170,255,0.3) 16px)';
     } else if (g.zone >= 3) {
         platColor = 'linear-gradient(180deg, #3a2a1a, #1a0a0a)';
         borderColor = '#f80';
-        pattern = 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,136,0,0.3) 8px, rgba(255,136,0,0.3) 16px)';
     } else if (g.zone >= 2) {
         platColor = 'linear-gradient(180deg, #1a3a2a, #0a1a0a)';
         borderColor = '#6a6';
-        pattern = 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(102,170,102,0.3) 8px, rgba(102,170,102,0.3) 16px)';
-    } else {
-        pattern = 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(102,102,102,0.3) 8px, rgba(102,102,102,0.3) 16px)';
     }
 
-    el.style.cssText = `
-        left:${x}px; 
-        bottom:${y}px; 
-        width:${w}px; 
-        height:${h}px; 
-        background: ${platColor}, ${pattern}; 
-        border-top-color: ${borderColor};
-    `;
-
+    el.style.cssText = `left:${x}px; bottom:${y}px; width:${w}px; height:${h}px; background: ${platColor}; border-top-color: ${borderColor};`;
     document.getElementById('platform-layer').appendChild(el);
     g.plats.push({ x, y, w, h, el });
 }
@@ -1267,42 +1243,12 @@ function loop() {
 
         if (dist < 50 && distY < 50) {
             if (item.type === 'trap') {
-                // Trap with special effects
+                // Piège
                 if (p.invulnerable === 0) {
                     p.hp -= item.damage;
                     p.invulnerable = 40;
-
-                    let effectText = `-${item.damage} TRAP!`;
-                    let effectColor = '#f00';
-
-                    if (item.effect === 'poison') {
-                        effectText = `-${item.damage} POISON!`;
-                        effectColor = '#0f0';
-                        // Apply poison damage over time
-                        let poisonTicks = 5;
-                        const poisonInterval = setInterval(() => {
-                            if (poisonTicks-- > 0 && g.active) {
-                                p.hp -= 5;
-                                showDamageNumber(p.x, p.y + 30, '-5 POISON', 'normal');
-                                if (p.hp <= 0) {
-                                    clearInterval(poisonInterval);
-                                    gameOver();
-                                }
-                            } else {
-                                clearInterval(poisonInterval);
-                            }
-                        }, 1000);
-                    } else if (item.effect === 'freeze') {
-                        effectText = `-${item.damage} FREEZE!`;
-                        effectColor = '#0ff';
-                        // Slow player temporarily
-                        const oldSpeed = p.moveSpeed;
-                        p.moveSpeed *= 0.5;
-                        setTimeout(() => p.moveSpeed = oldSpeed, 3000);
-                    }
-
-                    showDamageNumber(p.x, p.y + 30, effectText, 'normal');
-                    createParticles(item.x, item.y, 20, effectColor);
+                    showDamageNumber(p.x, p.y + 30, `-${item.damage} TRAP!`, 'normal');
+                    createParticles(item.x, item.y, 20, '#f00');
                     item.active = false;
                     item.el.remove();
                     if (p.hp <= 0) gameOver();
@@ -1316,50 +1262,10 @@ function loop() {
                 item.active = false;
                 item.el.remove();
             } else if (item.type === 'portal') {
-                // Portal - Fixed teleport with platform detection
-                const teleportDist = item.teleportDistance * p.dir;
-                const targetX = p.x + teleportDist;
-
-                // Find nearest platform at target location
-                let nearestPlat = null;
-                let minDist = 999999;
-
-                g.plats.forEach(pl => {
-                    const platCenterX = pl.x + pl.w / 2;
-                    const distX = Math.abs(platCenterX - targetX);
-                    // Check if target X is within platform bounds
-                    if (targetX >= pl.x && targetX <= pl.x + pl.w) {
-                        if (distX < minDist) {
-                            minDist = distX;
-                            nearestPlat = pl;
-                        }
-                    }
-                });
-
-                // If no exact match, find closest platform
-                if (!nearestPlat) {
-                    g.plats.forEach(pl => {
-                        const distX = Math.abs((pl.x + pl.w / 2) - targetX);
-                        if (distX < 500 && distX < minDist) {
-                            minDist = distX;
-                            nearestPlat = pl;
-                        }
-                    });
-                }
-
-                // Teleport player
-                if (nearestPlat) {
-                    p.x = nearestPlat.x + nearestPlat.w / 2 - 20;
-                    p.y = nearestPlat.y + nearestPlat.h + 5;
-                    p.vy = 0;
-                    p.ground = true;
-                } else {
-                    p.x = targetX;
-                }
-
+                // Portail
+                p.x += item.teleportDistance * p.dir;
                 showDamageNumber(p.x, p.y + 50, '🌀 TELEPORT!', 'crit');
                 createParticles(item.x, item.y, 40, '#0ff');
-                createParticles(p.x, p.y, 40, '#0ff');
                 item.active = false;
                 item.el.remove();
             } else {
@@ -1429,69 +1335,7 @@ function loop() {
 
     updateQuestProgress('gold', 0);
 
-    // Render minimap
-    renderMinimap();
-
-    checkAchievements();
-
     requestAnimationFrame(loop);
-}
-
-function renderMinimap() {
-    const canvas = document.getElementById('minimap-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width;
-    const h = canvas.height;
-
-    // Clear
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-    ctx.fillRect(0, 0, w, h);
-
-    // Scale factor
-    const scale = 0.05;
-    const offsetX = w / 2 - g.player.x * scale;
-    const offsetY = h - 20;
-
-    // Draw platforms
-    ctx.fillStyle = '#4a4a4a';
-    g.plats.forEach(pl => {
-        if (Math.abs(pl.x - g.player.x) < 2000) {
-            const x = pl.x * scale + offsetX;
-            const y = offsetY - pl.y * scale;
-            const width = pl.w * scale;
-            ctx.fillRect(x, y, Math.max(width, 2), 3);
-        }
-    });
-
-    // Draw mobs
-    ctx.fillStyle = '#f44';
-    g.mobs.forEach(m => {
-        if (m.active && Math.abs(m.x - g.player.x) < 2000) {
-            const x = m.x * scale + offsetX;
-            const y = offsetY - m.y * scale;
-            ctx.fillRect(x - 1, y - 1, 3, 3);
-        }
-    });
-
-    // Draw items
-    ctx.fillStyle = '#fd0';
-    g.items.forEach(item => {
-        if (item.active && Math.abs(item.x - g.player.x) < 2000) {
-            const x = item.x * scale + offsetX;
-            const y = offsetY - item.y * scale;
-            ctx.fillRect(x - 1, y - 1, 2, 2);
-        }
-    });
-
-    // Draw player
-    ctx.fillStyle = '#0f0';
-    ctx.fillRect(w / 2 - 2, offsetY - g.player.y * scale - 2, 4, 4);
-
-    // Border
-    ctx.strokeStyle = '#888';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, w, h);
 }
 
 // Event listeners

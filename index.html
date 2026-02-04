@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ABYSS: DUNGEON PIXEL EDITION</title>
+    <title>THE ABYSS: EVOLUTION - Ultimate Edition</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700;900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body oncontextmenu="return false;">
@@ -18,98 +19,95 @@
             <div class="layer bg-stars"></div>
         </div>
 
-        <!-- Mini Map -->
-        <div id="minimap">
-            <div class="minimap-title">MAP</div>
-            <canvas id="minimap-canvas" width="200" height="150"></canvas>
-        </div>
-
         <div id="hud">
             <div class="hud-left">
-                <div class="player-card pixel-border">
+                <div class="player-card">
                     <div class="player-portrait">
                         <div id="portrait-img"></div>
-                        <div class="level-badge pixel-font" id="level-badge">1</div>
+                        <div class="level-badge" id="level-badge">1</div>
                     </div>
                     <div class="player-info">
-                        <div class="player-name pixel-font" id="player-class-name">WARRIOR</div>
+                        <div class="player-name" id="player-class-name">Warrior</div>
                         <div class="stat-bar-group">
                             <div class="stat-bar">
-                                <div class="stat-label pixel-font">HP</div>
-                                <div class="bar hp-bar-pixel">
+                                <div class="stat-label">❤️ HP</div>
+                                <div class="bar hp-bar-modern">
                                     <div id="hp-bar" class="fill hp"></div>
-                                    <span class="bar-text pixel-font" id="hp-text">100/100</span>
+                                    <span class="bar-text" id="hp-text">100/100</span>
                                 </div>
                             </div>
                             <div class="stat-bar">
-                                <div class="stat-label pixel-font">EXP</div>
-                                <div class="bar exp-bar-pixel">
+                                <div class="stat-label">⭐ EXP</div>
+                                <div class="bar exp-bar-modern">
                                     <div id="exp-bar" class="fill exp"></div>
-                                    <span class="bar-text pixel-font" id="exp-text">0/100</span>
+                                    <span class="bar-text" id="exp-text">0/100</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="quick-stats pixel-border">
+                <div class="quick-stats">
                     <div class="stat-item gold-stat">
-                        <span class="stat-icon">$</span>
-                        <span class="stat-value pixel-font" id="gold-val">0</span>
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold-val">0</span>
                     </div>
                     <div class="stat-item combo-stat">
-                        <span class="stat-icon">X</span>
-                        <span class="stat-value pixel-font" id="combo-val">0</span>
-                        <span class="stat-sublabel pixel-font">COMBO</span>
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-value" id="combo-val">0</span>
+                        <span class="stat-sublabel">COMBO</span>
                     </div>
                 </div>
             </div>
 
             <div class="hud-center">
-                <div id="quest-mini" class="quest-mini-panel pixel-border">
-                    <div class="quest-mini-header pixel-font">
-                        <span>QUEST</span>
-                        <button class="quest-expand-btn pixel-btn-small" onclick="toggleGUI('gui-quests')">+</button>
+                <div id="quest-mini" class="quest-mini-panel">
+                    <div class="quest-mini-header">
+                        <span>📜 NHIỆM VỤ</span>
+                        <button class="quest-expand-btn" onclick="toggleGUI('gui-quests')">►</button>
                     </div>
-                    <div class="quest-mini-content pixel-font">
-                        <div class="quest-desc-mini" id="quest-desc-mini">Kill 10 monsters</div>
-                        <div class="progress-bar-mini pixel-border-thin">
+                    <div class="quest-mini-content">
+                        <div class="quest-desc-mini" id="quest-desc-mini">Tiêu diệt 10 quái vật</div>
+                        <div class="progress-bar-mini">
                             <div id="quest-progress-bar-mini"></div>
                             <span id="quest-progress-text-mini">0/10</span>
                         </div>
-                        <div class="quest-reward-mini" id="quest-reward-mini">500$</div>
+                        <div class="quest-reward-mini" id="quest-reward-mini">🎁 500💰</div>
                     </div>
                 </div>
 
-                <div class="zone-display pixel-border">
-                    <div class="zone-icon pixel-font">ZONE</div>
-                    <div class="zone-number pixel-font" id="zone-val">1</div>
+                <div class="zone-display">
+                    <div class="zone-icon">🌍</div>
+                    <div class="zone-info">
+                        <div class="zone-label">KHU VỰC</div>
+                        <div class="zone-number" id="zone-val">1</div>
+                    </div>
                 </div>
             </div>
 
             <div class="hud-right">
-                <div class="game-stats-panel pixel-border">
-                    <div class="stat-row pixel-font">
-                        <span class="stat-icon">T</span>
+                <div class="game-stats-panel">
+                    <div class="stat-row">
+                        <span class="stat-icon">⏱️</span>
                         <span class="stat-text" id="timer-val">0:00</span>
                     </div>
-                    <div class="stat-row pixel-font">
-                        <span class="stat-icon">K</span>
+                    <div class="stat-row">
+                        <span class="stat-icon">💀</span>
                         <span class="stat-text" id="kills-val">0</span>
                     </div>
-                    <div class="stat-row danger-stat pixel-font">
-                        <span class="stat-icon">D</span>
+                    <div class="stat-row danger-stat">
+                        <span class="stat-icon">⚔️</span>
                         <span class="stat-text" id="danger-val">1</span>
                     </div>
                 </div>
 
                 <div class="buffs-panel" id="buffs-panel"></div>
 
-                <div class="hotkeys-panel pixel-border">
-                    <div class="hotkey-item pixel-font"><kbd>H</kbd> HELP</div>
-                    <div class="hotkey-item pixel-font"><kbd>B</kbd> SHOP</div>
-                    <div class="hotkey-item pixel-font"><kbd>Q</kbd> QUEST</div>
-                    <div class="hotkey-item pixel-font"><kbd>I</kbd> STATS</div>
+                <div class="hotkeys-panel">
+                    <div class="hotkey-item"><kbd>H</kbd> Trợ giúp</div>
+                    <div class="hotkey-item"><kbd>B</kbd> Cửa hàng</div>
+                    <div class="hotkey-item"><kbd>Q</kbd> Nhiệm vụ</div>
+                    <div class="hotkey-item"><kbd>I</kbd> Chỉ số</div>
                 </div>
             </div>
         </div>
@@ -120,7 +118,7 @@
                     <div id="p-sprite"></div>
                     <div id="p-weapon"></div>
                     <div id="p-slash"></div>
-                    <div id="lvl-up-fx" class="pixel-font">LEVEL UP!</div>
+                    <div id="lvl-up-fx">⭐ LEVEL UP! ⭐</div>
                 </div>
                 <div id="platform-layer"></div>
                 <div id="entity-layer"></div>
@@ -132,143 +130,180 @@
 
         <div id="mobile-controls">
             <div class="control-left">
-                <button class="btn-control pixel-btn-ctrl" id="btn-left">L</button>
-                <button class="btn-control pixel-btn-ctrl" id="btn-right">R</button>
+                <button class="btn-control" id="btn-left">◀</button>
+                <button class="btn-control" id="btn-right">▶</button>
             </div>
             <div class="control-right">
-                <button class="btn-control pixel-btn-ctrl" id="btn-jump">J</button>
-                <button class="btn-control pixel-btn-ctrl" id="btn-attack">A</button>
+                <button class="btn-control" id="btn-jump">⬆</button>
+                <button class="btn-control" id="btn-attack">⚔</button>
             </div>
         </div>
     </div>
 
     <div id="gui-select" class="overlay">
         <div class="win pixel-win">
-            <h1 class="pixel-title">SELECT HERO</h1>
+            <h1 class="pixel-title">⚔️ CHỌN CHIẾN BINH ⚔️</h1>
             <div class="sel-grid-wrap">
                 <div id="class-grid"></div>
                 <div id="class-info" class="pixel-panel">
-                    <h3 class="pixel-font">CLASS INFO</h3>
-                    <div id="class-stats" class="pixel-font"></div>
+                    <h3>THÔNG TIN CLASS</h3>
+                    <div id="class-stats"></div>
                     <div id="class-weapon-preview"></div>
                 </div>
             </div>
             <div class="btn-row">
-                <button class="pixel-btn" id="start-btn" disabled onclick="startGame()">START</button>
-                <button class="pixel-btn" onclick="loadGame()" id="continue-btn" style="display:none">CONTINUE</button>
+                <button class="pixel-btn" id="start-btn" disabled onclick="startGame()">🎮 BẮT ĐẦU</button>
+                <button class="pixel-btn" onclick="loadGame()" id="continue-btn" style="display:none">📂 TIẾP
+                    TỤC</button>
             </div>
         </div>
     </div>
 
     <div id="gui-help" class="overlay" style="display:none">
         <div class="win pixel-win small">
-            <h2 class="pixel-font">HELP</h2>
-            <div class="help-content pixel-panel pixel-font">
-                <h3>CONTROLS</h3>
-                <p>A/D or ARROWS - Move</p>
-                <p>SPACE/W - Jump</p>
-                <p>SHIFT - Dash</p>
-                <p>CLICK - Attack</p>
-                <p>H - Help | B - Shop</p>
-                <p>Q - Quests | I - Stats</p>
-                <p>P/ESC - Pause</p>
-
-                <h3>GAMEPLAY</h3>
-                <p>Kill monsters, collect gold</p>
-                <p>Complete quests for rewards</p>
-                <p>Open chests for items</p>
-                <p>Avoid traps and pits</p>
-                <p>Use portals to teleport</p>
-                <p>Survive and explore!</p>
+            <h2>📖 HƯỚNG DẪN</h2>
+            <div class="help-section">
+                <p><kbd>A</kbd><kbd>D</kbd> Di chuyển | <kbd>SPACE</kbd> Nhảy</p>
+                <p><kbd>SHIFT</kbd> Dash (mới!) | <kbd>CLICK</kbd> Tấn công</p>
+                <p><kbd>B</kbd> Shop | <kbd>Q</kbd> Nhiệm vụ | <kbd>P</kbd> Pause</p>
+                <h3>Mục tiêu:</h3>
+                <p>⚔️ Tiêu diệt quái vật lên cấp</p>
+                <p>📦 Mở rương nhận vàng và items đặc biệt</p>
+                <p>💊 Thu thập lọ thuốc tăng sức mạnh</p>
+                <p>⭐ Nhặt bonus platforms cho gold</p>
+                <p>🌀 Sử dụng portals để teleport</p>
+                <p>⚠️ Tránh bẫy nguy hiểm!</p>
+                <p>⚡ Đánh bại Mini-Boss</p>
+                <h3>Tính năng mới:</h3>
+                <p>💨 Dash: Tăng tốc và invul tạm thời</p>
+                <p>✨ Double Jump: Mua tại shop để nhảy 2 lần</p>
+                <p>🎯 Range Boost: Tăng tầm bắn cho class tầm xa</p>
+                <p>🔥 Combo cao = Damage x2-x5!</p>
             </div>
-            <button class="pixel-btn" onclick="toggleGUI('gui-help')">CLOSE</button>
+            <button class="pixel-btn" onclick="toggleGUI('gui-help')">ĐÓNG</button>
         </div>
     </div>
 
     <div id="gui-shop" class="overlay" style="display:none">
-        <div class="win pixel-win large">
+        <div class="win modern-win large-win">
             <div class="win-header">
-                <h2 class="pixel-font">DUNGEON SHOP</h2>
-                <button class="close-btn pixel-btn-small" onclick="toggleGUI('gui-shop')">X</button>
-            </div>
-            <div class="shop-tabs pixel-border">
-                <button class="category-btn pixel-btn-tab active" data-category="combat">COMBAT</button>
-                <button class="category-btn pixel-btn-tab" data-category="defense">DEFENSE</button>
-                <button class="category-btn pixel-btn-tab" data-category="utility">UTILITY</button>
-                <button class="category-btn pixel-btn-tab" data-category="special">SPECIAL</button>
+                <h2>🏪 CỬA HÀNG</h2>
+                <div class="player-gold-display">
+                    <span class="gold-icon">💰</span>
+                    <span id="shop-gold-display">0</span>
+                </div>
+                <button class="close-btn" onclick="toggleGUI('gui-shop')">✕</button>
             </div>
             <div class="win-content">
-                <div id="shop-items-combat" class="shop-grid-pixel">
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('atk', 100)">
-                        <div class="item-icon">+</div>
-                        <div class="item-name pixel-font">ATK +10</div>
-                        <div class="item-price pixel-font">100$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('crit', 150)">
-                        <div class="item-icon">!</div>
-                        <div class="item-name pixel-font">CRIT +5%</div>
-                        <div class="item-price pixel-font">150$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('atkspeed', 200)">
-                        <div class="item-icon">^</div>
-                        <div class="item-name pixel-font">SPEED +10%</div>
-                        <div class="item-price pixel-font">200$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('lifesteal', 300)">
-                        <div class="item-icon">V</div>
-                        <div class="item-name pixel-font">LIFESTEAL +5%</div>
-                        <div class="item-price pixel-font">300$</div>
-                    </div>
+                <div class="shop-categories">
+                    <button class="category-btn active" data-category="combat">⚔️ Chiến đấu</button>
+                    <button class="category-btn" data-category="utility">🎯 Tiện ích</button>
+                    <button class="category-btn" data-category="special">✨ Đặc biệt</button>
                 </div>
-                <div id="shop-items-defense" class="shop-grid-pixel" style="display:none">
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('hp', 80)">
-                        <div class="item-icon">H</div>
-                        <div class="item-name pixel-font">HP +50</div>
-                        <div class="item-price pixel-font">80$</div>
+                <div class="shop-items-container">
+                    <div class="shop-grid-modern" id="shop-items-combat">
+                        <div class="shop-card" onclick="buy('heal')">
+                            <div class="shop-card-icon">💊</div>
+                            <div class="shop-card-info">
+                                <h4>Hồi máu ngay</h4>
+                                <p class="shop-card-desc">Hồi 100% HP</p>
+                                <div class="shop-card-price">200💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('atk')">
+                            <div class="shop-card-icon">⚔️</div>
+                            <div class="shop-card-info">
+                                <h4>Tăng sức mạnh</h4>
+                                <p class="shop-card-desc">ATK +25</p>
+                                <div class="shop-card-price">500💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('hp')">
+                            <div class="shop-card-icon">🛡️</div>
+                            <div class="shop-card-info">
+                                <h4>Tăng sinh lực</h4>
+                                <p class="shop-card-desc">Max HP +100</p>
+                                <div class="shop-card-price">600💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('crit')">
+                            <div class="shop-card-icon">💎</div>
+                            <div class="shop-card-info">
+                                <h4>Tăng chí mạng</h4>
+                                <p class="shop-card-desc">Crit +5%</p>
+                                <div class="shop-card-price">1000💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('lifesteal')">
+                            <div class="shop-card-icon">🌟</div>
+                            <div class="shop-card-info">
+                                <h4>Hút máu</h4>
+                                <p class="shop-card-desc">Life Steal +10%</p>
+                                <div class="shop-card-price">1500💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('speed')">
+                            <div class="shop-card-icon">⚡</div>
+                            <div class="shop-card-info">
+                                <h4>Tốc độ đánh</h4>
+                                <p class="shop-card-desc">ATK Speed +10%</p>
+                                <div class="shop-card-price">800💰</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('regen', 250)">
-                        <div class="item-icon">R</div>
-                        <div class="item-name pixel-font">REGEN +1HP/s</div>
-                        <div class="item-price pixel-font">250$</div>
+
+                    <div class="shop-grid-modern" id="shop-items-utility" style="display:none">
+                        <div class="shop-card" onclick="buy('movespeed')">
+                            <div class="shop-card-icon">🏃</div>
+                            <div class="shop-card-info">
+                                <h4>Tốc độ di chuyển</h4>
+                                <p class="shop-card-desc">Move Speed +20%</p>
+                                <div class="shop-card-price">700💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('doublejump')">
+                            <div class="shop-card-icon">💨</div>
+                            <div class="shop-card-info">
+                                <h4>Nhảy đôi</h4>
+                                <p class="shop-card-desc">Double Jump</p>
+                                <div class="shop-card-price">1000💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('range')">
+                            <div class="shop-card-icon">🎯</div>
+                            <div class="shop-card-info">
+                                <h4>Tăng tầm bắn</h4>
+                                <p class="shop-card-desc">Range +30%</p>
+                                <div class="shop-card-price">900💰</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('armor', 180)">
-                        <div class="item-icon">A</div>
-                        <div class="item-name pixel-font">ARMOR +5%</div>
-                        <div class="item-price pixel-font">180$</div>
-                    </div>
-                </div>
-                <div id="shop-items-utility" class="shop-grid-pixel" style="display:none">
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('speed', 120)">
-                        <div class="item-icon">S</div>
-                        <div class="item-name pixel-font">MOVE +10%</div>
-                        <div class="item-price pixel-font">120$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('doublejump', 500)">
-                        <div class="item-icon">J</div>
-                        <div class="item-name pixel-font">DOUBLE JUMP</div>
-                        <div class="item-price pixel-font">500$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('dash', 400)">
-                        <div class="item-icon">D</div>
-                        <div class="item-name pixel-font">DASH COOLDOWN -20%</div>
-                        <div class="item-price pixel-font">400$</div>
-                    </div>
-                </div>
-                <div id="shop-items-special" class="shop-grid-pixel" style="display:none">
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('combo', 350)">
-                        <div class="item-icon">C</div>
-                        <div class="item-name pixel-font">COMBO TIME +50</div>
-                        <div class="item-price pixel-font">350$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('goldbonus', 280)">
-                        <div class="item-icon">$</div>
-                        <div class="item-name pixel-font">GOLD +25%</div>
-                        <div class="item-price pixel-font">280$</div>
-                    </div>
-                    <div class="shop-item pixel-border" onclick="buyUpgrade('expbonus', 300)">
-                        <div class="item-icon">E</div>
-                        <div class="item-name pixel-font">EXP +25%</div>
-                        <div class="item-price pixel-font">300$</div>
+
+                    <div class="shop-grid-modern" id="shop-items-special" style="display:none">
+                        <div class="shop-card" onclick="buy('combo')">
+                            <div class="shop-card-icon">🔥</div>
+                            <div class="shop-card-info">
+                                <h4>Bậc thầy combo</h4>
+                                <p class="shop-card-desc">Combo +50%</p>
+                                <div class="shop-card-price">1200💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('magnet')">
+                            <div class="shop-card-icon">🧲</div>
+                            <div class="shop-card-info">
+                                <h4>Nam châm vàng</h4>
+                                <p class="shop-card-desc">Auto collect gold</p>
+                                <div class="shop-card-price">2000💰</div>
+                            </div>
+                        </div>
+                        <div class="shop-card" onclick="buy('shield')">
+                            <div class="shop-card-icon">🛡️</div>
+                            <div class="shop-card-info">
+                                <h4>Lá chắn năng lượng</h4>
+                                <p class="shop-card-desc">Shield 1 hit/10s</p>
+                                <div class="shop-card-price">1800💰</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -276,41 +311,55 @@
     </div>
 
     <div id="gui-quests" class="overlay" style="display:none">
-        <div class="win pixel-win medium">
+        <div class="win modern-win">
             <div class="win-header">
-                <h2 class="pixel-font">QUEST LOG</h2>
-                <button class="close-btn pixel-btn-small" onclick="toggleGUI('gui-quests')">X</button>
+                <h2>📜 NHIỆM VỤ HIỆN TẠI</h2>
+                <button class="close-btn" onclick="toggleGUI('gui-quests')">✕</button>
             </div>
-            <div class="win-content pixel-font">
-                <div class="quest-display">
-                    <div class="quest-main-card pixel-border">
-                        <h3 class="pixel-font">CURRENT QUEST</h3>
-                        <div class="quest-content">
-                            <div class="quest-icon">?</div>
-                            <div class="quest-info">
-                                <div class="quest-title pixel-font" id="quest-title-detail">Active Quest</div>
-                                <div class="quest-desc pixel-font" id="quest-desc-detail">Description</div>
-                                <div class="progress-section">
-                                    <div class="progress-bar-full pixel-border-thin">
-                                        <div id="quest-progress-bar-full"></div>
-                                        <span id="quest-progress-text-full" class="pixel-font">0/10</span>
+            <div class="win-content">
+                <div class="current-quest-display">
+                    <div class="quest-card active-quest">
+                        <div class="quest-card-header">
+                            <span class="quest-icon">⚔️</span>
+                            <span class="quest-title" id="current-quest-title">Tiêu diệt 10 quái vật</span>
+                        </div>
+                        <div class="quest-card-body">
+                            <div class="quest-description" id="current-quest-desc">
+                                Hãy tiêu diệt 10 quái vật để hoàn thành nhiệm vụ này.
+                            </div>
+                            <div class="quest-progress-display">
+                                <div class="progress-circle" id="quest-circle">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="45" class="progress-bg"></circle>
+                                        <circle cx="50" cy="50" r="45" class="progress-fill" id="quest-circle-fill">
+                                        </circle>
+                                    </svg>
+                                    <div class="progress-text" id="quest-circle-text">0%</div>
+                                </div>
+                                <div class="quest-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Tiến độ:</span>
+                                        <span class="detail-value" id="quest-detail-progress">0/10</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Phần thưởng:</span>
+                                        <span class="detail-value reward-text" id="quest-detail-reward">500💰</span>
                                     </div>
                                 </div>
-                                <div class="quest-reward pixel-font" id="quest-reward-detail">REWARD: 500$</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="quest-stats pixel-border">
-                        <h3 class="pixel-font">STATS</h3>
-                        <div class="stats-grid pixel-font">
+                    <div class="quest-stats">
+                        <h3>📊 Thống kê nhiệm vụ</h3>
+                        <div class="stats-grid">
                             <div class="stat-box">
                                 <div class="stat-number" id="quests-completed-stat">0</div>
-                                <div class="stat-name">COMPLETED</div>
+                                <div class="stat-name">Hoàn thành</div>
                             </div>
                             <div class="stat-box">
                                 <div class="stat-number" id="total-rewards-stat">0</div>
-                                <div class="stat-name">REWARDS</div>
+                                <div class="stat-name">Tổng thưởng</div>
                             </div>
                         </div>
                     </div>
@@ -320,86 +369,88 @@
     </div>
 
     <div id="gui-stats" class="overlay" style="display:none">
-        <div class="win pixel-win large-win">
+        <div class="win modern-win large-win">
             <div class="win-header">
-                <h2 class="pixel-font">CHARACTER STATS</h2>
-                <button class="close-btn pixel-btn-small" onclick="toggleGUI('gui-stats')">X</button>
+                <h2>📊 CHỈ SỐ NHÂN VẬT</h2>
+                <button class="close-btn" onclick="toggleGUI('gui-stats')">✕</button>
             </div>
-            <div class="win-content pixel-font">
+            <div class="win-content">
                 <div class="stats-layout">
-                    <div class="stats-section pixel-border">
-                        <h3 class="pixel-font">COMBAT</h3>
+                    <div class="stats-section">
+                        <h3>⚔️ Chỉ số chiến đấu</h3>
                         <div class="stat-list">
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">ATK</span>
+                                <span class="stat-name-detailed">Sức mạnh (ATK)</span>
                                 <span class="stat-value-detailed" id="stat-atk">90</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">HP</span>
+                                <span class="stat-name-detailed">Sinh lực (HP)</span>
                                 <span class="stat-value-detailed" id="stat-hp">500/500</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">CRIT</span>
+                                <span class="stat-name-detailed">Chí mạng</span>
                                 <span class="stat-value-detailed" id="stat-crit">15%</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">LIFESTEAL</span>
+                                <span class="stat-name-detailed">Hút máu</span>
                                 <span class="stat-value-detailed" id="stat-lifesteal">0%</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">ATKSPEED</span>
+                                <span class="stat-name-detailed">Tốc độ đánh</span>
                                 <span class="stat-value-detailed" id="stat-atkspeed">100%</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stats-section pixel-border">
-                        <h3 class="pixel-font">MOVEMENT</h3>
+                    <div class="stats-section">
+                        <h3>🏃 Chỉ số di chuyển</h3>
                         <div class="stat-list">
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">SPEED</span>
+                                <span class="stat-name-detailed">Tốc độ</span>
                                 <span class="stat-value-detailed" id="stat-movespeed">100%</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">DASH CD</span>
+                                <span class="stat-name-detailed">Dash Cooldown</span>
                                 <span class="stat-value-detailed" id="stat-dash">1.0s</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">DBL JUMP</span>
-                                <span class="stat-value-detailed" id="stat-doublejump">NO</span>
+                                <span class="stat-name-detailed">Double Jump</span>
+                                <span class="stat-value-detailed" id="stat-doublejump">Không</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stats-section pixel-border">
-                        <h3 class="pixel-font">GAME</h3>
+                    <div class="stats-section">
+                        <h3>🎯 Thống kê game</h3>
                         <div class="stat-list">
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">LEVEL</span>
+                                <span class="stat-name-detailed">Cấp độ</span>
                                 <span class="stat-value-detailed" id="stat-level">1</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">KILLS</span>
+                                <span class="stat-name-detailed">Tiêu diệt</span>
                                 <span class="stat-value-detailed" id="stat-kills">0</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">MAX COMBO</span>
+                                <span class="stat-name-detailed">Combo tối đa</span>
                                 <span class="stat-value-detailed" id="stat-maxcombo">0</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">BOSSES</span>
+                                <span class="stat-name-detailed">Boss đã hạ</span>
                                 <span class="stat-value-detailed" id="stat-bosses">0</span>
                             </div>
                             <div class="stat-item-detailed">
-                                <span class="stat-name-detailed">CHESTS</span>
+                                <span class="stat-name-detailed">Rương mở</span>
                                 <span class="stat-value-detailed" id="stat-chests">0</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stats-section full-width pixel-border">
-                        <h3 class="pixel-font">ACHIEVEMENTS</h3>
-                        <div class="achievements-grid" id="achievements-list"></div>
+                    <div class="stats-section full-width">
+                        <h3>🏆 Thành tích</h3>
+                        <div class="achievements-grid" id="achievements-list">
+                            <!-- Achievements will be added dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -408,34 +459,34 @@
 
     <div id="gui-pause" class="overlay" style="display:none">
         <div class="win pixel-win small">
-            <h2 class="pixel-font">PAUSED</h2>
-            <div class="pause-stats pixel-panel pixel-font">
-                <p>LEVEL: <span id="pause-lvl">1</span></p>
-                <p>GOLD: <span id="pause-gold">0</span></p>
-                <p>TIME: <span id="pause-time">0:00</span></p>
-                <p>KILLS: <span id="pause-kills">0</span></p>
-                <p>ZONE: <span id="pause-zone">1</span></p>
+            <h2>⏸️ TẠM DỪNG</h2>
+            <div class="pause-stats pixel-panel">
+                <p>Cấp: <span id="pause-lvl">1</span></p>
+                <p>Vàng: <span id="pause-gold">0</span></p>
+                <p>Thời gian: <span id="pause-time">0:00</span></p>
+                <p>Tiêu diệt: <span id="pause-kills">0</span></p>
+                <p>Khu vực: <span id="pause-zone">1</span></p>
             </div>
-            <button class="pixel-btn" onclick="togglePause()">CONTINUE</button>
-            <button class="pixel-btn" onclick="saveGame()">SAVE</button>
-            <button class="pixel-btn" onclick="location.reload()">EXIT</button>
+            <button class="pixel-btn" onclick="togglePause()">TIẾP TỤC</button>
+            <button class="pixel-btn" onclick="saveGame()">💾 LƯU</button>
+            <button class="pixel-btn" onclick="location.reload()">🏠 THOÁT</button>
         </div>
     </div>
 
     <div id="gui-gameover" class="overlay" style="display:none">
         <div class="win pixel-win">
-            <h1 class="game-over-title pixel-font">GAME OVER</h1>
-            <div class="stats-summary pixel-panel pixel-font">
-                <h3>FINAL STATS</h3>
-                <p>LEVEL: <span id="final-lvl">1</span></p>
-                <p>GOLD: <span id="final-gold">0</span></p>
-                <p>TIME: <span id="final-time">0:00</span></p>
-                <p>KILLS: <span id="final-kills">0</span></p>
-                <p>QUESTS: <span id="final-quests">0</span></p>
-                <p>ZONE: <span id="final-zone">1</span></p>
-                <p>MAX COMBO: <span id="final-combo">0</span></p>
+            <h1 class="game-over-title">💀 GAME OVER 💀</h1>
+            <div class="stats-summary pixel-panel">
+                <h3>THỐNG KÊ CUỐI GAME</h3>
+                <p>Cấp độ: <span id="final-lvl">1</span></p>
+                <p>Vàng: <span id="final-gold">0</span></p>
+                <p>Thời gian: <span id="final-time">0:00</span></p>
+                <p>Tiêu diệt: <span id="final-kills">0</span></p>
+                <p>Nhiệm vụ: <span id="final-quests">0</span></p>
+                <p>Khu vực: <span id="final-zone">1</span></p>
+                <p>Max Combo: <span id="final-combo">0</span></p>
             </div>
-            <button class="pixel-btn" onclick="location.reload()">RETRY</button>
+            <button class="pixel-btn" onclick="location.reload()">🔄 CHƠI LẠI</button>
         </div>
     </div>
 
