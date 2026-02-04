@@ -49,7 +49,6 @@ window.onload = () => {
         const card = document.createElement('div');
         card.className = 'card';
 
-        // Create icon display
         const iconDiv = document.createElement('div');
         iconDiv.className = 'class-icon';
         iconDiv.textContent = c.icon;
@@ -66,10 +65,11 @@ window.onload = () => {
         nameDiv.style.bottom = '5px';
         nameDiv.style.left = '0';
         nameDiv.style.right = '0';
-        nameDiv.style.fontSize = '7px';
+        nameDiv.style.fontSize = '9px';
         nameDiv.style.textAlign = 'center';
-        nameDiv.style.background = 'rgba(0,0,0,0.7)';
-        nameDiv.style.padding = '3px';
+        nameDiv.style.background = 'rgba(0,0,0,0.8)';
+        nameDiv.style.padding = '4px';
+        nameDiv.style.fontWeight = '700';
 
         card.style.background = `linear-gradient(135deg, ${c.color} 0%, ${adjustColor(c.color, -30)} 100%)`;
         card.appendChild(iconDiv);
@@ -91,8 +91,114 @@ window.onload = () => {
 
     if (localStorage.getItem('abyssGame')) document.getElementById('continue-btn').style.display = 'inline-block';
     setupMobileControls();
+    setupShopCategories();
     generateNewQuest();
+    initializeAchievements();
 };
+
+function setupShopCategories() {
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const category = btn.getAttribute('data-category');
+            document.querySelectorAll('.shop-grid-modern').forEach(grid => {
+                grid.style.display = 'none';
+            });
+            document.getElementById(`shop-items-${category}`).style.display = 'grid';
+        });
+    });
+}
+
+function initializeAchievements() {
+    g.achievements = [
+        { id: 'first_blood', name: 'Máu đầu tiên', desc: 'Tiêu diệt quái vật đầu tiên', icon: '⚔️', unlocked: false, check: () => g.player.kills >= 1 },
+        { id: 'slayer', name: 'Sát thủ', desc: 'Tiêu diệt 50 quái vật', icon: '💀', unlocked: false, check: () => g.player.kills >= 50 },
+        { id: 'combo_master', name: 'Bậc thầy combo', desc: 'Đạt combo 30', icon: '🔥', unlocked: false, check: () => g.player.maxCombo >= 30 },
+        { id: 'rich', name: 'Giàu có', desc: 'Thu thập 5000 vàng', icon: '💰', unlocked: false, check: () => g.player.gold >= 5000 },
+        { id: 'survivor', name: 'Người sống sót', desc: 'Sống sót 10 phút', icon: '⏱️', unlocked: false, check: () => g.timer >= 600 },
+        { id: 'explorer', name: 'Nhà thám hiểm', desc: 'Đến khu vực 3', icon: '🌍', unlocked: false, check: () => g.zone >= 3 },
+        { id: 'boss_slayer', name: 'Sát thủ Boss', desc: 'Đánh bại 3 Boss', icon: '👑', unlocked: false, check: () => g.player.bossKilled >= 3 },
+        { id: 'treasure_hunter', name: 'Thợ săn kho báu', desc: 'Mở 20 rương', icon: '📦', unlocked: false, check: () => g.player.chestOpened >= 20 },
+    ];
+}
+
+function checkAchievements() {
+    g.achievements.forEach(ach => {
+        if (!ach.unlocked && ach.check()) {
+            ach.unlocked = true;
+            showAchievement(ach);
+        }
+    });
+}
+
+function showAchievement(ach) {
+    const el = document.createElement('div');
+    el.className = 'achievement-popup';
+    el.innerHTML = `
+        <div class="achievement-popup-icon">${ach.icon}</div>
+        <div class="achievement-popup-text">
+            <div class="achievement-popup-title">Thành tích mở khóa!</div>
+            <div class="achievement-popup-name">${ach.name}</div>
+        </div>
+    `;
+    el.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: -400px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(79, 70, 229, 0.95));
+        border: 3px solid #fbbf24;
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(251,191,36,0.5);
+        z-index: 10000;
+        animation: slideInAchievement 0.5s forwards, slideOutAchievement 0.5s 3s forwards;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+}
+
+function updateStatsUI() {
+    if (document.getElementById('gui-stats').style.display !== 'none') {
+        const p = g.player;
+        document.getElementById('stat-atk').textContent = Math.floor(g.selected.atk);
+        document.getElementById('stat-hp').textContent = `${Math.floor(p.hp)}/${p.maxH}`;
+        document.getElementById('stat-crit').textContent = Math.floor(p.critChance * 100) + '%';
+        document.getElementById('stat-lifesteal').textContent = Math.floor(p.lifeSteal * 100) + '%';
+        document.getElementById('stat-atkspeed').textContent = Math.floor((1 / g.upgrades.atkSpeed) * 100) + '%';
+        document.getElementById('stat-movespeed').textContent = Math.floor(p.moveSpeed * 100) + '%';
+        document.getElementById('stat-dash').textContent = '1.0s';
+        document.getElementById('stat-doublejump').textContent = p.hasDoubleJump ? 'Có' : 'Không';
+        document.getElementById('stat-level').textContent = p.lvl;
+        document.getElementById('stat-kills').textContent = p.kills;
+        document.getElementById('stat-maxcombo').textContent = p.maxCombo;
+        document.getElementById('stat-bosses').textContent = p.bossKilled;
+        document.getElementById('stat-chests').textContent = p.chestOpened;
+
+        updateAchievementsDisplay();
+    }
+}
+
+function updateAchievementsDisplay() {
+    const container = document.getElementById('achievements-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    g.achievements.forEach(ach => {
+        const card = document.createElement('div');
+        card.className = 'achievement-card' + (ach.unlocked ? ' unlocked' : '');
+        card.innerHTML = `
+            <div class="achievement-icon">${ach.icon}</div>
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-desc">${ach.desc}</div>
+        `;
+        container.appendChild(card);
+    });
+}
 
 function adjustColor(color, amount) {
     const num = parseInt(color.replace('#', ''), 16);
@@ -132,21 +238,45 @@ function completeQuest() {
     g.currentQuest.completed = true;
     g.player.gold += g.currentQuest.reward;
     g.questsCompleted++;
-    showDamageNumber(g.player.x, g.player.y + 60, `+${g.currentQuest.reward}💰`, 'crit');
-    createParticles(g.player.x, g.player.y + 30, 20, '#ffd700');
+    g.totalQuestRewards = (g.totalQuestRewards || 0) + g.currentQuest.reward;
+    showDamageNumber(g.player.x, g.player.y + 60, `+${g.currentQuest.reward}💰 QUEST!`, 'crit');
+    createParticles(g.player.x, g.player.y + 30, 30, '#ffd700');
     setTimeout(() => generateNewQuest(), 3000);
 }
 
 function updateQuestUI() {
     if (!g.currentQuest) return;
-    document.getElementById('quest-desc').textContent = g.currentQuest.desc;
+
+    // Mini panel
+    document.getElementById('quest-desc-mini').textContent = g.currentQuest.desc;
     const percent = (g.currentQuest.progress / g.currentQuest.target) * 100;
-    document.getElementById('quest-progress-bar').style.width = Math.min(100, percent) + '%';
-    document.getElementById('quest-progress-text').textContent = `${Math.min(g.currentQuest.progress, g.currentQuest.target)}/${g.currentQuest.target}`;
-    document.getElementById('quest-reward').textContent = `Phần thưởng: ${g.currentQuest.reward}💰`;
+    document.getElementById('quest-progress-bar-mini').style.width = Math.min(100, percent) + '%';
+    document.getElementById('quest-progress-text-mini').textContent = `${Math.min(g.currentQuest.progress, g.currentQuest.target)}/${g.currentQuest.target}`;
+    document.getElementById('quest-reward-mini').textContent = `🎁 ${g.currentQuest.reward}💰`;
+
+    // Detailed quest panel
+    if (document.getElementById('gui-quests').style.display !== 'none') {
+        document.getElementById('current-quest-title').textContent = g.currentQuest.desc;
+        document.getElementById('current-quest-desc').textContent = `Hãy hoàn thành nhiệm vụ này để nhận ${g.currentQuest.reward} vàng!`;
+        document.getElementById('quest-detail-progress').textContent = `${Math.min(g.currentQuest.progress, g.currentQuest.target)}/${g.currentQuest.target}`;
+        document.getElementById('quest-detail-reward').textContent = `${g.currentQuest.reward}💰`;
+        document.getElementById('quest-circle-text').textContent = Math.floor(percent) + '%';
+
+        // Update circle progress
+        const circle = document.getElementById('quest-circle-fill');
+        if (circle) {
+            const circumference = 283;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        document.getElementById('quests-completed-stat').textContent = g.questsCompleted;
+        document.getElementById('total-rewards-stat').textContent = g.totalQuestRewards || 0;
+    }
+
     if (g.currentQuest.completed) {
-        document.getElementById('quest-desc').textContent = 'HOÀN THÀNH! Nhiệm vụ mới...';
-        document.getElementById('quest-progress-bar').style.background = '#ffd700';
+        document.getElementById('quest-desc-mini').textContent = 'HOÀN THÀNH! Nhiệm vụ mới...';
+        document.getElementById('quest-progress-bar-mini').style.background = '#fbbf24';
     }
 }
 
@@ -155,7 +285,8 @@ function startGame() {
     Object.assign(g.player, {
         hp: s.hp, maxH: s.hp, exp: 0, lvl: 1, gold: 0, kills: 0,
         chestOpened: 0, potionsCollected: 0, bossKilled: 0,
-        combo: 0, maxCombo: 0, comboTimer: 0, lifeSteal: 0
+        combo: 0, maxCombo: 0, comboTimer: 0, lifeSteal: 0,
+        buffs: {}, goldMagnet: false, energyShield: false, shieldCooldown: 0
     });
 
     // Sprite avec couleur et icône
@@ -170,6 +301,10 @@ function startGame() {
     document.getElementById('portrait-img').style.alignItems = 'center';
     document.getElementById('portrait-img').style.justifyContent = 'center';
     document.getElementById('portrait-img').style.backgroundColor = s.color;
+
+    // Nom de classe
+    document.getElementById('player-class-name').textContent = s.id;
+    document.getElementById('level-badge').textContent = '1';
 
     // Arme du personnage
     const weaponEl = document.getElementById('p-weapon');
@@ -187,6 +322,7 @@ function startGame() {
 
     g.active = true;
     g.startTime = Date.now();
+    g.totalQuestRewards = 0;
     requestAnimationFrame(loop);
 
     setInterval(() => {
@@ -207,6 +343,16 @@ function startGame() {
                 if (g.player.comboTimer === 0) {
                     g.player.combo = 0;
                 }
+            }
+
+            // Shield cooldown
+            if (g.player.shieldCooldown > 0) {
+                g.player.shieldCooldown--;
+            }
+
+            // Check achievements
+            if (g.timer % 5 === 0) {
+                checkAchievements();
             }
         }
     }, 1000);
@@ -745,19 +891,23 @@ function createParticles(x, y, count, color) {
 
 function buy(type) {
     const p = g.player;
+    let purchased = false;
+
     switch (type) {
         case 'heal':
             if (p.gold >= 200) {
                 p.hp = p.maxH;
                 p.gold -= 200;
-                showDamageNumber(p.x, p.y + 40, '+HP', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+FULL HP', 'crit');
+                purchased = true;
             }
             break;
         case 'atk':
             if (p.gold >= 500) {
                 g.selected.atk += 25;
                 p.gold -= 500;
-                showDamageNumber(p.x, p.y + 40, '+ATK', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+25 ATK', 'crit');
+                purchased = true;
             }
             break;
         case 'hp':
@@ -765,42 +915,49 @@ function buy(type) {
                 p.maxH += 100;
                 p.hp += 100;
                 p.gold -= 600;
-                showDamageNumber(p.x, p.y + 40, '+HP', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+100 MAX HP', 'crit');
+                purchased = true;
             }
             break;
         case 'speed':
             if (p.gold >= 800 && g.upgrades.atkSpeed > 0.5) {
                 g.upgrades.atkSpeed *= 0.9;
                 p.gold -= 800;
-                showDamageNumber(p.x, p.y + 40, '+SPD', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+ATK SPEED', 'crit');
+                purchased = true;
             }
             break;
         case 'crit':
             if (p.gold >= 1000) {
                 p.critChance += 0.05;
                 p.gold -= 1000;
-                showDamageNumber(p.x, p.y + 40, '+CRIT', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+5% CRIT', 'crit');
+                purchased = true;
             }
             break;
         case 'movespeed':
             if (p.gold >= 700) {
                 p.moveSpeed += 0.2;
                 p.gold -= 700;
-                showDamageNumber(p.x, p.y + 40, '+MOVE', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+20% SPEED', 'crit');
+                purchased = true;
             }
             break;
         case 'combo':
             if (p.gold >= 1200) {
                 g.upgrades.comboDuration += 50;
                 p.gold -= 1200;
-                showDamageNumber(p.x, p.y + 40, '+COMBO', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+COMBO TIME', 'crit');
+                purchased = true;
             }
             break;
         case 'lifesteal':
             if (p.gold >= 1500) {
                 p.lifeSteal += 0.1;
                 p.gold -= 1500;
-                showDamageNumber(p.x, p.y + 40, '+LIFESTEAL', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+10% LIFESTEAL', 'crit');
+                addBuff('lifesteal', '🌟');
+                purchased = true;
             }
             break;
         case 'doublejump':
@@ -809,15 +966,70 @@ function buy(type) {
                 p.gold -= 1000;
                 showDamageNumber(p.x, p.y + 40, '💨 DOUBLE JUMP!', 'crit');
                 createParticles(p.x, p.y + 30, 25, '#0ff');
+                addBuff('doublejump', '💨');
+                purchased = true;
             }
             break;
         case 'range':
             if (p.gold >= 900) {
                 g.player.rangeBonus = (g.player.rangeBonus || 0) + 0.3;
                 p.gold -= 900;
-                showDamageNumber(p.x, p.y + 40, '+RANGE', 'crit');
+                showDamageNumber(p.x, p.y + 40, '+30% RANGE', 'crit');
+                purchased = true;
             }
             break;
+        case 'magnet':
+            if (p.gold >= 2000 && !p.goldMagnet) {
+                p.goldMagnet = true;
+                p.gold -= 2000;
+                showDamageNumber(p.x, p.y + 40, '🧲 GOLD MAGNET!', 'crit');
+                addBuff('magnet', '🧲');
+                purchased = true;
+            }
+            break;
+        case 'shield':
+            if (p.gold >= 1800 && !p.energyShield) {
+                p.energyShield = true;
+                p.shieldCooldown = 0;
+                p.gold -= 1800;
+                showDamageNumber(p.x, p.y + 40, '🛡️ SHIELD ACTIVE!', 'crit');
+                addBuff('shield', '🛡️');
+                purchased = true;
+            }
+            break;
+    }
+
+    if (purchased) {
+        createParticles(p.x, p.y + 30, 20, '#fbbf24');
+        updateShopGoldDisplay();
+    }
+}
+
+function addBuff(type, icon) {
+    if (!g.player.buffs) g.player.buffs = {};
+    g.player.buffs[type] = icon;
+    updateBuffsDisplay();
+}
+
+function updateBuffsDisplay() {
+    const panel = document.getElementById('buffs-panel');
+    if (!panel) return;
+
+    panel.innerHTML = '';
+    if (g.player.buffs) {
+        Object.values(g.player.buffs).forEach(icon => {
+            const buffEl = document.createElement('div');
+            buffEl.className = 'buff-icon';
+            buffEl.textContent = icon;
+            panel.appendChild(buffEl);
+        });
+    }
+}
+
+function updateShopGoldDisplay() {
+    const goldDisplay = document.getElementById('shop-gold-display');
+    if (goldDisplay) {
+        goldDisplay.textContent = g.player.gold;
     }
 }
 
@@ -825,7 +1037,20 @@ function toggleGUI(id) {
     const el = document.getElementById(id);
     const wasHidden = el.style.display === 'none';
     el.style.display = wasHidden ? 'flex' : 'none';
-    if (id === 'gui-shop' || id === 'gui-help' || id === 'gui-quests') g.paused = wasHidden;
+
+    if (id === 'gui-shop') {
+        if (wasHidden) updateShopGoldDisplay();
+        g.paused = wasHidden;
+    } else if (id === 'gui-help' || id === 'gui-quests') {
+        g.paused = wasHidden;
+        if (wasHidden && id === 'gui-quests') updateQuestUI();
+    } else if (id === 'gui-stats') {
+        g.paused = wasHidden;
+        if (wasHidden) {
+            updateStatsUI();
+            checkAchievements();
+        }
+    }
 }
 
 function togglePause() {
@@ -1087,7 +1312,7 @@ function loop() {
     document.getElementById('exp-text').textContent = `${p.exp % 100}/100`;
     document.getElementById('gold-val').textContent = p.gold;
     document.getElementById('danger-val').textContent = g.danger;
-    document.getElementById('lvl-tag').textContent = `LV. ${p.lvl}`;
+    document.getElementById('level-badge').textContent = p.lvl;
     document.getElementById('timer-val').textContent = formatTime(g.timer);
     document.getElementById('kills-val').textContent = p.kills;
     document.getElementById('zone-val').textContent = g.zone;
@@ -1119,6 +1344,7 @@ window.onkeydown = e => {
     if (e.code === 'KeyH') toggleGUI('gui-help');
     if (e.code === 'KeyB') toggleGUI('gui-shop');
     if (e.code === 'KeyQ') toggleGUI('gui-quests');
+    if (e.code === 'KeyI') toggleGUI('gui-stats');
     if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
 };
 window.onkeyup = e => g.keys[e.code] = false;
